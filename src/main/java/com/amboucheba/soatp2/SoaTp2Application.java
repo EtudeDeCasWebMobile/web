@@ -3,6 +3,7 @@ package com.amboucheba.soatp2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
@@ -16,6 +17,11 @@ public class SoaTp2Application {
 	@GetMapping(produces = "text/html")
 	public String home(){
 		return "<html><body><p> Home page </p></body></html>";
+	}
+
+	@GetMapping(value = "/{param}", produces = "text/html")
+	public String param(@PathVariable("param") String param){
+		return "<html><body><p> You entered : " + param + " </p></body></html>";
 	}
 
 }
