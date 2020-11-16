@@ -19,9 +19,6 @@ public class SoaTp2Application {
 		return "<html><body><p> Home page </p></body></html>";
 	}
 
-	@GetMapping(value = "/{param}", produces = "text/html")
-	public String param(@PathVariable("param") String param){
-		return "<html><body><p> You entered : " + param + " </p></body></html>";
-	}
+
 
 }
