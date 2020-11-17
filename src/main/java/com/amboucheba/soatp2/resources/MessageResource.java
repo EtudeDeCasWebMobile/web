@@ -6,6 +6,7 @@ import com.amboucheba.soatp2.models.MessageList;
 import com.amboucheba.soatp2.repositories.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -25,7 +26,7 @@ public class MessageResource {
     @Autowired
     MessageRepository messageRepository;
 
-    @GetMapping()
+    @GetMapping(produces = "application/json")
     public ResponseEntity<MessageList> getAll(){
 
         List<Message> messages = StreamSupport.stream(messageRepository.findAll().spliterator(), false)
@@ -34,7 +35,7 @@ public class MessageResource {
         return ResponseEntity.ok(new MessageList(messages));
     }
 
-    @GetMapping(value = "/{messageId}")
+    @GetMapping(value = "/{messageId}", produces = "application/json")
     public ResponseEntity<Message> getMessageById(@PathVariable("messageId") long messageId){
 
         Optional<Message> message = messageRepository.findById(messageId);
@@ -44,7 +45,7 @@ public class MessageResource {
         return ResponseEntity.ok(message.get());
     }
 
-    @PostMapping
+    @PostMapping(consumes = "application/json" )
     public ResponseEntity<Object> addMessage(@Valid @RequestBody Message newMessage){
         // NOT ENOUGH SPACE EXCEPTION
         /// ...
@@ -58,7 +59,7 @@ public class MessageResource {
         return ResponseEntity.created(location).build();
     }
 
-    @PutMapping(value = "/{messageId}")
+    @PutMapping(value = "/{messageId}", consumes = "application/json")
     public ResponseEntity<Object> updateMessage(@PathVariable("messageId") long messageId, @Valid @RequestBody Message newMessage){
         // NOT ENOUGH SPACE EXCEPTION
         /// ...
