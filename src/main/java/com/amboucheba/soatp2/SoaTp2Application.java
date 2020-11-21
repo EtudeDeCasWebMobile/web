@@ -25,7 +25,7 @@ public class SoaTp2Application {
 
 	@GetMapping(produces = "text/html")
 	public String home(){
-		return "<html><body><p> Home page </p></body></html>";
+		return "<html><body><p>Message Service: Home page </p></body></html>";
 	}
 
 

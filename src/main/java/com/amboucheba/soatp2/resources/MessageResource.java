@@ -27,10 +27,19 @@ public class MessageResource {
     MessageRepository messageRepository;
 
     @GetMapping(produces = "application/json")
-    public ResponseEntity<MessageList> getAll(){
+    public ResponseEntity<MessageList> getAll(@RequestParam(value = "username", defaultValue = "") String username){
 
-        List<Message> messages = StreamSupport.stream(messageRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
+        List<Message> messages;
+
+        if (username == null || username.isEmpty()){
+            // no username provided -> get all of them
+            messages = StreamSupport.stream(messageRepository.findAll().spliterator(), false)
+                    .collect(Collectors.toList());
+        }
+        else{
+            // username provided -> get messages of username
+            messages = messageRepository.findByUsername(username);
+        }
 
         return ResponseEntity.ok(new MessageList(messages));
     }
@@ -44,6 +53,7 @@ public class MessageResource {
         }
         return ResponseEntity.ok(message.get());
     }
+
 
     @PostMapping(consumes = "application/json" )
     public ResponseEntity<Object> addMessage(@Valid @RequestBody Message newMessage){

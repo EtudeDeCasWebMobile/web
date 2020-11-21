@@ -43,6 +43,17 @@ class GetAllTest {
        MessageList messageList = responseEntity.getBody();
 
        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(3, messageList.getCount() );
+    }
 
+    @Test
+    void getByUsername() throws Exception {
+        String username = "AB";
+        String uri = "http://localhost:" + port + "/messages?username="+ username;
+        ResponseEntity<MessageList> responseEntity = testRestTemplate.getForEntity(uri, MessageList.class);
+        MessageList messageList = responseEntity.getBody();
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(2, messageList.getCount() );
     }
 }

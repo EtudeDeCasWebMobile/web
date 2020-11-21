@@ -55,6 +55,27 @@ class GetAllTest {
 
         // Compare expected response with actual response
         assertEquals(expectedResponse, response_str);
+    }
 
+    @Test
+    void getByUsername() throws Exception {
+
+        // Mock dependency response: messageRepository
+        String username = "u1";
+        List<Message> messages = Arrays.asList(
+                new Message(username, "t1"),
+                new Message(username, "t2")
+        );
+        Mockito.when(messageRepository.findByUsername(username)).thenReturn(messages);
+
+        // Send request to endpoint
+        RequestBuilder request = MockMvcRequestBuilders.get("/messages?username="+username);
+        MvcResult response = mvc.perform(request).andReturn();
+        String response_str = response.getResponse().getContentAsString();
+
+        String expectedResponse = objectMapper.writeValueAsString(new MessageList( messages));
+
+        // Compare expected response with actual response
+        assertEquals(expectedResponse, response_str);
     }
 }
