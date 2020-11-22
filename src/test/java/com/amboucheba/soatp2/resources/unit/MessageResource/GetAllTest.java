@@ -37,7 +37,7 @@ class GetAllTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void getAll() throws Exception {
+    void getAllWithoutUsername() throws Exception {
 
         // Mock dependency response: messageRepository
         List<Message> messages = Arrays.asList(
@@ -67,6 +67,30 @@ class GetAllTest {
                 new Message(username, "t2")
         );
         Mockito.when(messageRepository.findByUsername(username)).thenReturn(messages);
+
+        // Send request to endpoint
+        RequestBuilder request = MockMvcRequestBuilders.get("/messages?username="+username);
+        MvcResult response = mvc.perform(request).andReturn();
+        String response_str = response.getResponse().getContentAsString();
+
+        String expectedResponse = objectMapper.writeValueAsString(new MessageList( messages));
+
+        // Compare expected response with actual response
+        assertEquals(expectedResponse, response_str);
+    }
+
+    @Test
+    //Should get all messages
+    void usernameEmpty() throws Exception {
+
+        // Mock dependency response: messageRepository
+        // username empty
+        String username = "";
+        List<Message> messages = Arrays.asList(
+                new Message(username, "t1"),
+                new Message(username, "t2")
+        );
+        Mockito.when(messageRepository.findAll()).thenReturn(messages);
 
         // Send request to endpoint
         RequestBuilder request = MockMvcRequestBuilders.get("/messages?username="+username);
