@@ -40,7 +40,7 @@ class DeleteMessageTest {
         RequestBuilder request = MockMvcRequestBuilders.delete("/messages/" + messageId );
         MvcResult response = mvc.perform(request).andReturn();
 
-        assert response.getResponse().getStatus() == HttpStatus.OK.value();
+        assertEquals(HttpStatus.NO_CONTENT.value(), response.getResponse().getStatus());
     }
 
     @Test

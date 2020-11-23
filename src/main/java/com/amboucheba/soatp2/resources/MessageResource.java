@@ -4,6 +4,8 @@ import com.amboucheba.soatp2.exceptions.NotFoundException;
 import com.amboucheba.soatp2.models.Message;
 import com.amboucheba.soatp2.models.MessageList;
 import com.amboucheba.soatp2.repositories.MessageRepository;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -44,7 +46,12 @@ public class MessageResource {
         return ResponseEntity.ok(new MessageList(messages));
     }
 
+
     @GetMapping(value = "/{messageId}", produces = "application/json")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Message returned in body"),
+        @ApiResponse(code = 404, message = "Message not found")
+    })
     public ResponseEntity<Message> getMessageById(@PathVariable("messageId") long messageId){
 
         Optional<Message> message = messageRepository.findById(messageId);
@@ -56,7 +63,12 @@ public class MessageResource {
 
 
     @PostMapping(consumes = "application/json" )
-    public ResponseEntity<Object> addMessage(@Valid @RequestBody Message newMessage){
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Message created, check location header for uri"),
+            @ApiResponse(code = 400, message = "Provided Message info not valid, check response body for more details on error")
+    })
+    public ResponseEntity<Void> addMessage(@Valid @RequestBody Message newMessage){
         // NOT ENOUGH SPACE EXCEPTION
         /// ...
         Message savedMessage = messageRepository.save(newMessage);
@@ -69,8 +81,14 @@ public class MessageResource {
         return ResponseEntity.created(location).build();
     }
 
-    @PutMapping(value = "/{messageId}", consumes = "application/json")
-    public ResponseEntity<Object> updateMessage(@PathVariable("messageId") long messageId, @Valid @RequestBody Message newMessage){
+
+    @PutMapping(value = "/{messageId}", consumes = "application/json", produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Message updated and returned in response body"),
+            @ApiResponse(code = 201, message = "Message created,  check location header for uri"),
+            @ApiResponse(code = 400, message = "Provided Message info not valid, check response body for more details on error")
+    })
+    public ResponseEntity<Message> updateMessage(@PathVariable("messageId") long messageId, @Valid @RequestBody Message newMessage){
         // NOT ENOUGH SPACE EXCEPTION
         /// ...
 
@@ -97,15 +115,20 @@ public class MessageResource {
         return ResponseEntity.created(location).build();
     }
 
+
     @DeleteMapping(value = "/{messageId}")
-    public ResponseEntity<Object> deleteMessage(@PathVariable("messageId") long messageId){
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "Message deleted"),
+            @ApiResponse(code = 404, message = "Message not found")
+    })
+    public ResponseEntity<Void> deleteMessage(@PathVariable("messageId") long messageId){
 
         if (!messageRepository.existsById(messageId)){
             throw new NotFoundException("Message with id " + messageId + " not found");
         }
         messageRepository.deleteById(messageId);
 
-        String responseBody = "Message with id " + messageId + " has been deleted.";
-        return ResponseEntity.ok(responseBody);
+        return ResponseEntity.noContent().build();
     }
 }

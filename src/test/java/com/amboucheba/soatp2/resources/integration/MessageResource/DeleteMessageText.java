@@ -47,7 +47,7 @@ public class DeleteMessageText {
         ResponseEntity<String> response = testRestTemplate.exchange(uri, HttpMethod.DELETE, entity, String.class);
 
         // Http status must be OK(200)
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 
         // Message must have benn deleted
         Optional<Message> messageResult = messageRepository.findById(savedMessage.getId());

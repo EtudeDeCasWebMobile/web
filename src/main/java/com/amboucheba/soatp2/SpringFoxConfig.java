@@ -18,10 +18,12 @@ public class SpringFoxConfig {
     @Bean
     public Docket documentation() {
         return new Docket(DocumentationType.SWAGGER_2)
+                .useDefaultResponseMessages(false)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.amboucheba.soatp2"))
                 .paths(PathSelectors.any())
                 .paths(Predicate.not(PathSelectors.ant("/documentation")) )
+
                 .build()
                 .apiInfo(apiInfo());
     }
