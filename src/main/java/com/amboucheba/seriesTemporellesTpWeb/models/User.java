@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "User") // create the table in public schema
+@Table(name = "users") // create the table in public schema
 public class User implements Serializable {
 
     @Id
