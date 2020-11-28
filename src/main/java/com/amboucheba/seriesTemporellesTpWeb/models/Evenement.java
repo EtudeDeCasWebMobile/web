@@ -8,7 +8,7 @@ import java.sql.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Evenements") // create the table in public schema
+@Table(name = "evenements") // create the table in public schema
 public class Evenement implements Serializable {
 
     @Id
@@ -24,13 +24,13 @@ public class Evenement implements Serializable {
     private Float valeur;
 
     @Column(name = "commentaire")
-    @NotBlank(message = "Field 'commentaire' is required")
-    @Size( min = 0, max = 255, message = "Commentaire length must be between 0 and 255")
-    private Float commentaire;
+//    @NotBlank(message = "Field 'commentaire' is required")
+//    @Size( min = 0, max = 255, message = "Commentaire length must be between 0 and 255")
+    private String commentaire;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_SerieTemporelle", nullable = false)
-    private User serieTemporelle;
+//    @JoinColumn(name = "id_SerieTemporelle", nullable = false)
+    @ManyToOne
+    private SerieTemporelle serieTemporelle;
 
     public Evenement() {
     }
@@ -52,19 +52,19 @@ public class Evenement implements Serializable {
         this.valeur = valeur;
     }
 
-    public Float getCommentaire() {
+    public String getCommentaire() {
         return commentaire;
     }
 
-    public void setCommentaire(Float commentaire) {
+    public void setCommentaire(String commentaire) {
         this.commentaire = commentaire;
     }
 
-    public User getSerieTemporelle() {
+    public SerieTemporelle getSerieTemporelle() {
         return serieTemporelle;
     }
 
-    public void setSerieTemporelle(User serieTemporelle) {
+    public void setSerieTemporelle(SerieTemporelle serieTemporelle) {
         this.serieTemporelle = serieTemporelle;
     }
 

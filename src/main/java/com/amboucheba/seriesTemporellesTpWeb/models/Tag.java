@@ -18,16 +18,17 @@ public class Tag implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "id_Evenement")
-    private String event;
+//    @Column(name = "id_Evenement")
+    @ManyToOne
+    private Evenement event;
 
-    public Tag(Long id, String name, String event) {
+    public Tag(Long id, String name, Evenement event) {
         this.id = id;
         this.name = name;
         this.event = event;
     }
 
-    public Tag(String name, String event) {
+    public Tag(String name, Evenement event) {
         this.name = name;
         this.event = event;
     }
@@ -51,11 +52,11 @@ public class Tag implements Serializable {
         this.name = name;
     }
 
-    public String getEvent() {
+    public Evenement getEvent() {
         return event;
     }
 
-    public void setEvent(String event) {
+    public void setEvent(Evenement event) {
         this.event = event;
     }
 

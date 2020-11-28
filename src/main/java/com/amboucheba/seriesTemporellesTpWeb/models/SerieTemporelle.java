@@ -25,13 +25,13 @@ public class SerieTemporelle implements Serializable {
     @Size( min = 0, max = 255, message = "Description length must be between 0 and 255")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "owner", nullable = false)
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "owner", nullable = false)
+    @ManyToOne
     private User owner;
 
-    @OneToMany(mappedBy = "serieTemporelle", fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
-    private Set<Evenement> evenements;
+//    @OneToMany(mappedBy = "serieTemporelle", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    private Set<Evenement> evenements;
 
     public SerieTemporelle(Long id, String titre, String description, User owner) {
         this.id = id;

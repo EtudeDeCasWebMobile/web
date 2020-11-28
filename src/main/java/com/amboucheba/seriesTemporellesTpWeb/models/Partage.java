@@ -1,10 +1,7 @@
 package com.amboucheba.seriesTemporellesTpWeb.models;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -15,23 +12,25 @@ public class Partage implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "id_user")
-    private String user;
+//    @Column(name = "id_user")
+    @ManyToOne
+    private User user;
 
-    @Column(name = "id_SerieTemporelle")
-    private String serieTemporelle;
+//    @Column(name = "id_SerieTemporelle")
+    @ManyToOne
+    private SerieTemporelle serieTemporelle;
 
     @Column(name = "type")
     private String type;
 
-    public Partage(Long id, String user, String serieTemporelle, String type) {
+    public Partage(Long id, User user, SerieTemporelle serieTemporelle, String type) {
         this.id = id;
         this.user = user;
         this.serieTemporelle = serieTemporelle;
         this.type = type;
     }
 
-    public Partage(String user, String serieTemporelle, String type) {
+    public Partage(User user, SerieTemporelle serieTemporelle, String type) {
         this.user = user;
         this.serieTemporelle = serieTemporelle;
         this.type = type;
@@ -48,19 +47,19 @@ public class Partage implements Serializable {
         this.id = id;
     }
 
-    public String getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(String user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
-    public String getSerieTemporelle() {
+    public SerieTemporelle getSerieTemporelle() {
         return serieTemporelle;
     }
 
-    public void setSerieTemporelle(String serieTemporelle) {
+    public void setSerieTemporelle(SerieTemporelle serieTemporelle) {
         this.serieTemporelle = serieTemporelle;
     }
 

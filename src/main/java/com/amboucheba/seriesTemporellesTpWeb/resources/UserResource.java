@@ -1,7 +1,7 @@
 package com.amboucheba.seriesTemporellesTpWeb.resources;
 
-import com.amboucheba.seriesTemporellesTpWeb.models.Partage;
-import com.amboucheba.seriesTemporellesTpWeb.repositories.PartageRepository;
+import com.amboucheba.seriesTemporellesTpWeb.models.User;
+import com.amboucheba.seriesTemporellesTpWeb.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,18 +13,17 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @RestController
-@RequestMapping("/partages")
-public class PartageResource {
+@RequestMapping("/users")
+public class UserResource  {
 
     @Autowired
-    PartageRepository partageRepository;
+    UserRepository userRepository;
 
     @GetMapping
     public ResponseEntity getAll(){
-
-        List<Partage> partages = StreamSupport.stream(partageRepository.findAll().spliterator(), false)
+        List<User> users = StreamSupport.stream(userRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(partages);
+        return ResponseEntity.ok(users);
     }
 }
