@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "Users") // create the table in public schema
+@Table(name = "users") // create the table in public schema
 public class User implements Serializable {
 
     @Id
