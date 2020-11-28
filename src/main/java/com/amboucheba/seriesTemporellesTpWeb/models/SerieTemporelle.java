@@ -5,6 +5,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "SeriesTemporelles") // create the table in public schema
@@ -27,6 +28,10 @@ public class SerieTemporelle implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "owner", nullable = false)
     private User owner;
+
+    @OneToMany(mappedBy = "serieTemporelle", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private Set<Evenement> evenements;
 
     public SerieTemporelle(Long id, String titre, String description, User owner) {
         this.id = id;

@@ -19,12 +19,12 @@ public class User implements Serializable {
 
     @Column(name = "username")
     @NotBlank(message = "Field 'username' is required")
-    @Size( min = 6, max = 255, message = "Username length must be between 6 and 255")
+    @Size( min = 0, max = 255, message = "Username length must be between 6 and 255")
     private String username;
 
     @Column(name = "password")
     @NotBlank(message = "Field 'password' is required")
-    @Size( min = 6, max = 255, message = "Password length must be between 6 and 255")
+    @Size( min = 0, max = 255, message = "Password length must be between 6 and 255")
     private String password;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,
