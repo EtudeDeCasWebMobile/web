@@ -1,8 +1,9 @@
 CREATE TABLE if not EXISTS User(
-  username VARCHAR(255),
+  id AUTOINCREMENT,
+  username VARCHAR(255) not null UNIQUE,
   password varchar(255) not null,
 
-  PRIMARY KEY (username),
+  PRIMARY KEY (id),
   );
 
 CREATE TABLE if not EXISTS SerieTemporelle(
@@ -12,7 +13,7 @@ CREATE TABLE if not EXISTS SerieTemporelle(
   owner Varchar(255),
 
   PRIMARY KEY (id),
-  FOREIGN KEY (owner) REFERENCES User(username)
+  FOREIGN KEY (owner) REFERENCES User(id)
   );
 
 CREATE TABLE if not EXISTS Partage(
@@ -22,7 +23,7 @@ CREATE TABLE if not EXISTS Partage(
   type char(1) not null,
 
   PRIMARY KEY (id),
-  FOREIGN KEY (user) REFERENCES User(username),
+  FOREIGN KEY (user) REFERENCES User(id),
   FOREIGN KEY (id_SerieTemporelle) REFERENCES SerieTemporelle(id)
   );
 
@@ -38,7 +39,8 @@ CREATE TABLE if not EXISTS Evenement(
   );
 
 CREATE TABLE if not EXISTS Tag(
-  name varchar(255),
+  id AUTOINCREMENT,
+  name varchar(255) UNIQUE not null,
   id_Evenement int,
 
   PRIMARY KEY (name),
