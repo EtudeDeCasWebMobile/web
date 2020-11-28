@@ -1,5 +1,5 @@
 CREATE TABLE if not EXISTS User(
-  id AUTOINCREMENT,
+  id integer auto_increment,
   username VARCHAR(255) not null UNIQUE,
   password varchar(255) not null,
 
@@ -7,7 +7,7 @@ CREATE TABLE if not EXISTS User(
   );
 
 CREATE TABLE if not EXISTS SerieTemporelle(
-  id AUTOINCREMENT,
+  id integer auto_increment,
   titre VARCHAR(255) not null,
   description varchar(255) not null,
   owner Varchar(255),
@@ -17,7 +17,7 @@ CREATE TABLE if not EXISTS SerieTemporelle(
   );
 
 CREATE TABLE if not EXISTS Partage(
-  id AUTOINCREMENT,
+  id integer auto_increment,
   user VARCHAR(255),
   id_SerieTemporelle varchar(255),
   type char(1) not null,
@@ -28,7 +28,7 @@ CREATE TABLE if not EXISTS Partage(
   );
 
 CREATE TABLE if not EXISTS Evenement(
-  id AUTOINCREMENT,
+  id integer auto_increment,
   id_SerieTemporelle int,
   date_Evenement DATE not null,
   valeur float not null,
@@ -39,7 +39,7 @@ CREATE TABLE if not EXISTS Evenement(
   );
 
 CREATE TABLE if not EXISTS Tag(
-  id AUTOINCREMENT,
+  id integer SERIAL,
   name varchar(255) UNIQUE not null,
   id_Evenement int,
 

@@ -1,14 +1,16 @@
 package com.amboucheba.seriesTemporellesTpWeb.models;
 
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
-@Table(name = "User") // create the table in public schema
+@Table(name = "Users") // create the table in public schema
 public class User implements Serializable {
 
     @Id
@@ -24,6 +26,10 @@ public class User implements Serializable {
     @NotBlank(message = "Field 'password' is required")
     @Size( min = 6, max = 255, message = "Password length must be between 6 and 255")
     private String password;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private Set<SerieTemporelle> seriesTemporelles;
 
     public User(Long id, String username, String password) {
         this.id = id;

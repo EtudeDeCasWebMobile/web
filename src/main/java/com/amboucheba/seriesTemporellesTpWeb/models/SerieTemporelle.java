@@ -1,0 +1,86 @@
+package com.amboucheba.seriesTemporellesTpWeb.models;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Objects;
+
+@Entity
+@Table(name = "SeriesTemporelles") // create the table in public schema
+public class SerieTemporelle implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "titre")
+    @NotBlank(message = "Field 'titre' is required")
+    @Size( min = 0, max = 255, message = "Titre length must be between 0 and 255")
+    private String titre;
+
+    @Column(name = "description")
+    @NotBlank(message = "Field 'description' is required")
+    @Size( min = 0, max = 255, message = "Description length must be between 0 and 255")
+    private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "owner", nullable = false)
+    private User owner;
+
+    public SerieTemporelle(Long id, String titre, String description, User owner) {
+        this.id = id;
+        this.titre = titre;
+        this.description = description;
+        this.owner = owner;
+    }
+
+    public SerieTemporelle() {
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitre() {
+        return titre;
+    }
+
+    public void setTitre(String titre) {
+        this.titre = titre;
+    }
+
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        SerieTemporelle user = (SerieTemporelle) o;
+        return user.id == this.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+}
