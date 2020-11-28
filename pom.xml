@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.amboucheba</groupId>
-	<artifactId>soa-tp2</artifactId>
+	<artifactId>series-temporelles-tp-web</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>soa-tp2</name>
-	<description>Demo project for Spring Boot</description>
+	<name>series-temporelles-tp-web</name>
+	<description>Projet technologie web: Series temporelles</description>
 
 	<properties>
 		<java.version>15</java.version>
