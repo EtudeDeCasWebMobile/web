@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -24,7 +25,8 @@ public class UserResource  {
 
     @Autowired
     UserRepository userRepository;
-    @GetMapping
+
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity getAll(){
 
         List<User> users = StreamSupport.stream(userRepository.findAll().spliterator(), false)
@@ -33,7 +35,7 @@ public class UserResource  {
         return ResponseEntity.ok(users);
     }
 
-    @PostMapping(consumes = "application/json" )
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "User created, check location header for uri"),
@@ -50,7 +52,7 @@ public class UserResource  {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping(value = "/{userId}", produces = "application/json")
+    @GetMapping(value = "/{userId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User returned in body"),
             @ApiResponse(code = 404, message = "User not found")

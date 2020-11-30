@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -24,7 +25,8 @@ public class PartageResource {
 
     @Autowired
     PartageRepository partageRepository;
-    @GetMapping
+
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity getAll(){
         List<Partage> partages = StreamSupport.stream(partageRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
@@ -32,7 +34,7 @@ public class PartageResource {
         return ResponseEntity.ok(partages);
     }
 
-    @PostMapping(consumes = "application/json" )
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE} )
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Partage created, check location header for uri"),
@@ -49,7 +51,7 @@ public class PartageResource {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping(value = "/{partageId}", produces = "application/json")
+    @GetMapping(value = "/{partageId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Partage returned in body"),
             @ApiResponse(code = 404, message = "Partage not found")
@@ -63,7 +65,11 @@ public class PartageResource {
         return ResponseEntity.ok(partage.get());
     }
 
-    @PutMapping(value = "/{partageId}", consumes = "application/json", produces = "application/json")
+    @PutMapping(
+            value = "/{partageId}",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+    )
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Partage updated and returned in response body"),
             @ApiResponse(code = 201, message = "Partage created,  check location header for uri"),

@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -26,7 +27,8 @@ public class EvenementResource {
 
     @Autowired
     EventRepository eventRepository;
-    @GetMapping
+
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity getAll(){
 
         List<Evenement> evenements = StreamSupport.stream(eventRepository.findAll().spliterator(), false)
@@ -35,7 +37,7 @@ public class EvenementResource {
         return ResponseEntity.ok(evenements);
     }
 
-    @PostMapping(consumes = "application/json" )
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE} )
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Event created, check location header for uri"),
@@ -52,7 +54,7 @@ public class EvenementResource {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping(value = "/{eventId}", produces = "application/json")
+    @GetMapping(value = "/{eventId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Event returned in body"),
             @ApiResponse(code = 404, message = "Event not found")
@@ -66,7 +68,11 @@ public class EvenementResource {
         return ResponseEntity.ok(event.get());
     }
 
-    @PutMapping(value = "/{eventId}", consumes = "application/json", produces = "application/json")
+    @PutMapping(
+            value = "/{eventId}",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+    )
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Event updated and returned in response body"),
             @ApiResponse(code = 201, message = "Event created,  check location header for uri"),

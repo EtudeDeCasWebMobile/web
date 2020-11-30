@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -24,7 +25,8 @@ public class TagResource {
 
     @Autowired
     TagRepository tagRepository;
-    @GetMapping
+
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity getAll(){
 
         List<Tag> tags = StreamSupport.stream(tagRepository.findAll().spliterator(), false)
@@ -33,7 +35,7 @@ public class TagResource {
         return ResponseEntity.ok(tags);
     }
 
-    @PostMapping(consumes = "application/json" )
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE} )
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Tag created, check location header for uri"),
@@ -50,7 +52,7 @@ public class TagResource {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping(value = "/{tagId}", produces = "application/json")
+    @GetMapping(value = "/{tagId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Tag returned in body"),
             @ApiResponse(code = 404, message = "Tag not found")
@@ -64,7 +66,10 @@ public class TagResource {
         return ResponseEntity.ok(tag.get());
     }
 
-    @PutMapping(value = "/{tagId}", consumes = "application/json", produces = "application/json")
+    @PutMapping(
+            value = "/{tagId}",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Tag updated and returned in response body"),
             @ApiResponse(code = 201, message = "Tag created,  check location header for uri"),
