@@ -24,8 +24,7 @@ public class Evenement implements Serializable {
     private Float valeur;
 
     @Column(name = "commentaire")
-//    @NotBlank(message = "Field 'commentaire' is required")
-//    @Size( min = 0, max = 255, message = "Commentaire length must be between 0 and 255")
+    @Size( min = 0, max = 255, message = "Commentaire length must be between 0 and 255")
     private String commentaire;
 
 //    @JoinColumn(name = "id_SerieTemporelle", nullable = false)
