@@ -1,7 +1,7 @@
 package com.amboucheba.seriesTemporellesTpWeb.controllers.unit.MessageResource;
 
 import com.amboucheba.seriesTemporellesTpWeb.models.Message;
-import com.amboucheba.seriesTemporellesTpWeb.models.MessageList;
+import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.MessageList;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.MessageRepository;
 import com.amboucheba.seriesTemporellesTpWeb.controllers.MessageResource;
 import com.fasterxml.jackson.databind.ObjectMapper;

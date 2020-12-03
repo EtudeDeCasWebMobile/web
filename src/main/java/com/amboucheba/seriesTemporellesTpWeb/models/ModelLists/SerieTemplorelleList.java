@@ -1,4 +1,6 @@
-package com.amboucheba.seriesTemporellesTpWeb.models;
+package com.amboucheba.seriesTemporellesTpWeb.models.ModelLists;
+
+import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
 
 import java.util.List;
 
@@ -22,8 +24,8 @@ public class SerieTemplorelleList {
         this.count = count;
     }
 
-    public SerieTemplorelleList(List<SerieTemporelle> seriestemporelles, int count) {
+    public SerieTemplorelleList(List<SerieTemporelle> seriestemporelles) {
         this.seriestemporelles = seriestemporelles;
-        this.count = count;
+        this.count = seriestemporelles.size();
     }
 }

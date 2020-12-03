@@ -1,4 +1,6 @@
-package com.amboucheba.seriesTemporellesTpWeb.models;
+package com.amboucheba.seriesTemporellesTpWeb.models.ModelLists;
+
+import com.amboucheba.seriesTemporellesTpWeb.models.User;
 
 import java.util.List;
 

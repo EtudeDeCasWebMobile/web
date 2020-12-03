@@ -2,7 +2,7 @@ package com.amboucheba.seriesTemporellesTpWeb.controllers;
 
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
 import com.amboucheba.seriesTemporellesTpWeb.models.Message;
-import com.amboucheba.seriesTemporellesTpWeb.models.MessageList;
+import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.MessageList;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.MessageRepository;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
