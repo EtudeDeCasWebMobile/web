@@ -1,9 +1,7 @@
-package com.amboucheba.seriesTemporellesTpWeb.resources;
+package com.amboucheba.seriesTemporellesTpWeb.controllers;
 
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
 import com.amboucheba.seriesTemporellesTpWeb.models.Evenement;
-import com.amboucheba.seriesTemporellesTpWeb.models.Message;
-import com.amboucheba.seriesTemporellesTpWeb.models.Partage;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.EventRepository;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -23,7 +21,7 @@ import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/evenements")
-public class EvenementResource {
+public class EvenementController {
 
     @Autowired
     EventRepository eventRepository;

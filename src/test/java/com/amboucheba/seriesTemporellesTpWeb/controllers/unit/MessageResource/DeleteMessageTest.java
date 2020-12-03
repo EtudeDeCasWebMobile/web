@@ -1,7 +1,7 @@
-package com.amboucheba.seriesTemporellesTpWeb.resources.unit.MessageResource;
+package com.amboucheba.seriesTemporellesTpWeb.controllers.unit.MessageResource;
 
 import com.amboucheba.seriesTemporellesTpWeb.repositories.MessageRepository;
-import com.amboucheba.seriesTemporellesTpWeb.resources.MessageResource;
+import com.amboucheba.seriesTemporellesTpWeb.controllers.MessageResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

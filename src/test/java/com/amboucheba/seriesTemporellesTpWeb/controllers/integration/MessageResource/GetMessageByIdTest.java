@@ -1,4 +1,4 @@
-package com.amboucheba.seriesTemporellesTpWeb.resources.integration.MessageResource;
+package com.amboucheba.seriesTemporellesTpWeb.controllers.integration.MessageResource;
 
 import com.amboucheba.seriesTemporellesTpWeb.SeriesTemporellesTpWebApplication;
 import com.amboucheba.seriesTemporellesTpWeb.models.Message;

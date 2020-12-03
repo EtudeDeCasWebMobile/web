@@ -1,4 +1,4 @@
-package com.amboucheba.seriesTemporellesTpWeb.resources;
+package com.amboucheba.seriesTemporellesTpWeb.controllers;
 
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
 import com.amboucheba.seriesTemporellesTpWeb.models.Partage;
@@ -21,7 +21,7 @@ import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/partages")
-public class PartageResource {
+public class PartageController {
 
     @Autowired
     PartageRepository partageRepository;

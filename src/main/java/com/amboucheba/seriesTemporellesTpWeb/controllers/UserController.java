@@ -1,8 +1,9 @@
-package com.amboucheba.seriesTemporellesTpWeb.resources;
+package com.amboucheba.seriesTemporellesTpWeb.controllers;
 
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
 import com.amboucheba.seriesTemporellesTpWeb.models.User;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.UserRepository;
+import com.amboucheba.seriesTemporellesTpWeb.services.UserService;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,13 @@ import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/users")
-public class UserResource  {
+public class UserController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    UserService userService;
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity getAll(){
@@ -42,11 +46,13 @@ public class UserResource  {
             @ApiResponse(code = 400, message = "Provided User info not valid, check response body for more details on error")
     })
     public ResponseEntity<Void> addUser(@Valid @RequestBody User newUser){
-        User savedUser = userRepository.save(newUser);
+//        User savedUser = userRepository.save(newUser);
+
+        long newUserId = userService.registerUser(newUser);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(savedUser.getId())
+                .buildAndExpand(newUserId)
                 .toUri();
 
         return ResponseEntity.created(location).build();

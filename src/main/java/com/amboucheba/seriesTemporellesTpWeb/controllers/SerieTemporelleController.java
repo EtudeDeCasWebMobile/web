@@ -1,4 +1,4 @@
-package com.amboucheba.seriesTemporellesTpWeb.resources;
+package com.amboucheba.seriesTemporellesTpWeb.controllers;
 
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
 import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
@@ -21,7 +21,7 @@ import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/serieTemporelles")
-public class SerieTemporelleResource {
+public class SerieTemporelleController {
 
     @Autowired
     SerieTemporelleRepository serieTemporelleRepository;
