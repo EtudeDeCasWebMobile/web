@@ -1,8 +1,10 @@
 package com.amboucheba.seriesTemporellesTpWeb.controllers;
 
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
+import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.PartageList;
 import com.amboucheba.seriesTemporellesTpWeb.models.Partage;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.PartageRepository;
+import com.amboucheba.seriesTemporellesTpWeb.services.PartageService;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +26,17 @@ import java.util.stream.StreamSupport;
 public class PartageController {
 
     @Autowired
-    PartageRepository partageRepository;
+    PartageService partageService;
 
-    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity getAll(){
-        List<Partage> partages = StreamSupport.stream(partageRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
+    @GetMapping(value = "serietemporelle/{serieTemporelleId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity getAllBySerieTemporelleId(@PathVariable("serieTemporelleId") long serieTemporelleId){
+        PartageList partages = partageService.listPartageBySerieTemporelleId(serieTemporelleId);
+        return ResponseEntity.ok(partages);
+    }
 
+    @GetMapping(value = "user/{userId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity getAllByUserId(@PathVariable("userId") long userId){
+        PartageList partages = partageService.listPartageByUserId(userId);
         return ResponseEntity.ok(partages);
     }
 
@@ -41,29 +47,16 @@ public class PartageController {
             @ApiResponse(code = 400, message = "Provided Partage info not valid, check response body for more details on error")
     })
     public ResponseEntity<Void> addPartage(@Valid @RequestBody Partage newPartage){
-        Partage savedPartage = partageRepository.save(newPartage);
+        long partageId = partageService.createPartage(newPartage);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(savedPartage.getId())
+                .buildAndExpand(partageId)
                 .toUri();
 
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping(value = "/{partageId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Partage returned in body"),
-            @ApiResponse(code = 404, message = "Partage not found")
-    })
-    public ResponseEntity<Partage> getPartageById(@PathVariable("partageId") long partageId){
-
-        Optional<Partage> partage = partageRepository.findById(partageId);
-        if (partage.isEmpty()){
-            throw new NotFoundException("Partage with id " + partageId + " not found");
-        }
-        return ResponseEntity.ok(partage.get());
-    }
 
     @PutMapping(
             value = "/{partageId}",
@@ -76,25 +69,10 @@ public class PartageController {
             @ApiResponse(code = 400, message = "Provided Partage info not valid, check response body for more details on error")
     })
     public ResponseEntity<Partage> updatePartage(@PathVariable("partageId") long partageId, @Valid @RequestBody Partage newPartage){
-        Optional<Partage> partage = partageRepository.findById(partageId);
+        Partage partage = partageService.updatePartage(newPartage, partageId);
 
-        if (partage.isPresent()){
-            Partage actualPartage = partage.get();
-            actualPartage.setType(newPartage.getType());
-            Partage savedPartage = partageRepository.save(actualPartage);
-            return ResponseEntity.ok(savedPartage);
-        }
 
-        // Partage does not exist so create it
-        Partage savedEvent = partageRepository.save(newPartage);
-
-        URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("partages")
-                .path("/{id}")
-                .buildAndExpand(savedEvent.getId())
-                .toUri();
-
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.ok(partage);
     }
 
 
@@ -106,11 +84,7 @@ public class PartageController {
     })
     public ResponseEntity<Void> deletePartage(@PathVariable("partageId") long partageId){
 
-        if (!partageRepository.existsById(partageId)){
-            throw new NotFoundException("Partage with id " + partageId + " not found");
-        }
-        partageRepository.deleteById(partageId);
-
+        partageService.removePartage(partageId);
         return ResponseEntity.noContent().build();
     }
 }

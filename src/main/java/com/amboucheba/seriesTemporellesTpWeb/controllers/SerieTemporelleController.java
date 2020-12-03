@@ -1,7 +1,7 @@
 package com.amboucheba.seriesTemporellesTpWeb.controllers;
 
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
-import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemplorelleList;
+import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.SerieTemplorelleList;
 import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
 import com.amboucheba.seriesTemporellesTpWeb.services.SerieTemporelleService;
 import io.swagger.annotations.ApiResponse;
@@ -17,13 +17,12 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/serieTemporelles")
 public class SerieTemporelleController {
 
     @Autowired
     SerieTemporelleService serieTemporelleService;
 
-    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(value = "/seriesTemporelles", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity getAll(){
 
         SerieTemplorelleList liste = serieTemporelleService.listSerieTemporelle();
@@ -31,14 +30,22 @@ public class SerieTemporelleController {
         return ResponseEntity.ok(liste);
     }
 
-    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE} )
+    @GetMapping(value = "/users/{userId}/seriesTemporelles", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity getAllOfOwner(@PathVariable("userId") long userId){
+
+        SerieTemplorelleList liste = serieTemporelleService.listSerieTemporelleOfOwner(userId);
+
+        return ResponseEntity.ok(liste);
+    }
+
+    @PostMapping(value = "/users/{userId}/seriesTemporelles", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE} )
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "SerieTemporelle created, check location header for uri"),
             @ApiResponse(code = 400, message = "Provided SerieTemporelle info not valid, check response body for more details on error")
     })
-    public ResponseEntity<Void> addSerieTemporelle(@Valid @RequestBody SerieTemporelle newSerieTemporelle){
-        long createdSerieTemporelleId = serieTemporelleService.createSerieTemporelle(newSerieTemporelle);
+    public ResponseEntity<Void> addSerieTemporelle(@Valid @RequestBody SerieTemporelle newSerieTemporelle, @PathVariable("userId") long userId){
+        long createdSerieTemporelleId = serieTemporelleService.createSerieTemporelle(newSerieTemporelle, userId);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -48,20 +55,20 @@ public class SerieTemporelleController {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping(value = "/{serieTemporelleId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(value = "/seriestemporelles/{serieTemporelleId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "SerieTemporelle returned in body"),
             @ApiResponse(code = 404, message = "SerieTemporelle not found")
     })
     public ResponseEntity<SerieTemporelle> getSerieTemporelleById(@PathVariable("serieTemporelleId") long serieTemporelleId) throws NotFoundException{
 
-        SerieTemporelle serieTemporelle = serieTemporelleService.getSerieTemporelleById(serieTemporelleId);
+        SerieTemporelle serieTemporelle = serieTemporelleService.find(serieTemporelleId);
         return ResponseEntity.ok(serieTemporelle);
     }
 
 
     @PutMapping(
-            value = "/{serieTemporelleId}",
+            value = "/seriesTemporelles/{serieTemporelleId}",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
@@ -83,7 +90,7 @@ public class SerieTemporelleController {
     }
 
 
-    @DeleteMapping(value = "/{serieTemporelleId}")
+    @DeleteMapping(value = "/seriesTemporelles/{serieTemporelleId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "SerieTemporelle deleted"),

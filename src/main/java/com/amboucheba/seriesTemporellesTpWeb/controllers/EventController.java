@@ -2,7 +2,7 @@ package com.amboucheba.seriesTemporellesTpWeb.controllers;
 
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
 import com.amboucheba.seriesTemporellesTpWeb.models.Event;
-import com.amboucheba.seriesTemporellesTpWeb.models.EventList;
+import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.EventList;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.EventRepository;
 import com.amboucheba.seriesTemporellesTpWeb.services.EventService;
 import io.swagger.annotations.ApiResponse;
@@ -18,8 +18,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @RestController
 public class EventController {

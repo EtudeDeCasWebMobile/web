@@ -1,12 +1,12 @@
 package com.amboucheba.seriesTemporellesTpWeb.services;
 
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
-import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemplorelleList;
+
+import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.SerieTemplorelleList;
 import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
 import com.amboucheba.seriesTemporellesTpWeb.models.User;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.SerieTemporelleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,9 +19,11 @@ public class SerieTemporelleService {
 
     @Autowired
     SerieTemporelleRepository serieTemporelleRepository;
+    @Autowired
+    UserService userService;
 
 
-    public SerieTemporelle getSerieTemporelleById(long serieTemporelleId) throws NotFoundException {
+    public SerieTemporelle find(long serieTemporelleId) throws NotFoundException {
 
         Optional<SerieTemporelle> serieTemporelle = serieTemporelleRepository.findById(serieTemporelleId);
         if(serieTemporelle.isPresent()){
@@ -30,14 +32,23 @@ public class SerieTemporelleService {
         throw new NotFoundException("Serie temporelle Not Found");
     }
 
-    public long createSerieTemporelle(SerieTemporelle serieTemporelle){
+
+    public long createSerieTemporelle(SerieTemporelle serieTemporelle, long userId){
+        User user = userService.find(userId);
+        serieTemporelle.setOwner(user);
         return serieTemporelleRepository.save(serieTemporelle).getId();
     }
 
     public SerieTemplorelleList listSerieTemporelle(){
         List<SerieTemporelle> liste = StreamSupport.stream(serieTemporelleRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
-        return new SerieTemplorelleList(liste, liste.size());
+        return new SerieTemplorelleList(liste);
+    }
+
+    public SerieTemplorelleList listSerieTemporelleOfOwner(long userId){
+        List<SerieTemporelle> liste = StreamSupport.stream(serieTemporelleRepository.findByOwnerId(userId).spliterator(), false)
+                .collect(Collectors.toList());
+        return new SerieTemplorelleList(liste);
     }
 
     public SerieTemporelle updateSerieTemporelle(SerieTemporelle newSerieTemporelle, long serieTemporelleId){

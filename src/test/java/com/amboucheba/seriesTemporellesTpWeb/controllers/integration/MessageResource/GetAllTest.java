@@ -1,7 +1,7 @@
 package com.amboucheba.seriesTemporellesTpWeb.controllers.integration.MessageResource;
 
 import com.amboucheba.seriesTemporellesTpWeb.SeriesTemporellesTpWebApplication;
-import com.amboucheba.seriesTemporellesTpWeb.models.MessageList;
+import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.MessageList;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.MessageRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
