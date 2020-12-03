@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "evenements") // create the table in public schema
-public class Evenement implements Serializable {
+public class Event implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +31,7 @@ public class Evenement implements Serializable {
     @ManyToOne
     private SerieTemporelle serieTemporelle;
 
-    public Evenement() {
+    public Event() {
     }
 
 
@@ -78,7 +78,7 @@ public class Evenement implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        Evenement user = (Evenement) o;
+        Event user = (Event) o;
         return user.id == this.id;
     }
 

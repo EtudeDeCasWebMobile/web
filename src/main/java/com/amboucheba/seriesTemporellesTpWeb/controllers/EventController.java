@@ -1,8 +1,10 @@
 package com.amboucheba.seriesTemporellesTpWeb.controllers;
 
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
-import com.amboucheba.seriesTemporellesTpWeb.models.Evenement;
+import com.amboucheba.seriesTemporellesTpWeb.models.Event;
+import com.amboucheba.seriesTemporellesTpWeb.models.EventList;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.EventRepository;
+import com.amboucheba.seriesTemporellesTpWeb.services.EventService;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +22,21 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @RestController
-@RequestMapping("/evenements")
-public class EvenementController {
+@RequestMapping("/seriesTemporelles/{serieTemporelleId}/events")
+public class EventController {
 
     @Autowired
     EventRepository eventRepository;
 
-    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity getAll(){
+    @Autowired
+    EventService eventService;
 
-        List<Evenement> evenements = StreamSupport.stream(eventRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
+    @GetMapping( produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<EventList> getEventsBySerieTemporelle(@PathVariable("serieTemporelleId") long serieTemporelleId){
 
-        return ResponseEntity.ok(evenements);
+        List<Event> events = eventService.listEventsBySerieTemporelle(serieTemporelleId);
+
+        return ResponseEntity.ok(new EventList(events));
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE} )
@@ -41,8 +45,8 @@ public class EvenementController {
             @ApiResponse(code = 201, message = "Event created, check location header for uri"),
             @ApiResponse(code = 400, message = "Provided Event info not valid, check response body for more details on error")
     })
-    public ResponseEntity<Void> addEvent(@Valid @RequestBody Evenement newEvent){
-        Evenement savedEvent = eventRepository.save(newEvent);
+    public ResponseEntity<Void> addEvent(@Valid @RequestBody Event newEvent){
+        Event savedEvent = eventRepository.save(newEvent);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -57,9 +61,9 @@ public class EvenementController {
             @ApiResponse(code = 200, message = "Event returned in body"),
             @ApiResponse(code = 404, message = "Event not found")
     })
-    public ResponseEntity<Evenement> getEventById(@PathVariable("eventId") long eventId){
+    public ResponseEntity<Event> getEventById(@PathVariable("eventId") long eventId){
 
-        Optional<Evenement> event = eventRepository.findById(eventId);
+        Optional<Event> event = eventRepository.findById(eventId);
         if (event.isEmpty()){
             throw new NotFoundException("Tag with id " + eventId + " not found");
         }
@@ -76,20 +80,20 @@ public class EvenementController {
             @ApiResponse(code = 201, message = "Event created,  check location header for uri"),
             @ApiResponse(code = 400, message = "Provided Event info not valid, check response body for more details on error")
     })
-    public ResponseEntity<Evenement> updateEvent(@PathVariable("eventId") long eventId, @Valid @RequestBody Evenement newEvent){
-        Optional<Evenement> event = eventRepository.findById(eventId);
+    public ResponseEntity<Event> updateEvent(@PathVariable("eventId") long eventId, @Valid @RequestBody Event newEvent){
+        Optional<Event> event = eventRepository.findById(eventId);
 
         if (event.isPresent()){
-            Evenement actualEvent = event.get();
+            Event actualEvent = event.get();
             actualEvent.setDate(newEvent.getDate());
             actualEvent.setValeur(newEvent.getValeur());
             actualEvent.setCommentaire(newEvent.getCommentaire());
-            Evenement savedEvent = eventRepository.save(actualEvent);
+            Event savedEvent = eventRepository.save(actualEvent);
             return ResponseEntity.ok(savedEvent);
         }
 
         // Event does not exist so create it
-        Evenement savedEvent = eventRepository.save(newEvent);
+        Event savedEvent = eventRepository.save(newEvent);
 
         URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("evenements")

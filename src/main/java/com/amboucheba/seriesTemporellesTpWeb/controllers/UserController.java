@@ -2,6 +2,7 @@ package com.amboucheba.seriesTemporellesTpWeb.controllers;
 
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
 import com.amboucheba.seriesTemporellesTpWeb.models.User;
+import com.amboucheba.seriesTemporellesTpWeb.models.UserList;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.UserRepository;
 import com.amboucheba.seriesTemporellesTpWeb.services.UserService;
 import io.swagger.annotations.ApiResponse;
@@ -25,18 +26,14 @@ import java.util.stream.StreamSupport;
 public class UserController {
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
     UserService userService;
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity getAll(){
+    public ResponseEntity<UserList> getAll(){
 
-        List<User> users = StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
+        List<User> users = userService.listUsers();
 
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(new UserList(users));
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
@@ -46,9 +43,8 @@ public class UserController {
             @ApiResponse(code = 400, message = "Provided User info not valid, check response body for more details on error")
     })
     public ResponseEntity<Void> addUser(@Valid @RequestBody User newUser){
-//        User savedUser = userRepository.save(newUser);
 
-        long newUserId = userService.registerUser(newUser);
+        long newUserId = userService.registerUser(newUser).getId();
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -64,12 +60,7 @@ public class UserController {
             @ApiResponse(code = 404, message = "User not found")
     })
     public ResponseEntity<User> getUserById(@PathVariable("userId") long userId){
-
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()){
-            throw new NotFoundException("User with id " + userId + " not found");
-        }
-        return ResponseEntity.ok(user.get());
+        return ResponseEntity.ok(userService.find(userId));
     }
 
 //    @PutMapping(value = "/{userId}", consumes = "application/json", produces = "application/json")

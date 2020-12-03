@@ -1,10 +1,7 @@
 package com.amboucheba.seriesTemporellesTpWeb.models;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -20,15 +17,15 @@ public class Tag implements Serializable {
 
 //    @Column(name = "id_Evenement")
     @ManyToOne
-    private Evenement event;
+    private Event event;
 
-    public Tag(Long id, String name, Evenement event) {
+    public Tag(Long id, String name, Event event) {
         this.id = id;
         this.name = name;
         this.event = event;
     }
 
-    public Tag(String name, Evenement event) {
+    public Tag(String name, Event event) {
         this.name = name;
         this.event = event;
     }
@@ -52,11 +49,11 @@ public class Tag implements Serializable {
         this.name = name;
     }
 
-    public Evenement getEvent() {
+    public Event getEvent() {
         return event;
     }
 
-    public void setEvent(Evenement event) {
+    public void setEvent(Event event) {
         this.event = event;
     }
 

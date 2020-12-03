@@ -1,7 +1,11 @@
 package com.amboucheba.seriesTemporellesTpWeb.repositories;
 
-import com.amboucheba.seriesTemporellesTpWeb.models.Evenement;
+import com.amboucheba.seriesTemporellesTpWeb.models.Event;
 import org.springframework.data.repository.CrudRepository;
 
-public interface EventRepository extends CrudRepository<Evenement, Long> {
+import java.util.List;
+
+public interface EventRepository extends CrudRepository<Event, Long> {
+
+    public List<Event> findBySerieTemporelleId(long serieTemporelleId);
 }
