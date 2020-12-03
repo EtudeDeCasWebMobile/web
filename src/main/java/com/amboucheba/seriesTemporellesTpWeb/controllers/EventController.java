@@ -28,6 +28,10 @@ public class EventController {
     @GetMapping(
             value = "/seriesTemporelles/{serieTemporelleId}/events",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "Serie Temporelle not found"),
+    })
     public ResponseEntity<EventList> getEventsBySerieTemporelle(@PathVariable("serieTemporelleId") long serieTemporelleId){
 
         List<Event> events = eventService.listEventsBySerieTemporelle(serieTemporelleId);
@@ -41,6 +45,7 @@ public class EventController {
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Event created, check location header for uri"),
+            @ApiResponse(code = 404, message = "Serie Temporelle not found"),
             @ApiResponse(code = 400, message = "Provided Event info not valid, check response body for more details on error") })
     public ResponseEntity<Void> addEventToSerieTemporelle(
             @PathVariable("serieTemporelleId") long serieTemporelleId,
@@ -74,6 +79,7 @@ public class EventController {
     )
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Event updated and returned in response body"),
+            @ApiResponse(code = 404, message = "Event not found"),
             @ApiResponse(code = 400, message = "Provided Event info not valid, check response body for more details on error")
     })
     public ResponseEntity<Event> updateEvent(@PathVariable("eventId") long eventId, @Valid @RequestBody Event newEvent){

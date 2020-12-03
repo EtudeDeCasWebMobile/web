@@ -10,5 +10,4 @@ public interface EventRepository extends CrudRepository<Event, Long> {
 
     public List<Event> findBySerieTemporelleId(long serieTemporelleId);
 
-    public Optional<Event> findByIdAndSerieTemporelleId(long eventId, long serieTemporelleId);
 }

@@ -4,7 +4,6 @@ import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
 import com.amboucheba.seriesTemporellesTpWeb.models.Event;
 import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.EventRepository;
-import com.amboucheba.seriesTemporellesTpWeb.repositories.SerieTemporelleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +18,11 @@ public class EventService {
     EventRepository eventRepository;
 
     @Autowired
-    SerieTemporelleRepository serieTemporelleRepository;
+    SerieTemporelleService serieTemporelleService;
 
     public List<Event> listEventsBySerieTemporelle(long serieTemporelleId){
+
+        SerieTemporelle serieTemporelle = serieTemporelleService.find(serieTemporelleId);
         return eventRepository.findBySerieTemporelleId(serieTemporelleId);
     }
 
@@ -37,14 +38,10 @@ public class EventService {
     public Event addEventToSerieTemporelle(long serieTemporelleId, Event event){
 
         // look for the serie temporelle
-        Optional<SerieTemporelle> serieTemporelle = serieTemporelleRepository.findById(serieTemporelleId);
+        SerieTemporelle serieTemporelle = serieTemporelleService.find(serieTemporelleId);
 
-        if (serieTemporelle.isEmpty()){
-            //No such serie temporelle
-            throw new NotFoundException("'Serie temporelle' with id " + serieTemporelleId + " not found.");
-        }
         // serie temporelle exists
-        event.setSerieTemporelle(serieTemporelle.get());
+        event.setSerieTemporelle(serieTemporelle);
         return eventRepository.save(event);
     }
 

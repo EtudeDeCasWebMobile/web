@@ -25,7 +25,7 @@ public class UserService {
     public User find(long userId){
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()){
-            throw new NotFoundException("User with id " + userId + " not found");
+            throw new NotFoundException("'User' with id " + userId + " not found");
         }
         return user.get();
     }
@@ -33,6 +33,5 @@ public class UserService {
     public User registerUser(User user){
         return userRepository.save(user);
     }
-
 
 }

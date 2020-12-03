@@ -4,10 +4,14 @@ import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
 import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.PartageList;
 import com.amboucheba.seriesTemporellesTpWeb.models.Partage;
 import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.SerieTemplorelleList;
+import com.amboucheba.seriesTemporellesTpWeb.models.PartageRequest;
+import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
+import com.amboucheba.seriesTemporellesTpWeb.models.User;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.PartageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Part;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,34 +23,41 @@ public class PartageService {
     @Autowired
     PartageRepository partageRepository;
 
+    @Autowired
+    UserService userService;
 
-    public PartageList listPartageByUserId(long userId) throws NotFoundException {
+    @Autowired
+    SerieTemporelleService serieTemporelleService;
 
-        List<Partage> liste = partageRepository.findByUserId(userId);
-        return new PartageList(liste);
+    public List<Partage> listPartageByUserId(long userId) throws NotFoundException {
 
+        User user = userService.find(userId);
+        return partageRepository.findByUserId(userId);
     }
 
-    public PartageList listPartageBySerieTemporelleId(long serieTemporelleId) throws NotFoundException {
+    public List<Partage> listPartageBySerieTemporelleId(long serieTemporelleId) throws NotFoundException {
 
-        List<Partage> liste = partageRepository.findBySerieTemporelleId(serieTemporelleId);
-        return new PartageList(liste);
-
+        SerieTemporelle serieTemporelle = serieTemporelleService.find(serieTemporelleId);
+        return partageRepository.findBySerieTemporelleId(serieTemporelleId);
     }
 
-    public long createPartage(Partage partage){
-        return partageRepository.save(partage).getId();
+    public long createPartage(PartageRequest partage){
+        // Not found is handled inside service call
+        User user = userService.find(partage.getUserId());
+        SerieTemporelle serieTemporelle = serieTemporelleService.find(partage.getSerieTemporelleId());
+
+        Partage savedPartage = new Partage(user, serieTemporelle, partage.getType());
+        return partageRepository.save(savedPartage).getId();
     }
 
-    public Partage updatePartage(Partage newPartage, long partageId){
+    public Partage updatePartage(PartageRequest newPartage, long partageId){
 
         Optional<Partage> partage = partageRepository.findById(partageId);
 
         if (partage.isPresent()){
             Partage actualPartage = partage.get();
             actualPartage.setType(newPartage.getType());
-            Partage savedPartage = partageRepository.save(actualPartage);
-            return savedPartage;
+            return partageRepository.save(actualPartage);
         }
 
         throw new NotFoundException("Partage with id " + partageId + " not found");

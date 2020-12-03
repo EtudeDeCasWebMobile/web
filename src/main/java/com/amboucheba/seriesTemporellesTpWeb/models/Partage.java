@@ -23,13 +23,6 @@ public class Partage implements Serializable {
     @Column(name = "type")
     private String type;
 
-    public Partage(Long id, User user, SerieTemporelle serieTemporelle, String type) {
-        this.id = id;
-        this.user = user;
-        this.serieTemporelle = serieTemporelle;
-        this.type = type;
-    }
-
     public Partage(User user, SerieTemporelle serieTemporelle, String type) {
         this.user = user;
         this.serieTemporelle = serieTemporelle;

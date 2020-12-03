@@ -15,6 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 public class SerieTemporelleController {
@@ -22,29 +23,36 @@ public class SerieTemporelleController {
     @Autowired
     SerieTemporelleService serieTemporelleService;
 
-    @GetMapping(value = "/seriesTemporelles", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity getAll(){
+//    @GetMapping(value = "/seriesTemporelles", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+//    public ResponseEntity getAll(){
+//
+//        SerieTemplorelleList liste = serieTemporelleService.listSerieTemporelle();
+//
+//        return ResponseEntity.ok(liste);
+//    }
 
-        SerieTemplorelleList liste = serieTemporelleService.listSerieTemporelle();
+    @GetMapping(
+            value = "/users/{userId}/seriesTemporelles",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "User not found") })
+    public ResponseEntity<SerieTemplorelleList> getAllOfOwner(@PathVariable long userId){
 
-        return ResponseEntity.ok(liste);
+        List<SerieTemporelle> list = serieTemporelleService.listSerieTemporelleOfOwner(userId);
+        return ResponseEntity.ok(new SerieTemplorelleList(list));
     }
 
-    @GetMapping(value = "/users/{userId}/seriesTemporelles", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity getAllOfOwner(@PathVariable("userId") long userId){
-
-        SerieTemplorelleList liste = serieTemporelleService.listSerieTemporelleOfOwner(userId);
-
-        return ResponseEntity.ok(liste);
-    }
-
-    @PostMapping(value = "/users/{userId}/seriesTemporelles", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE} )
+    @PostMapping(
+            value = "/users/{userId}/seriesTemporelles",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "SerieTemporelle created, check location header for uri"),
+            @ApiResponse(code = 404, message = "User not found"),
             @ApiResponse(code = 400, message = "Provided SerieTemporelle info not valid, check response body for more details on error")
     })
-    public ResponseEntity<Void> addSerieTemporelle(@Valid @RequestBody SerieTemporelle newSerieTemporelle, @PathVariable("userId") long userId){
+    public ResponseEntity<Void> addSerieTemporelle(@Valid @RequestBody SerieTemporelle newSerieTemporelle, @PathVariable long userId){
         long createdSerieTemporelleId = serieTemporelleService.createSerieTemporelle(newSerieTemporelle, userId);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -55,12 +63,13 @@ public class SerieTemporelleController {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping(value = "/seriestemporelles/{serieTemporelleId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(
+            value = "/seriestemporelles/{serieTemporelleId}",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "SerieTemporelle returned in body"),
-            @ApiResponse(code = 404, message = "SerieTemporelle not found")
-    })
-    public ResponseEntity<SerieTemporelle> getSerieTemporelleById(@PathVariable("serieTemporelleId") long serieTemporelleId) throws NotFoundException{
+            @ApiResponse(code = 404, message = "SerieTemporelle not found") })
+    public ResponseEntity<SerieTemporelle> getSerieTemporelleById(@PathVariable long serieTemporelleId){
 
         SerieTemporelle serieTemporelle = serieTemporelleService.find(serieTemporelleId);
         return ResponseEntity.ok(serieTemporelle);
@@ -74,21 +83,16 @@ public class SerieTemporelleController {
     )
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "SerieTemporelle updated and returned in response body"),
+            @ApiResponse(code = 404, message = "SerieTemporelle not found"),
             @ApiResponse(code = 400, message = "Provided SerieTemporelle info not valid, check response body for more details on error")
     })
-    public ResponseEntity<SerieTemporelle> updateSerieTemporelle(@PathVariable("serieTemporelleId") long serieTemporelleId, @Valid @RequestBody SerieTemporelle newSerieTemporelle) throws  NotFoundException{
+    public ResponseEntity<SerieTemporelle> updateSerieTemporelle(
+            @PathVariable long serieTemporelleId,
+            @Valid @RequestBody SerieTemporelle newSerieTemporelle){
 
         SerieTemporelle modifiedSerieTemporelle = serieTemporelleService.updateSerieTemporelle(newSerieTemporelle, serieTemporelleId);
-
-        URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("serieTemporelles")
-                .path("/{id}")
-                .buildAndExpand(modifiedSerieTemporelle.getId())
-                .toUri();
-
         return ResponseEntity.ok(modifiedSerieTemporelle);
     }
-
 
     @DeleteMapping(value = "/seriesTemporelles/{serieTemporelleId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -96,10 +100,9 @@ public class SerieTemporelleController {
             @ApiResponse(code = 204, message = "SerieTemporelle deleted"),
             @ApiResponse(code = 404, message = "SerieTemporelle not found")
     })
-    public ResponseEntity<Void> deleteSerieTemporelle(@PathVariable("serieTemporelleId") long serieTemporelleId){
+    public ResponseEntity<Void> deleteSerieTemporelle(@PathVariable long serieTemporelleId){
 
         serieTemporelleService.removeSerieTemporelle(serieTemporelleId);
-
         return ResponseEntity.noContent().build();
     }
 }

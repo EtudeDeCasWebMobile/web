@@ -5,6 +5,7 @@ import com.amboucheba.seriesTemporellesTpWeb.models.Partage;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PartageRepository extends CrudRepository<Partage, Long> {
     public List<Partage> findBySerieTemporelleId(long serieTemporelleId);

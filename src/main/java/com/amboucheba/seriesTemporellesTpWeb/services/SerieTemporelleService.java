@@ -19,11 +19,12 @@ public class SerieTemporelleService {
 
     @Autowired
     SerieTemporelleRepository serieTemporelleRepository;
+
     @Autowired
     UserService userService;
 
 
-    public SerieTemporelle find(long serieTemporelleId) throws NotFoundException {
+    public SerieTemporelle find(long serieTemporelleId){
 
         Optional<SerieTemporelle> serieTemporelle = serieTemporelleRepository.findById(serieTemporelleId);
         if(serieTemporelle.isPresent()){
@@ -39,16 +40,16 @@ public class SerieTemporelleService {
         return serieTemporelleRepository.save(serieTemporelle).getId();
     }
 
-    public SerieTemplorelleList listSerieTemporelle(){
-        List<SerieTemporelle> liste = StreamSupport.stream(serieTemporelleRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
-        return new SerieTemplorelleList(liste);
-    }
+//    public SerieTemplorelleList listSerieTemporelle(){
+//        List<SerieTemporelle> liste = StreamSupport.stream(serieTemporelleRepository.findAll().spliterator(), false)
+//                .collect(Collectors.toList());
+//        return new SerieTemplorelleList(liste);
+//    }
 
-    public SerieTemplorelleList listSerieTemporelleOfOwner(long userId){
-        List<SerieTemporelle> liste = StreamSupport.stream(serieTemporelleRepository.findByOwnerId(userId).spliterator(), false)
-                .collect(Collectors.toList());
-        return new SerieTemplorelleList(liste);
+    public List<SerieTemporelle> listSerieTemporelleOfOwner(long userId){
+
+        User user = userService.find(userId);
+        return serieTemporelleRepository.findByOwnerId(userId);
     }
 
     public SerieTemporelle updateSerieTemporelle(SerieTemporelle newSerieTemporelle, long serieTemporelleId){
@@ -59,8 +60,7 @@ public class SerieTemporelleService {
             SerieTemporelle actualSerieTemporelle = serieTemporelle.get();
             actualSerieTemporelle.setTitre(newSerieTemporelle.getTitre());
             actualSerieTemporelle.setDescription(newSerieTemporelle.getDescription());
-            SerieTemporelle savedSerieTemporelle = serieTemporelleRepository.save(actualSerieTemporelle);
-            return savedSerieTemporelle;
+            return serieTemporelleRepository.save(actualSerieTemporelle);
         }
 
         throw new NotFoundException("SerieTemporelle with id " + serieTemporelleId + " not found");
