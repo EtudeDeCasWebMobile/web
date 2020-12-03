@@ -1,7 +1,6 @@
 package com.amboucheba.seriesTemporellesTpWeb.services;
 
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
-import com.amboucheba.seriesTemporellesTpWeb.models.Evenement;
 import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemplorelleList;
 import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
 import com.amboucheba.seriesTemporellesTpWeb.models.User;

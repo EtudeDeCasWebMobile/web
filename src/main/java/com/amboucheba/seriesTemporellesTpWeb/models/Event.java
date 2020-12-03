@@ -27,7 +27,7 @@ public class Event implements Serializable {
     @Size( min = 0, max = 255, message = "Commentaire length must be between 0 and 255")
     private String commentaire;
 
-//    @JoinColumn(name = "id_SerieTemporelle", nullable = false)
+    @JoinColumn(name = "id_SerieTemporelle", nullable = false)
     @ManyToOne
     private SerieTemporelle serieTemporelle;
 

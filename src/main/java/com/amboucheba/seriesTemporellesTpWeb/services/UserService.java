@@ -17,7 +17,6 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-
     public List<User> listUsers(){
         return StreamSupport.stream(userRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
