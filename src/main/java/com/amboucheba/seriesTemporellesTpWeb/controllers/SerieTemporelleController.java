@@ -1,8 +1,9 @@
 package com.amboucheba.seriesTemporellesTpWeb.controllers;
 
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
+import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemplorelleList;
 import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
-import com.amboucheba.seriesTemporellesTpWeb.repositories.SerieTemporelleRepository;
+import com.amboucheba.seriesTemporellesTpWeb.services.SerieTemporelleService;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,25 +15,20 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/serieTemporelles")
 public class SerieTemporelleController {
 
     @Autowired
-    SerieTemporelleRepository serieTemporelleRepository;
+    SerieTemporelleService serieTemporelleService;
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity getAll(){
 
-        List<SerieTemporelle> serieTemporelles = StreamSupport.stream(serieTemporelleRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
+        SerieTemplorelleList liste = serieTemporelleService.listSerieTemporelle();
 
-        return ResponseEntity.ok(serieTemporelles);
+        return ResponseEntity.ok(liste);
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE} )
@@ -42,11 +38,11 @@ public class SerieTemporelleController {
             @ApiResponse(code = 400, message = "Provided SerieTemporelle info not valid, check response body for more details on error")
     })
     public ResponseEntity<Void> addSerieTemporelle(@Valid @RequestBody SerieTemporelle newSerieTemporelle){
-        SerieTemporelle savedSerieTemporelle = serieTemporelleRepository.save(newSerieTemporelle);
+        long createdSerieTemporelleId = serieTemporelleService.createSerieTemporelle(newSerieTemporelle);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(savedSerieTemporelle.getId())
+                .buildAndExpand(createdSerieTemporelleId)
                 .toUri();
 
         return ResponseEntity.created(location).build();
@@ -57,14 +53,12 @@ public class SerieTemporelleController {
             @ApiResponse(code = 200, message = "SerieTemporelle returned in body"),
             @ApiResponse(code = 404, message = "SerieTemporelle not found")
     })
-    public ResponseEntity<SerieTemporelle> getSerieTemporelleById(@PathVariable("serieTemporelleId") long serieTemporelleId){
+    public ResponseEntity<SerieTemporelle> getSerieTemporelleById(@PathVariable("serieTemporelleId") long serieTemporelleId) throws NotFoundException{
 
-        Optional<SerieTemporelle> serieTemporelle = serieTemporelleRepository.findById(serieTemporelleId);
-        if (serieTemporelle.isEmpty()){
-            throw new NotFoundException("SerieTemporelle with id " + serieTemporelleId + " not found");
-        }
-        return ResponseEntity.ok(serieTemporelle.get());
+        SerieTemporelle serieTemporelle = serieTemporelleService.getSerieTemporelleById(serieTemporelleId);
+        return ResponseEntity.ok(serieTemporelle);
     }
+
 
     @PutMapping(
             value = "/{serieTemporelleId}",
@@ -73,30 +67,19 @@ public class SerieTemporelleController {
     )
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "SerieTemporelle updated and returned in response body"),
-            @ApiResponse(code = 201, message = "SerieTemporelle created,  check location header for uri"),
             @ApiResponse(code = 400, message = "Provided SerieTemporelle info not valid, check response body for more details on error")
     })
-    public ResponseEntity<SerieTemporelle> updateSerieTemporelle(@PathVariable("serieTemporelleId") long serieTemporelleId, @Valid @RequestBody SerieTemporelle newSerieTemporelle){
-        Optional<SerieTemporelle> serieTemporelle = serieTemporelleRepository.findById(serieTemporelleId);
+    public ResponseEntity<SerieTemporelle> updateSerieTemporelle(@PathVariable("serieTemporelleId") long serieTemporelleId, @Valid @RequestBody SerieTemporelle newSerieTemporelle) throws  NotFoundException{
 
-        if (serieTemporelle.isPresent()){
-            SerieTemporelle actualSerieTemporelle = serieTemporelle.get();
-            actualSerieTemporelle.setTitre(newSerieTemporelle.getTitre());
-            actualSerieTemporelle.setDescription(newSerieTemporelle.getDescription());
-            SerieTemporelle savedSerieTemporelle = serieTemporelleRepository.save(actualSerieTemporelle);
-            return ResponseEntity.ok(savedSerieTemporelle);
-        }
-
-        // Serie Temporelle does not exist so create it
-        SerieTemporelle savedEvent = serieTemporelleRepository.save(newSerieTemporelle);
+        SerieTemporelle modifiedSerieTemporelle = serieTemporelleService.updateSerieTemporelle(newSerieTemporelle, serieTemporelleId);
 
         URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("serieTemporelles")
                 .path("/{id}")
-                .buildAndExpand(savedEvent.getId())
+                .buildAndExpand(modifiedSerieTemporelle.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.ok(modifiedSerieTemporelle);
     }
 
 
@@ -108,10 +91,7 @@ public class SerieTemporelleController {
     })
     public ResponseEntity<Void> deleteSerieTemporelle(@PathVariable("serieTemporelleId") long serieTemporelleId){
 
-        if (!serieTemporelleRepository.existsById(serieTemporelleId)){
-            throw new NotFoundException("SerieTemporelle with id " + serieTemporelleId + " not found");
-        }
-        serieTemporelleRepository.deleteById(serieTemporelleId);
+        serieTemporelleService.removeSerieTemporelle(serieTemporelleId);
 
         return ResponseEntity.noContent().build();
     }
