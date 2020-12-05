@@ -23,6 +23,13 @@ public class Partage implements Serializable {
     @Column(name = "type")
     private String type;
 
+    public Partage(Long id, User user, SerieTemporelle serieTemporelle, String type) {
+        this.id = id;
+        this.user = user;
+        this.serieTemporelle = serieTemporelle;
+        this.type = type;
+    }
+
     public Partage(User user, SerieTemporelle serieTemporelle, String type) {
         this.user = user;
         this.serieTemporelle = serieTemporelle;
@@ -66,8 +73,13 @@ public class Partage implements Serializable {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Partage partage = (Partage) o;
-        return partage.getId().equals(this.id) ;
+        return Objects.equals(id, partage.id) &&
+                Objects.equals(user, partage.user) &&
+                Objects.equals(serieTemporelle, partage.serieTemporelle) &&
+                type.equals(partage.type);
     }
 
     @Override

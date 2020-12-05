@@ -53,11 +53,11 @@ public class SerieTemporelleController {
             @ApiResponse(code = 400, message = "Provided SerieTemporelle info not valid, check response body for more details on error")
     })
     public ResponseEntity<Void> addSerieTemporelle(@Valid @RequestBody SerieTemporelle newSerieTemporelle, @PathVariable long userId){
-        long createdSerieTemporelleId = serieTemporelleService.createSerieTemporelle(newSerieTemporelle, userId);
+        SerieTemporelle createdSerieTemporelle = serieTemporelleService.createSerieTemporelle(newSerieTemporelle, userId);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(createdSerieTemporelleId)
+                .buildAndExpand(createdSerieTemporelle.getId())
                 .toUri();
 
         return ResponseEntity.created(location).build();

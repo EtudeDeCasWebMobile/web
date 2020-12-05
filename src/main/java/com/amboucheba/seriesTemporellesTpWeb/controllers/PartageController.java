@@ -60,11 +60,11 @@ public class PartageController {
             @ApiResponse(code = 404, message = "User or Serie Temporelle not found"),
             @ApiResponse(code = 400, message = "Provided Partage info not valid, check response body for more details on error") })
     public ResponseEntity<Void> addPartage(@Valid @RequestBody PartageRequest newPartage){
-        long partageId = partageService.createPartage(newPartage);
+        Partage partage = partageService.createPartage(newPartage);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(partageId)
+                .buildAndExpand(partage.getId())
                 .toUri();
 
         return ResponseEntity.created(location).build();
