@@ -23,16 +23,16 @@ public class SerieTemporelleController {
     @Autowired
     SerieTemporelleService serieTemporelleService;
 
-//    @GetMapping(value = "/seriesTemporelles", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-//    public ResponseEntity getAll(){
-//
-//        SerieTemplorelleList liste = serieTemporelleService.listSerieTemporelle();
-//
-//        return ResponseEntity.ok(liste);
-//    }
+    @GetMapping(value = "/seriestemporelles", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity getAll(){
+
+        SerieTemplorelleList liste = serieTemporelleService.listSerieTemporelle();
+
+        return ResponseEntity.ok(liste);
+    }
 
     @GetMapping(
-            value = "/users/{userId}/seriesTemporelles",
+            value = "/users/{userId}/seriestemporelles",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -44,7 +44,7 @@ public class SerieTemporelleController {
     }
 
     @PostMapping(
-            value = "/users/{userId}/seriesTemporelles",
+            value = "/users/{userId}/seriestemporelles",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
@@ -52,7 +52,7 @@ public class SerieTemporelleController {
             @ApiResponse(code = 404, message = "User not found"),
             @ApiResponse(code = 400, message = "Provided SerieTemporelle info not valid, check response body for more details on error")
     })
-    public ResponseEntity<Void> addSerieTemporelle(@Valid @RequestBody SerieTemporelle newSerieTemporelle, @PathVariable long userId){
+    public ResponseEntity<SerieTemporelle> addSerieTemporelle(@Valid @RequestBody SerieTemporelle newSerieTemporelle, @PathVariable long userId){
         long createdSerieTemporelleId = serieTemporelleService.createSerieTemporelle(newSerieTemporelle, userId);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -60,7 +60,7 @@ public class SerieTemporelleController {
                 .buildAndExpand(createdSerieTemporelleId)
                 .toUri();
 
-        return ResponseEntity.created(location).build();
+        return new ResponseEntity(newSerieTemporelle, HttpStatus.CREATED);
     }
 
     @GetMapping(

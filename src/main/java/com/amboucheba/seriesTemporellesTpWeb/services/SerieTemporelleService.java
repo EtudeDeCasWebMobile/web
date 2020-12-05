@@ -40,11 +40,11 @@ public class SerieTemporelleService {
         return serieTemporelleRepository.save(serieTemporelle).getId();
     }
 
-//    public SerieTemplorelleList listSerieTemporelle(){
-//        List<SerieTemporelle> liste = StreamSupport.stream(serieTemporelleRepository.findAll().spliterator(), false)
-//                .collect(Collectors.toList());
-//        return new SerieTemplorelleList(liste);
-//    }
+    public SerieTemplorelleList listSerieTemporelle(){
+        List<SerieTemporelle> liste = StreamSupport.stream(serieTemporelleRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
+        return new SerieTemplorelleList(liste);
+    }
 
     public List<SerieTemporelle> listSerieTemporelleOfOwner(long userId){
 

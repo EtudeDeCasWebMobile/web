@@ -43,6 +43,11 @@ public class SerieTemporelle implements Serializable {
     public SerieTemporelle() {
     }
 
+    public SerieTemporelle(String titre, String description) {
+        this.titre=titre;
+        this.description=description;
+    }
+
     public User getOwner() {
         return owner;
     }
@@ -80,8 +85,8 @@ public class SerieTemporelle implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        SerieTemporelle user = (SerieTemporelle) o;
-        return user.id == this.id;
+        SerieTemporelle serieTemporelle = (SerieTemporelle) o;
+        return serieTemporelle.id == this.id;
     }
 
     @Override

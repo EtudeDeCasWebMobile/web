@@ -1,5 +1,6 @@
 package com.amboucheba.seriesTemporellesTpWeb.services;
 
+import com.amboucheba.seriesTemporellesTpWeb.exceptions.DBException;
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
 import com.amboucheba.seriesTemporellesTpWeb.models.User;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.UserRepository;
@@ -30,8 +31,12 @@ public class UserService {
         return user.get();
     }
 
-    public User registerUser(User user){
-        return userRepository.save(user);
+    public User registerUser(User user) throws DBException{
+        try{
+            return userRepository.save(user);
+        }catch (Exception e){
+            throw new DBException("User: Duplicate username not authorized");
+        }
     }
 
 }
