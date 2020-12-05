@@ -41,8 +41,8 @@ public class UserController {
 
         long newUserId = userService.registerUser(newUser).getId();
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
+        URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .pathSegment("users", "{id}")
                 .buildAndExpand(newUserId)
                 .toUri();
 

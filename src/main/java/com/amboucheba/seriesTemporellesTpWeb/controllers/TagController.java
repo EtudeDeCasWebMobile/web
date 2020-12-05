@@ -47,8 +47,8 @@ public class TagController {
 
         Tag savedTag = tagService.addTagToEvent(eventId, newTag);
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
+        URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .pathSegment("tags", "{id}")
                 .buildAndExpand(savedTag.getId())
                 .toUri();
 

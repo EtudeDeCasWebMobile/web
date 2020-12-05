@@ -55,8 +55,8 @@ public class SerieTemporelleController {
     public ResponseEntity<Void> addSerieTemporelle(@Valid @RequestBody SerieTemporelle newSerieTemporelle, @PathVariable long userId){
         SerieTemporelle createdSerieTemporelle = serieTemporelleService.createSerieTemporelle(newSerieTemporelle, userId);
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
+        URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .pathSegment("seriesTemporelles", "{id}")
                 .buildAndExpand(createdSerieTemporelle.getId())
                 .toUri();
 
@@ -64,7 +64,7 @@ public class SerieTemporelleController {
     }
 
     @GetMapping(
-            value = "/seriestemporelles/{serieTemporelleId}",
+            value = "/seriesTemporelles/{serieTemporelleId}",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "SerieTemporelle returned in body"),

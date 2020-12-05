@@ -16,7 +16,6 @@ public class Event implements Serializable {
     private Long id;
 
     @Column(name = "date")
-    @NotBlank(message = "Field 'date' is required")
     private Date date;
 
     @Column(name = "valeur")

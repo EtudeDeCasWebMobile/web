@@ -8,10 +8,12 @@ import com.amboucheba.seriesTemporellesTpWeb.models.PartageRequest;
 import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
 import com.amboucheba.seriesTemporellesTpWeb.models.User;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.PartageRepository;
+import net.bytebuddy.description.NamedElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Part;
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +30,15 @@ public class PartageService {
 
     @Autowired
     SerieTemporelleService serieTemporelleService;
+
+    public Partage find(long partageId){
+        Optional<Partage> partage = partageRepository.findById(partageId);
+
+        if(partage.isEmpty()) {
+            throw new NotFoundException("Partage with id " + partageId + " not found");
+        }
+        return partage.get();
+    }
 
     public List<Partage> listPartageByUserId(long userId) throws NotFoundException {
 
