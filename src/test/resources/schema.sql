@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS messages
    id integer GENERATED ALWAYS AS IDENTITY,
    titre VARCHAR(255) not null,
    description varchar(255) not null,
-   owner int,
+   owner integer,
 
    PRIMARY KEY (id),
    FOREIGN KEY (owner) REFERENCES users(id)

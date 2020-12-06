@@ -23,11 +23,10 @@ public class SerieTemporelleController {
     @Autowired
     SerieTemporelleService serieTemporelleService;
 
-    @GetMapping(value = "/seriestemporelles", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity getAll(){
+    @GetMapping(value = "/seriesTemporelles", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<SerieTemplorelleList> getAll(){
 
         SerieTemplorelleList liste = serieTemporelleService.listSerieTemporelle();
-
         return ResponseEntity.ok(liste);
     }
 

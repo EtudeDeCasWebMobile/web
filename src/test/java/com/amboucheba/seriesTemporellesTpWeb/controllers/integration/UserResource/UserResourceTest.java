@@ -4,6 +4,7 @@ import com.amboucheba.seriesTemporellesTpWeb.SeriesTemporellesTpWebApplication;
 import com.amboucheba.seriesTemporellesTpWeb.models.Message;
 import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.UserList;
 import com.amboucheba.seriesTemporellesTpWeb.models.User;
+import com.amboucheba.seriesTemporellesTpWeb.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,12 +15,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = SeriesTemporellesTpWebApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SqlGroup({
-        @Sql(scripts = { "classpath:schema.sql", "classpath:data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+        @Sql(scripts = { "classpath:schema.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = { "classpath:reset.sql" }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 })
 class UserResourceTest {
@@ -30,39 +33,48 @@ class UserResourceTest {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
+    @Autowired
+    UserRepository userRepository;
+
     @Test
-    void findUsersTest() throws Exception {
+    void getAllTest() throws Exception {
+
+        // create users
+        userRepository.save(new User("user1", "pass"));
+        userRepository.save(new User("user2", "pass"));
+
+        // get users through /users endpoint
         String uri = "http://localhost:" + port + "/users/";
         ResponseEntity<UserList> response = testRestTemplate.getForEntity(uri, UserList.class);
+        UserList userList = response.getBody();
 
+        // assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        assertNotNull(response.getBody().getCount());
-        assertEquals(response.getBody().getCount(), 2);
+        assertEquals(userList.getCount(), 2);
     }
 
     @Test
-    void findUserByIdTest() throws Exception {
-        String uri = "http://localhost:" + port + "/users/1";
+    void getUserByIdTest() throws Exception {
+
+        User user = new User("user", "pass");
+        user = userRepository.save(user);
+
+        String uri = "http://localhost:" + port + "/users/" + user.getId();
         ResponseEntity<User> response = testRestTemplate.getForEntity(uri, User.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        assertEquals(response.getBody().getUsername(), "user1");
-        assertEquals(response.getBody().getPassword(), "password1");
-        assertEquals(response.getBody().getId(), 1);
+        assertEquals(user, response.getBody());
     }
 
 
     @Test
-    void createUserTest() throws Exception {
+    void addUserTest() throws Exception {
         String username = "user3";
         String password = "password3";
         User user = new User(username, password);
 
         String uri = "http://localhost:" + port + "/users/";
-
-        ResponseEntity<User> response = testRestTemplate.postForEntity(uri, user, User.class);
+        ResponseEntity<Void> response = testRestTemplate.postForEntity(uri, user, Void.class);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
@@ -74,17 +86,26 @@ class UserResourceTest {
         assertEquals(password, savedUser.getPassword());
     }
 
-    @Test
-    void duplicateUserTest() throws Exception {
-        String username = "user1";
-        String password = "password3";
-        User user = new User(username, password);
-
-        String uri = "http://localhost:" + port + "/users/";
-
-        ResponseEntity<User> response = testRestTemplate.postForEntity(uri, user, User.class);
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-
-    }
+//    @Test
+//    void duplicateUserTest() throws Exception {
+//        String username = "user11";
+//        String password = "password3";
+//        User user = new User(username, password);
+//
+//        // create the user beforehand
+//        User user1 = userRepository.save(user);
+//        User user2 = userRepository.save(user);
+//
+//        String uri = "http://localhost:" + port + "/users/";
+//        ResponseEntity<Void> response = testRestTemplate.postForEntity(uri, user, Void.class);
+//
+//        Iterable<User> users = userRepository.findAll();
+//        System.out.println(users.spliterator().estimateSize());
+//
+//        String location = response.getHeaders().getFirst("location");
+//        System.out.println(location);
+//
+//        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+//
+//    }
 }

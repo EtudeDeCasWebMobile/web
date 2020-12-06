@@ -25,13 +25,11 @@ public class SerieTemporelle implements Serializable {
     @Size( min = 0, max = 255, message = "Description length must be between 0 and 255")
     private String description;
 
-//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "owner", nullable = false)
+    @JoinColumn(name = "owner", nullable = false)
     @ManyToOne
     private User owner;
 
-//    @OneToMany(mappedBy = "serieTemporelle", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private Set<Evenement> evenements;
+
 
     public SerieTemporelle(Long id, String titre, String description, User owner) {
         this.id = id;
@@ -85,8 +83,13 @@ public class SerieTemporelle implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        SerieTemporelle serieTemporelle = (SerieTemporelle) o;
-        return serieTemporelle.id == this.id;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SerieTemporelle that = (SerieTemporelle) o;
+        return Objects.equals(id, that.id) &&
+                titre.equals(that.titre) &&
+                description.equals(that.description) &&
+                Objects.equals(owner, that.owner);
     }
 
     @Override

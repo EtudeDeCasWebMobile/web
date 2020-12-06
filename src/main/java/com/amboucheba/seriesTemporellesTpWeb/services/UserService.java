@@ -35,6 +35,7 @@ public class UserService {
         try{
             return userRepository.save(user);
         }catch (Exception e){
+            System.out.println("service exception");
             throw new DBException("User: Duplicate username not authorized");
         }
     }
