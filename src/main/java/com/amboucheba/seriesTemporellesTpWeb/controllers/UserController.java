@@ -41,18 +41,15 @@ public class UserController {
             @ApiResponse(code = 400, message = "Provided User info not valid, check response body for more details on error")
     })
     public ResponseEntity<Void> addUser(@Valid @RequestBody User newUser) throws RestException{
-        try {
-            long newUserId = userService.registerUser(newUser).getId();
-            URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(newUserId)
-                    .toUri();
 
-            return ResponseEntity.created(location).build();
-        }catch (DBException e){
-            System.out.println("controller exception");
-            throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        long newUserId = userService.registerUser(newUser).getId();
+
+        URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .pathSegment("users", "{id}")
+                .buildAndExpand(newUserId)
+                .toUri();
+
+        return ResponseEntity.created(location).build();
 
     }
 

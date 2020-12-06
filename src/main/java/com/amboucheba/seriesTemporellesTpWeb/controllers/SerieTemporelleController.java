@@ -51,19 +51,20 @@ public class SerieTemporelleController {
             @ApiResponse(code = 404, message = "User not found"),
             @ApiResponse(code = 400, message = "Provided SerieTemporelle info not valid, check response body for more details on error")
     })
-    public ResponseEntity<SerieTemporelle> addSerieTemporelle(@Valid @RequestBody SerieTemporelle newSerieTemporelle, @PathVariable long userId){
-        long createdSerieTemporelleId = serieTemporelleService.createSerieTemporelle(newSerieTemporelle, userId);
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(createdSerieTemporelleId)
+    public ResponseEntity<Void> addSerieTemporelle(@Valid @RequestBody SerieTemporelle newSerieTemporelle, @PathVariable long userId){
+        SerieTemporelle createdSerieTemporelle = serieTemporelleService.createSerieTemporelle(newSerieTemporelle, userId);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .pathSegment("seriesTemporelles", "{id}")
+                .buildAndExpand(createdSerieTemporelle.getId())
                 .toUri();
 
-        return new ResponseEntity(newSerieTemporelle, HttpStatus.CREATED);
+        return ResponseEntity.created(location).build();
     }
 
     @GetMapping(
-            value = "/seriestemporelles/{serieTemporelleId}",
+            value = "/seriesTemporelles/{serieTemporelleId}",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "SerieTemporelle returned in body"),

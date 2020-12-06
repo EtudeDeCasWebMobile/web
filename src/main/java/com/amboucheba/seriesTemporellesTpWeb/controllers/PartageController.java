@@ -29,6 +29,17 @@ public class PartageController {
     PartageService partageService;
 
     @GetMapping(
+            value = "/partages/{partageId}",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "Partage not found") })
+    public ResponseEntity<Partage> getPartageById(@PathVariable long partageId){
+        Partage partage = partageService.find(partageId);
+        return ResponseEntity.ok(partage);
+    }
+
+    @GetMapping(
             value = "/seriesTemporelles/{serieTemporelleId}/partages",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
@@ -60,11 +71,11 @@ public class PartageController {
             @ApiResponse(code = 404, message = "User or Serie Temporelle not found"),
             @ApiResponse(code = 400, message = "Provided Partage info not valid, check response body for more details on error") })
     public ResponseEntity<Void> addPartage(@Valid @RequestBody PartageRequest newPartage){
-        long partageId = partageService.createPartage(newPartage);
+        Partage partage = partageService.createPartage(newPartage);
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(partageId)
+        URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .pathSegment("partages", "{id}")
+                .buildAndExpand(partage.getId())
                 .toUri();
 
         return ResponseEntity.created(location).build();

@@ -33,12 +33,12 @@ public class SerieTemporelleService {
         throw new NotFoundException("Serie temporelle Not Found");
     }
 
-
-    public long createSerieTemporelle(SerieTemporelle serieTemporelle, long userId){
+    public SerieTemporelle createSerieTemporelle(SerieTemporelle serieTemporelle, long userId){
         User user = userService.find(userId);
         serieTemporelle.setOwner(user);
-        return serieTemporelleRepository.save(serieTemporelle).getId();
+        return serieTemporelleRepository.save(serieTemporelle);
     }
+
 
     public SerieTemplorelleList listSerieTemporelle(){
         List<SerieTemporelle> liste = StreamSupport.stream(serieTemporelleRepository.findAll().spliterator(), false)
@@ -73,6 +73,4 @@ public class SerieTemporelleService {
         }
         serieTemporelleRepository.deleteById(serieTemporelleId);
     }
-
-
 }

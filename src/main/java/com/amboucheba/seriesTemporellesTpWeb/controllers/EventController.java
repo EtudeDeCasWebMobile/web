@@ -52,8 +52,9 @@ public class EventController {
             @Valid @RequestBody Event newEvent){
         Event savedEvent = eventService.addEventToSerieTemporelle(serieTemporelleId, newEvent);
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
+
+        URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .pathSegment("events", "{id}")
                 .buildAndExpand(savedEvent.getId())
                 .toUri();
 

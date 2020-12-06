@@ -38,6 +38,17 @@ public class SerieTemporelle implements Serializable {
         this.owner = owner;
     }
 
+    public SerieTemporelle(  String titre, String description, User owner) {
+        this.titre = titre;
+        this.description = description;
+        this.owner = owner;
+    }
+
+    public SerieTemporelle(String titre, String description) {
+        this.titre = titre;
+        this.description = description;
+    }
+
     public SerieTemporelle() {
     }
 

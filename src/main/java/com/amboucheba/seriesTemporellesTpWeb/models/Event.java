@@ -4,7 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -16,7 +16,6 @@ public class Event implements Serializable {
     private Long id;
 
     @Column(name = "date")
-    @NotBlank(message = "Field 'date' is required")
     private Date date;
 
     @Column(name = "valeur")
@@ -31,9 +30,29 @@ public class Event implements Serializable {
     @ManyToOne
     private SerieTemporelle serieTemporelle;
 
+    public Event(Long id,  Date date,  Float valeur,  String commentaire, SerieTemporelle serieTemporelle) {
+        this.id = id;
+        this.date = date;
+        this.valeur = valeur;
+        this.commentaire = commentaire;
+        this.serieTemporelle = serieTemporelle;
+    }
+
     public Event() {
     }
 
+    public Event(Date date, float valeur, String commentaire) {
+        this.date = date;
+        this.valeur = valeur;
+        this.commentaire = commentaire;
+    }
+
+    public Event(Date date, float valeur, String commentaire, SerieTemporelle serieTemporelle) {
+        this.date = date;
+        this.valeur = valeur;
+        this.commentaire = commentaire;
+        this.serieTemporelle = serieTemporelle;
+    }
 
     public Date getDate() {
         return date;
