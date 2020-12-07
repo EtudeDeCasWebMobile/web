@@ -1,12 +1,10 @@
 package com.amboucheba.seriesTemporellesTpWeb.controllers.integration.SerieTemporelleController;
 
-
 import com.amboucheba.seriesTemporellesTpWeb.SeriesTemporellesTpWebApplication;
-import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.MessageList;
+import com.amboucheba.seriesTemporellesTpWeb.exceptions.ApiException;
 import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.SerieTemplorelleList;
 import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
 import com.amboucheba.seriesTemporellesTpWeb.models.User;
-import com.amboucheba.seriesTemporellesTpWeb.repositories.MessageRepository;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.SerieTemporelleRepository;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,16 +18,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = SeriesTemporellesTpWebApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SqlGroup({
         @Sql(scripts = { "classpath:schema.sql" }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = { "classpath:reset.sql" }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 })
-public class GetAllTest {
+public class AddSerieTemporelleToUserTest {
 
     @LocalServerPort
     private int port;
@@ -47,19 +44,35 @@ public class GetAllTest {
     UserRepository userRepository;
 
     @Test
-    void __returnSts() throws Exception {
+    void userExists__returnStLocationInHeader() throws Exception {
         User user = new User("user", "pass");
         user = userRepository.save(user);
-        SerieTemporelle st1 = new SerieTemporelle("t1", "d1", user);
-        SerieTemporelle st2 = new SerieTemporelle("t2", "d2", user);
-        serieTemporelleRepository.save(st1);
-        serieTemporelleRepository.save(st2);
 
-        String uri = "http://localhost:" + port + "/seriesTemporelles";
-        ResponseEntity<SerieTemplorelleList> responseEntity = testRestTemplate.getForEntity(uri, SerieTemplorelleList.class);
-        SerieTemplorelleList stList = responseEntity.getBody();
+        SerieTemporelle st = new SerieTemporelle("title", "desc");
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(2, stList.getCount() );
+        String uri = "http://localhost:" + port + "/users/" + user.getId() + "/seriesTemporelles";
+        ResponseEntity<Void> response = testRestTemplate.postForEntity(uri, st, Void.class );
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
+        // check that it was actually created
+        String location = response.getHeaders().getFirst("location");
+        ResponseEntity<SerieTemporelle> getResponse = testRestTemplate.getForEntity(location, SerieTemporelle.class);
+        SerieTemporelle returned = getResponse.getBody();
+
+        assertEquals("title", returned.getTitre());
+        assertEquals("desc", returned.getDescription());
+
+    }
+
+    @Test
+    void userDoesNotExist__throwNotFoundException(){
+        SerieTemporelle st = new SerieTemporelle("title", "desc");
+
+        String uri = "http://localhost:" + port + "/users/1/seriesTemporelles";
+        ResponseEntity<ApiException> responseEntity = testRestTemplate.postForEntity(uri, st, ApiException.class);
+        ApiException e = responseEntity.getBody();
+
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
 }

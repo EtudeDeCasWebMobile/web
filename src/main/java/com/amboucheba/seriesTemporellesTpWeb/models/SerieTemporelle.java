@@ -52,11 +52,6 @@ public class SerieTemporelle implements Serializable {
     public SerieTemporelle() {
     }
 
-    public SerieTemporelle(String titre, String description) {
-        this.titre=titre;
-        this.description=description;
-    }
-
     public User getOwner() {
         return owner;
     }
@@ -64,8 +59,6 @@ public class SerieTemporelle implements Serializable {
     public void setOwner(User owner) {
         this.owner = owner;
     }
-
-
 
     public Long getId() {
         return id;

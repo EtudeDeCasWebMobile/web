@@ -12,19 +12,25 @@ public class ApiExceptionHandler {
 
 
     @ExceptionHandler(value = {RestException.class})
-    public ResponseEntity<Object> handleRestException(RestException e){
+    public ResponseEntity<ApiException> handleRestException(RestException e){
         ApiException apiException = new ApiException(e.getMessage(), e.getStatus());
         return new ResponseEntity<>(apiException, e.getStatus() );
     }
 
     @ExceptionHandler(value = {NotFoundException.class})
-    public ResponseEntity<Object> handleNotFoundException(NotFoundException e){
+    public ResponseEntity<ApiException> handleNotFoundException(NotFoundException e){
         ApiException apiException = new ApiException(e.getMessage(), HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(apiException, HttpStatus.NOT_FOUND );
     }
 
+    @ExceptionHandler(value = {DuplicateResourceException.class})
+    public ResponseEntity<ApiException> handleDuplicateResourceException(DuplicateResourceException e){
+        ApiException apiException = new ApiException(e.getMessage(), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(apiException, HttpStatus.CONFLICT );
+    }
+
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
-    public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
+    public ResponseEntity<ApiException> handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
         String message = e.getBindingResult().getFieldError().getDefaultMessage();
         ApiException apiException = new ApiException(message, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST );
@@ -38,7 +44,7 @@ public class ApiExceptionHandler {
 
     // Unused: Replaced with MethodArgumentNotValidException
     @ExceptionHandler(value = {PayloadTooLargeException.class})
-    public ResponseEntity<Object> handlePayloadTooLargeException(PayloadTooLargeException e){
+    public ResponseEntity<ApiException> handlePayloadTooLargeException(PayloadTooLargeException e){
         ApiException apiException = new ApiException(e.getMessage(), HttpStatus.PAYLOAD_TOO_LARGE);
         return new ResponseEntity<>(apiException, HttpStatus.PAYLOAD_TOO_LARGE );
     }

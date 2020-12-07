@@ -1,7 +1,6 @@
-package com.amboucheba.seriesTemporellesTpWeb.controllers.integration.UserResource;
+package com.amboucheba.seriesTemporellesTpWeb.controllers.integration.UserController;
 
 import com.amboucheba.seriesTemporellesTpWeb.SeriesTemporellesTpWebApplication;
-import com.amboucheba.seriesTemporellesTpWeb.models.Message;
 import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.UserList;
 import com.amboucheba.seriesTemporellesTpWeb.models.User;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.UserRepository;
@@ -14,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -66,7 +63,6 @@ class UserResourceTest {
         assertEquals(user, response.getBody());
     }
 
-
     @Test
     void addUserTest() throws Exception {
         String username = "user3";
@@ -86,26 +82,4 @@ class UserResourceTest {
         assertEquals(password, savedUser.getPassword());
     }
 
-//    @Test
-//    void duplicateUserTest() throws Exception {
-//        String username = "user11";
-//        String password = "password3";
-//        User user = new User(username, password);
-//
-//        // create the user beforehand
-//        User user1 = userRepository.save(user);
-//        User user2 = userRepository.save(user);
-//
-//        String uri = "http://localhost:" + port + "/users/";
-//        ResponseEntity<Void> response = testRestTemplate.postForEntity(uri, user, Void.class);
-//
-//        Iterable<User> users = userRepository.findAll();
-//        System.out.println(users.spliterator().estimateSize());
-//
-//        String location = response.getHeaders().getFirst("location");
-//        System.out.println(location);
-//
-//        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-//
-//    }
 }

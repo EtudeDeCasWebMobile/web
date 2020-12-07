@@ -31,7 +31,7 @@ public class SerieTemporelleController {
     }
 
     @GetMapping(
-            value = "/users/{userId}/seriestemporelles",
+            value = "/users/{userId}/seriesTemporelles",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -43,7 +43,7 @@ public class SerieTemporelleController {
     }
 
     @PostMapping(
-            value = "/users/{userId}/seriestemporelles",
+            value = "/users/{userId}/seriesTemporelles",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
@@ -52,7 +52,7 @@ public class SerieTemporelleController {
             @ApiResponse(code = 400, message = "Provided SerieTemporelle info not valid, check response body for more details on error")
     })
 
-    public ResponseEntity<Void> addSerieTemporelle(@Valid @RequestBody SerieTemporelle newSerieTemporelle, @PathVariable long userId){
+    public ResponseEntity<Void> addSerieTemporelleToUser(@Valid @RequestBody SerieTemporelle newSerieTemporelle, @PathVariable long userId){
         SerieTemporelle createdSerieTemporelle = serieTemporelleService.createSerieTemporelle(newSerieTemporelle, userId);
 
         URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -74,7 +74,6 @@ public class SerieTemporelleController {
         SerieTemporelle serieTemporelle = serieTemporelleService.find(serieTemporelleId);
         return ResponseEntity.ok(serieTemporelle);
     }
-
 
     @PutMapping(
             value = "/seriesTemporelles/{serieTemporelleId}",
