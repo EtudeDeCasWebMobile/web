@@ -77,7 +77,7 @@ public class SerieTemporelleController {
 
 
     @PutMapping(
-            value = "/seriesTemporelles/{serieTemporelleId}",
+            value = "/seriestemporelles/{serieTemporelleId}",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
@@ -94,7 +94,7 @@ public class SerieTemporelleController {
         return ResponseEntity.ok(modifiedSerieTemporelle);
     }
 
-    @DeleteMapping(value = "/seriesTemporelles/{serieTemporelleId}")
+    @DeleteMapping(value = "/seriestemporelles/{serieTemporelleId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "SerieTemporelle deleted"),
