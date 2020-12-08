@@ -41,13 +41,13 @@ public class PartageService {
         return partageRepository.findBySerieTemporelleId(serieTemporelleId);
     }
 
-    public long createPartage(PartageRequest partage){
+    public Partage createPartage(PartageRequest partage){
         // Not found is handled inside service call
         User user = userService.find(partage.getUserId());
         SerieTemporelle serieTemporelle = serieTemporelleService.find(partage.getSerieTemporelleId());
 
         Partage savedPartage = new Partage(user, serieTemporelle, partage.getType());
-        return partageRepository.save(savedPartage).getId();
+        return partageRepository.save(savedPartage);
     }
 
     public Partage updatePartage(PartageRequest newPartage, long partageId){
@@ -69,6 +69,5 @@ public class PartageService {
         }
         partageRepository.deleteById(partageId);
     }
-
 
 }

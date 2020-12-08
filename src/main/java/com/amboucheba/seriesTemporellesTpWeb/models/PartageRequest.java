@@ -15,6 +15,12 @@ public class PartageRequest {
     private long serieTemporelleId;
     private String type;
 
+    public PartageRequest(long userId, long serieTemporelleId, String type) {
+        this.userId = userId;
+        this.serieTemporelleId = serieTemporelleId;
+        this.type = type;
+    }
+
     public PartageRequest() {
     }
 

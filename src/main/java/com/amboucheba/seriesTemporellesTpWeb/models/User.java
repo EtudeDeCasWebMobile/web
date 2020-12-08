@@ -27,11 +27,6 @@ public class User implements Serializable {
     @Size( min = 0, max = 255, message = "Password length must be between 6 and 255")
     private String password;
 
-//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,
-//            cascade = CascadeType.ALL)
-//    @Column(name = "")
-//    private Set<SerieTemporelle> seriesTemporelles;
-
     public User(Long id, String username, String password) {
         this.id = id;
         this.username = username;
@@ -73,8 +68,12 @@ public class User implements Serializable {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return user.id == this.id;
+        return Objects.equals(id, user.id) &&
+                username.equals(user.username) &&
+                password.equals(user.password);
     }
 
     @Override
