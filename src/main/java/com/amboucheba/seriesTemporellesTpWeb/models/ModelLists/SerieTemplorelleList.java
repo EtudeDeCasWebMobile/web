@@ -28,4 +28,7 @@ public class SerieTemplorelleList {
         this.seriestemporelles = seriestemporelles;
         this.count = seriestemporelles.size();
     }
+
+    public SerieTemplorelleList() {
+    }
 }

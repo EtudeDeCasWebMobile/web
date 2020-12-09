@@ -39,6 +39,12 @@ public class SerieTemporelleService {
         return serieTemporelleRepository.save(serieTemporelle);
     }
 
+    public SerieTemplorelleList listSerieTemporelle(){
+        List<SerieTemporelle> liste = StreamSupport.stream(serieTemporelleRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
+        return new SerieTemplorelleList(liste);
+    }
+
     public List<SerieTemporelle> listSerieTemporelleOfOwner(long userId){
 
         User user = userService.find(userId);
@@ -65,4 +71,6 @@ public class SerieTemporelleService {
         }
         serieTemporelleRepository.deleteById(serieTemporelleId);
     }
+
+
 }

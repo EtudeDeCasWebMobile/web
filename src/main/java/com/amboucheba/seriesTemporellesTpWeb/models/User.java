@@ -17,7 +17,7 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     @NotBlank(message = "Field 'username' is required")
     @Size( min = 0, max = 255, message = "Username length must be between 6 and 255")
     private String username;

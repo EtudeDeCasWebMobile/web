@@ -1,5 +1,8 @@
 package com.amboucheba.seriesTemporellesTpWeb.controllers;
 
+import com.amboucheba.seriesTemporellesTpWeb.exceptions.ApiException;
+import com.amboucheba.seriesTemporellesTpWeb.exceptions.DBException;
+import com.amboucheba.seriesTemporellesTpWeb.exceptions.RestException;
 import com.amboucheba.seriesTemporellesTpWeb.models.User;
 import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.UserList;
 import com.amboucheba.seriesTemporellesTpWeb.services.UserService;
@@ -37,16 +40,16 @@ public class UserController {
             @ApiResponse(code = 201, message = "User created, check location header for uri"),
             @ApiResponse(code = 400, message = "Provided User info not valid, check response body for more details on error")
     })
-    public ResponseEntity<Void> addUser(@Valid @RequestBody User newUser){
+    public ResponseEntity<Void> addUser(@Valid @RequestBody User newUser) throws RestException{
 
-        long newUserId = userService.registerUser(newUser).getId();
-
+        Long newUserId = userService.registerUser(newUser).getId();
         URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .pathSegment("users", "{id}")
                 .buildAndExpand(newUserId)
                 .toUri();
 
         return ResponseEntity.created(location).build();
+
     }
 
     @GetMapping(value = "/{userId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
