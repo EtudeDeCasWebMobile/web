@@ -3,6 +3,7 @@ package com.amboucheba.seriesTemporellesTpWeb.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,6 +30,13 @@ public class ApiExceptionHandler {
         ApiException apiException = new ApiException(e.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST );
     }
+
+    @ExceptionHandler(value = {BadCredentialsException.class})
+    public ResponseEntity<ApiException> handleBadCredentialsException(BadCredentialsException e){
+        ApiException apiException = new ApiException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST );
+    }
+
 
     // Unused: Replaced with MethodArgumentNotValidException
     @ExceptionHandler(value = {PayloadTooLargeException.class})
