@@ -13,11 +13,13 @@ public class Partage implements Serializable {
     private Long id;
 
 //    @Column(name = "id_user")
+    @JoinColumn(name = "id_user", nullable = false)
     @ManyToOne
     private User user;
 
 //    @Column(name = "id_SerieTemporelle")
     @ManyToOne
+    @JoinColumn(name = "id_SerieTemporelle", nullable = false)
     private SerieTemporelle serieTemporelle;
 
     @Column(name = "type")

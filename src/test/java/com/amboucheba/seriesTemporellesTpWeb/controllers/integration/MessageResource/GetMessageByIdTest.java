@@ -31,7 +31,7 @@ class GetMessageByIdTest {
     @Autowired
     private MessageRepository messageRepository;
 
-    @Sql({ "classpath:schema.sql", "classpath:data.sql" })
+    @Sql({ "classpath:schema.sql" })
     @Test
     void getExistingMessageById() throws Exception {
         String username = "New User";
@@ -51,7 +51,7 @@ class GetMessageByIdTest {
         assertEquals(text, fetchedMessage.getText());
     }
 
-    @Sql({ "classpath:schema.sql", "classpath:data.sql" })
+    @Sql({ "classpath:schema.sql" })
     @Test
     void messageDoesNotExist() throws Exception {
         // Create a message and save it

@@ -23,16 +23,15 @@ public class SerieTemporelleController {
     @Autowired
     SerieTemporelleService serieTemporelleService;
 
-    @GetMapping(value = "/seriestemporelles", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity getAll(){
+    @GetMapping(value = "/seriesTemporelles", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<SerieTemplorelleList> getAll(){
 
         SerieTemplorelleList liste = serieTemporelleService.listSerieTemporelle();
-
         return ResponseEntity.ok(liste);
     }
 
     @GetMapping(
-            value = "/users/{userId}/seriestemporelles",
+            value = "/users/{userId}/seriesTemporelles",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -44,7 +43,7 @@ public class SerieTemporelleController {
     }
 
     @PostMapping(
-            value = "/users/{userId}/seriestemporelles",
+            value = "/users/{userId}/seriesTemporelles",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
@@ -60,7 +59,7 @@ public class SerieTemporelleController {
                 .buildAndExpand(createdSerieTemporelleId)
                 .toUri();
 
-        return new ResponseEntity(newSerieTemporelle, HttpStatus.CREATED);
+        return ResponseEntity.created(location).build();
     }
 
     @GetMapping(
@@ -74,7 +73,6 @@ public class SerieTemporelleController {
         SerieTemporelle serieTemporelle = serieTemporelleService.find(serieTemporelleId);
         return ResponseEntity.ok(serieTemporelle);
     }
-
 
     @PutMapping(
             value = "/seriestemporelles/{serieTemporelleId}",

@@ -18,12 +18,12 @@ public class PartageList {
     public PartageList() {
     }
 
-    public List<Partage> getEvents() {
+    public List<Partage> getPartages() {
         return partages;
     }
 
-    public void setEvents(List<Partage> events) {
-        this.partages = events;
+    public void setPartages(List<Partage> partages) {
+        this.partages = partages;
     }
 
     public int getCount() {
