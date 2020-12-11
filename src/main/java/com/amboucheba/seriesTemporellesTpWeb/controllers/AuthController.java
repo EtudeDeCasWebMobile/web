@@ -1,13 +1,20 @@
 package com.amboucheba.seriesTemporellesTpWeb.controllers;
 
+import com.amboucheba.seriesTemporellesTpWeb.models.AuthDetails;
 import com.amboucheba.seriesTemporellesTpWeb.models.AuthenticationRequest;
 import com.amboucheba.seriesTemporellesTpWeb.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.security.Principal;
 
 @RestController
 public class AuthController {
@@ -17,7 +24,7 @@ public class AuthController {
 
 
     @PostMapping("/authenticate")
-    ResponseEntity<Void> authenticate (@RequestBody AuthenticationRequest auth){
+    ResponseEntity<Void> authenticate ( @RequestBody AuthenticationRequest auth){
 
         String token = authService.authenticate(auth);
 

@@ -1,5 +1,6 @@
 package com.amboucheba.seriesTemporellesTpWeb.config;
 
+import com.amboucheba.seriesTemporellesTpWeb.models.AuthDetails;
 import com.amboucheba.seriesTemporellesTpWeb.services.AuthService;
 import com.amboucheba.seriesTemporellesTpWeb.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = authService.loadUserByUsername(username);
+            AuthDetails userDetails = authService.loadUserByUsername(username);
 
             if (jwtUtil.validateToken(jwt, userDetails)){
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(

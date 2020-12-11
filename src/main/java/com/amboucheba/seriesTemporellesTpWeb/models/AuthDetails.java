@@ -5,12 +5,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Map;
 
 public class AuthDetails implements UserDetails {
 
     private Long userId;
     private String username;
     private String password;
+
+    private Map<Long, String> authorities;
 
     public AuthDetails(Long userId, String username, String password) {
         this.userId = userId;
@@ -19,6 +22,14 @@ public class AuthDetails implements UserDetails {
     }
 
     public AuthDetails() {
+    }
+
+    public Boolean hasAuthority(Long serieTemporelleId, String action ){
+
+        String authority = authorities.get(serieTemporelleId);
+        if (authority == null) return false;
+        if (action.equals("r") ) return true;
+        return authority.equals(action);
     }
 
     @Override
