@@ -54,28 +54,28 @@ public class UpdatePartageTest {
     }
 
 
-    @Test
-    public void partageExists__returnUpdatedPartage() {
-        Partage partage = new Partage(1L, null, null, "r");
-        Mockito.when(partageRepository.findById(1L)).thenReturn(Optional.of(partage));
-
-        Partage newPartage = new Partage(1L, null, null, "w");
-        Mockito.when(partageRepository.save(newPartage)).thenReturn(newPartage);
-
-        PartageRequest pr = new PartageRequest( 1L, 1L, "w");
-        Partage updatedPartage = partageService.updatePartage(pr, 1L);
-
-        assertEquals(newPartage, updatedPartage);
-    }
-
-    @Test
-    public void partageDoesNotExist__ThrowNotFoundException(){
-
-        Mockito.when(partageRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(NotFoundException.class, () -> {
-            partageService.updatePartage( new PartageRequest(), 1L);
-        });
-    }
+//    @Test
+//    public void partageExists__returnUpdatedPartage() {
+//        Partage partage = new Partage(1L, null, null, "r");
+//        Mockito.when(partageRepository.findById(1L)).thenReturn(Optional.of(partage));
+//
+//        Partage newPartage = new Partage(1L, null, null, "w");
+//        Mockito.when(partageRepository.save(newPartage)).thenReturn(newPartage);
+//
+//        PartageRequest pr = new PartageRequest( 1L, 1L, "w");
+//        Partage updatedPartage = partageService.updatePartage(pr, 1L);
+//
+//        assertEquals(newPartage, updatedPartage);
+//    }
+//
+//    @Test
+//    public void partageDoesNotExist__ThrowNotFoundException(){
+//
+//        Mockito.when(partageRepository.findById(1L)).thenReturn(Optional.empty());
+//
+//        assertThrows(NotFoundException.class, () -> {
+//            partageService.updatePartage( new PartageRequest(), 1L);
+//        });
+//    }
 
 }

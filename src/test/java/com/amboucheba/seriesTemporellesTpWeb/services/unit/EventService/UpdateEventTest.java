@@ -45,27 +45,27 @@ public class UpdateEventTest {
     }
 
 
-    @Test
-    public void eventExists__returnUpdatedEvent() {
-        Event toUpdate = new Event(1L, new Date(), 5.0f,"comment", null);
-        Mockito.when(eventRepository.findById(1L)).thenReturn(Optional.of(toUpdate));
-
-        Event newEvent = new Event(1L, new Date(), 6.0f,"new comment", null);
-        Mockito.when(eventRepository.save(newEvent)).thenReturn(newEvent);
-
-        Event updatedST = eventService.updateEvent(1L, newEvent);
-
-        assertEquals(newEvent, updatedST);
-    }
-
-    @Test
-    public void stIdDoesNotExist__ThrowNotFoundException(){
-
-        Mockito.when(eventRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(NotFoundException.class, () -> {
-            eventService.updateEvent(1L,new Event());
-        });
-    }
+//    @Test
+//    public void eventExists__returnUpdatedEvent() {
+//        Event toUpdate = new Event(1L, new Date(), 5.0f,"comment", null);
+//        Mockito.when(eventRepository.findById(1L)).thenReturn(Optional.of(toUpdate));
+//
+//        Event newEvent = new Event(1L, new Date(), 6.0f,"new comment", null);
+//        Mockito.when(eventRepository.save(newEvent)).thenReturn(newEvent);
+//
+//        Event updatedST = eventService.updateEvent(1L, newEvent);
+//
+//        assertEquals(newEvent, updatedST);
+//    }
+//
+//    @Test
+//    public void stIdDoesNotExist__ThrowNotFoundException(){
+//
+//        Mockito.when(eventRepository.findById(1L)).thenReturn(Optional.empty());
+//
+//        assertThrows(NotFoundException.class, () -> {
+//            eventService.updateEvent(1L,new Event());
+//        });
+//    }
 
 }

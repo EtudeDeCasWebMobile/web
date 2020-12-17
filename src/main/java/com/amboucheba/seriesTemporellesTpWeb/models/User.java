@@ -25,6 +25,7 @@ public class User implements Serializable {
     @Column(name = "password")
     @NotBlank(message = "Field 'password' is required")
     @Size( min = 0, max = 255, message = "Password length must be between 6 and 255")
+//    @Transient
     private String password;
 
     public User(Long id, String username, String password) {

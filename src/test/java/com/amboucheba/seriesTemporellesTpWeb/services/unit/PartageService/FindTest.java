@@ -49,23 +49,23 @@ public class FindTest {
         }
     }
 
-    @Test
-    public void partageExists__returnPartage() {
-        Partage partage = new Partage(1L, null, null, "r");
-        Mockito.when(partageRepository.findById(1L)).thenReturn(Optional.of(partage));
-
-        Partage returned = partageService.find(1L);
-
-        assertEquals(partage, returned);
-    }
-
-    @Test
-    public void partageDoesNotExist__ThrowNotFoundException(){
-
-        Mockito.when(partageRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(NotFoundException.class, () -> {
-            partageService.find(1L);
-        });
-    }
+//    @Test
+//    public void partageExists__returnPartage() {
+//        Partage partage = new Partage(1L, null, null, "r");
+//        Mockito.when(partageRepository.findById(1L)).thenReturn(Optional.of(partage));
+//
+//        Partage returned = partageService.find(1L);
+//
+//        assertEquals(partage, returned);
+//    }
+//
+//    @Test
+//    public void partageDoesNotExist__ThrowNotFoundException(){
+//
+//        Mockito.when(partageRepository.findById(1L)).thenReturn(Optional.empty());
+//
+//        assertThrows(NotFoundException.class, () -> {
+//            partageService.find(1L);
+//        });
+//    }
 }

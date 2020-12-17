@@ -1,21 +1,27 @@
 package com.amboucheba.seriesTemporellesTpWeb.controllers;
 
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.RestException;
+import com.amboucheba.seriesTemporellesTpWeb.models.AuthDetails;
 import com.amboucheba.seriesTemporellesTpWeb.models.User;
 import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.UserList;
 import com.amboucheba.seriesTemporellesTpWeb.services.UserService;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/users")
@@ -24,6 +30,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    // Should be removed
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<UserList> getAll(){
 
@@ -38,7 +45,6 @@ public class UserController {
             @ApiResponse(code = 201, message = "User created, check location header for uri"),
             @ApiResponse(code = 400, message = "Provided User info not valid, check response body for more details on error")
     })
-
     public ResponseEntity<Void> addUser(@Valid @RequestBody User newUser){
 
         long newUserId = userService.registerUser(newUser).getId();
@@ -55,10 +61,20 @@ public class UserController {
     @GetMapping(value = "/{userId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User returned in body"),
+            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    public ResponseEntity<User> getUserById(@PathVariable("userId") long userId){
-        return ResponseEntity.ok(userService.find(userId));
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+    public ResponseEntity<User> getUserById(@PathVariable("userId") long userId, @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
+
+        return ResponseEntity
+                .ok()
+                .cacheControl(CacheControl
+                        .maxAge(60, TimeUnit.SECONDS)
+                        .cachePrivate()
+                        .noTransform()
+                        .staleIfError(1, TimeUnit.HOURS))
+                .body(userService.find(userId, userDetails.getUserId()));
     }
 
 //    @PutMapping(value = "/{userId}", consumes = "application/json", produces = "application/json")

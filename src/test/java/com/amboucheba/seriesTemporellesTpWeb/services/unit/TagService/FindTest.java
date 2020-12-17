@@ -47,26 +47,26 @@ public class FindTest {
         }
     }
 
-    @Test
-    public void tagExists__returnTag() throws Exception {
-
-        long tagId = 1L;
-        Tag tag = new Tag(1L, "tag", null);
-        Mockito.when(tagRepository.findById(tagId)).thenReturn(Optional.of(tag));
-
-        Tag found = tagService.find(tagId);
-
-        assertEquals(found, tag);
-    }
-
-    @Test
-    public void tagNotFound__throwNotFoundException() {
-
-        Mockito.when(tagRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(NotFoundException.class, () -> {
-            tagService.find(1L);
-        });
-    }
+//    @Test
+//    public void tagExists__returnTag() throws Exception {
+//
+//        long tagId = 1L;
+//        Tag tag = new Tag(1L, "tag", null);
+//        Mockito.when(tagRepository.findById(tagId)).thenReturn(Optional.of(tag));
+//
+//        Tag found = tagService.find(tagId);
+//
+//        assertEquals(found, tag);
+//    }
+//
+//    @Test
+//    public void tagNotFound__throwNotFoundException() {
+//
+//        Mockito.when(tagRepository.findById(1L)).thenReturn(Optional.empty());
+//
+//        assertThrows(NotFoundException.class, () -> {
+//            tagService.find(1L);
+//        });
+//    }
 
 }

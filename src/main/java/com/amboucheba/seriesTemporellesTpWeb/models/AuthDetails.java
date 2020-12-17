@@ -34,7 +34,6 @@ public class AuthDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        new SimpleGrantedAuthority("");
         return null;
     }
 

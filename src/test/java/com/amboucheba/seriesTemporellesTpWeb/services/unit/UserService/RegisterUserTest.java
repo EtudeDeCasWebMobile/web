@@ -38,28 +38,28 @@ public class RegisterUserTest {
         }
     }
 
-    @Test
-    public void usernameDoesAlreadyExist__returnUser(){
-        User toSave = new User("user", "pass");
-        User expected = new User( 1L,"user", "pass");
-
-        Mockito.when(userRepository.findByUsername("user")).thenReturn(Optional.empty());
-
-        Mockito.when(userRepository.save(toSave)).thenReturn(expected);
-
-        User returned = userService.registerUser(toSave);
-
-        assertEquals(expected, returned);
-    }
-
-    @Test
-    public void usernameAlreadyExists__throwDuplicateResourceException(){
-        User toSave = new User("user", "pass");
-
-        Mockito.when(userRepository.findByUsername("user")).thenReturn(Optional.of(toSave));
-
-        assertThrows(DuplicateResourceException.class, () -> {
-           userService.registerUser(toSave);
-        });
-    }
+//    @Test
+//    public void usernameDoesAlreadyExist__returnUser(){
+//        User toSave = new User("user", "pass");
+//        User expected = new User( 1L,"user", "pass");
+//
+//        Mockito.when(userRepository.findByUsername("user")).thenReturn(Optional.empty());
+//
+//        Mockito.when(userRepository.save(toSave)).thenReturn(expected);
+//
+//        User returned = userService.registerUser(toSave);
+//
+//        assertEquals(expected, returned);
+//    }
+//
+//    @Test
+//    public void usernameAlreadyExists__throwDuplicateResourceException(){
+//        User toSave = new User("user", "pass");
+//
+//        Mockito.when(userRepository.findByUsername("user")).thenReturn(Optional.of(toSave));
+//
+//        assertThrows(DuplicateResourceException.class, () -> {
+//           userService.registerUser(toSave);
+//        });
+//    }
 }

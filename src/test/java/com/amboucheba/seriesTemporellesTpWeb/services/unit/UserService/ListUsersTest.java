@@ -37,17 +37,17 @@ public class ListUsersTest {
         }
     }
 
-    @Test
-    public void __returnUserList(){
-
-        List<User> expected = Collections.singletonList(
-                new User("user", "pass")
-        );
-        Mockito.when(userRepository.findAll()).thenReturn(expected);
-
-        List<User> users = userService.listUsers();
-
-        assertEquals(expected, users);
-    }
+//    @Test
+//    public void __returnUserList(){
+//
+//        List<User> expected = Collections.singletonList(
+//                new User("user", "pass")
+//        );
+//        Mockito.when(userRepository.findAll()).thenReturn(expected);
+//
+//        List<User> users = userService.listUsers();
+//
+//        assertEquals(expected, users);
+//    }
 
 }

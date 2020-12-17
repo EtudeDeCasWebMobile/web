@@ -41,24 +41,24 @@ public class RemoveTest {
     }
 
 
-    @Test
-    public void eventExists__returnSTsOfUser() {
-
-        Mockito.when(eventRepository.existsById(1L)).thenReturn(true);
-        Mockito.doNothing().when(eventRepository).deleteById(1L);
-
-        eventService.remove(1L);
-
-        Mockito.verify(eventRepository, Mockito.times(1)).deleteById(1L);
-    }
-
-    @Test
-    public void eventDoesNotExist__ThrowNotFoundException(){
-
-        Mockito.when(eventRepository.existsById(1L)).thenReturn(false);
-
-        assertThrows(NotFoundException.class, () -> {
-            eventService.remove(1L);
-        });
-    }
+//    @Test
+//    public void eventExists__returnSTsOfUser() {
+//
+//        Mockito.when(eventRepository.existsById(1L)).thenReturn(true);
+//        Mockito.doNothing().when(eventRepository).deleteById(1L);
+//
+//        eventService.remove(1L);
+//
+//        Mockito.verify(eventRepository, Mockito.times(1)).deleteById(1L);
+//    }
+//
+//    @Test
+//    public void eventDoesNotExist__ThrowNotFoundException(){
+//
+//        Mockito.when(eventRepository.existsById(1L)).thenReturn(false);
+//
+//        assertThrows(NotFoundException.class, () -> {
+//            eventService.remove(1L);
+//        });
+//    }
 }

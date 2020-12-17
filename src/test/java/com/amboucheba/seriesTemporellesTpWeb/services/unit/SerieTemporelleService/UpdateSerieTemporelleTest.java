@@ -50,27 +50,27 @@ public class UpdateSerieTemporelleTest {
         }
     }
 
-    @Test
-    public void stExists__returnUpdatedST() {
-        SerieTemporelle toUpdate = new SerieTemporelle(1L, "title", "desc", null);
-        Mockito.when(stRepository.findById(1L)).thenReturn(Optional.of(toUpdate));
-
-        SerieTemporelle newSerieTemporelle = new SerieTemporelle(1L, "newTitle", "newDesc", null);
-        Mockito.when(stRepository.save(newSerieTemporelle)).thenReturn(newSerieTemporelle);
-
-        SerieTemporelle updatedST = serieTemporelleService.updateSerieTemporelle(newSerieTemporelle, 1L);
-
-        assertEquals(newSerieTemporelle, updatedST);
-    }
-
-    @Test
-    public void stIdDoesNotExist__ThrowNotFoundException(){
-
-        Mockito.when(stRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(NotFoundException.class, () -> {
-            serieTemporelleService.updateSerieTemporelle(new SerieTemporelle(),1L);
-        });
-    }
+//    @Test
+//    public void stExists__returnUpdatedST() {
+//        SerieTemporelle toUpdate = new SerieTemporelle(1L, "title", "desc", null);
+//        Mockito.when(stRepository.findById(1L)).thenReturn(Optional.of(toUpdate));
+//
+//        SerieTemporelle newSerieTemporelle = new SerieTemporelle(1L, "newTitle", "newDesc", null);
+//        Mockito.when(stRepository.save(newSerieTemporelle)).thenReturn(newSerieTemporelle);
+//
+//        SerieTemporelle updatedST = serieTemporelleService.updateSerieTemporelle(newSerieTemporelle, 1L);
+//
+//        assertEquals(newSerieTemporelle, updatedST);
+//    }
+//
+//    @Test
+//    public void stIdDoesNotExist__ThrowNotFoundException(){
+//
+//        Mockito.when(stRepository.findById(1L)).thenReturn(Optional.empty());
+//
+//        assertThrows(NotFoundException.class, () -> {
+//            serieTemporelleService.updateSerieTemporelle(new SerieTemporelle(),1L);
+//        });
+//    }
 
 }

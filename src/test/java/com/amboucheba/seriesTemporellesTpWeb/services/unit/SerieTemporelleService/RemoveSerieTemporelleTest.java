@@ -47,24 +47,24 @@ public class RemoveSerieTemporelleTest {
         }
     }
 
-    @Test
-    public void userExists__returnSTsOfUser() {
-
-        Mockito.when(stRepository.existsById(1L)).thenReturn(true);
-        Mockito.doNothing().when(stRepository).deleteById(1L);
-
-        serieTemporelleService.removeSerieTemporelle(1L);
-
-        Mockito.verify(stRepository, Mockito.times(1)).deleteById(1L);
-    }
-
-    @Test
-    public void stDoesNotExist__ThrowNotFoundException(){
-
-        Mockito.when(stRepository.existsById(1L)).thenReturn(false);
-
-        assertThrows(NotFoundException.class, () -> {
-            serieTemporelleService.removeSerieTemporelle(1L);
-        });
-    }
+//    @Test
+//    public void userExists__returnSTsOfUser() {
+//
+//        Mockito.when(stRepository.existsById(1L)).thenReturn(true);
+//        Mockito.doNothing().when(stRepository).deleteById(1L);
+//
+//        serieTemporelleService.removeSerieTemporelle(1L);
+//
+//        Mockito.verify(stRepository, Mockito.times(1)).deleteById(1L);
+//    }
+//
+//    @Test
+//    public void stDoesNotExist__ThrowNotFoundException(){
+//
+//        Mockito.when(stRepository.existsById(1L)).thenReturn(false);
+//
+//        assertThrows(NotFoundException.class, () -> {
+//            serieTemporelleService.removeSerieTemporelle(1L);
+//        });
+//    }
 }

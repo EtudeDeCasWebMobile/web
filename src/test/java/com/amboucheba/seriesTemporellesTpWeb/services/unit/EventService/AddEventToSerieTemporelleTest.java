@@ -50,29 +50,29 @@ public class AddEventToSerieTemporelleTest {
         }
     }
 
-    @Test
-    public void stExists__addEventToSt(){
-        SerieTemporelle st = new SerieTemporelle("event", "pass");
-        Event event = new Event(new Date(), 5.0f,"comment");
-        Event toSave = new Event( new Date(), 5.0f,"comment", st);
-        Event saved = new Event( 1L,new Date(), 5.0f,"comment", st);
+//    @Test
+//    public void stExists__addEventToSt(){
+//        SerieTemporelle st = new SerieTemporelle("event", "pass");
+//        Event event = new Event(new Date(), 5.0f,"comment");
+//        Event toSave = new Event( new Date(), 5.0f,"comment", st);
+//        Event saved = new Event( 1L,new Date(), 5.0f,"comment", st);
+//
+//        Mockito.when(serieTemporelleService.find(1L)).thenReturn(st);
+//        Mockito.when(eventRepository.save(toSave)).thenReturn(saved);
+//
+//        Event returned = eventService.addEventToSerieTemporelle(1L, event);
+//
+//        assertEquals(saved, returned);
+//    }
 
-        Mockito.when(serieTemporelleService.find(1L)).thenReturn(st);
-        Mockito.when(eventRepository.save(toSave)).thenReturn(saved);
-
-        Event returned = eventService.addEventToSerieTemporelle(1L, event);
-
-        assertEquals(saved, returned);
-    }
-
-    @Test
-    public void stDoesNotExist__ThrowNotFoundException(){
-
-        Mockito.when(serieTemporelleService.find(1L)).thenThrow(NotFoundException.class);
-
-        assertThrows(NotFoundException.class, () -> {
-            eventService.addEventToSerieTemporelle(1L, new Event() );
-        });
-    }
+//    @Test
+//    public void stDoesNotExist__ThrowNotFoundException(){
+//
+//        Mockito.when(serieTemporelleService.find(1L)).thenThrow(NotFoundException.class);
+//
+//        assertThrows(NotFoundException.class, () -> {
+//            eventService.addEventToSerieTemporelle(1L, new Event() );
+//        });
+//    }
 
 }

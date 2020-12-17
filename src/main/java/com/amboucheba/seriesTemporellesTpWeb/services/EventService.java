@@ -1,5 +1,6 @@
 package com.amboucheba.seriesTemporellesTpWeb.services;
 
+import com.amboucheba.seriesTemporellesTpWeb.exceptions.ForbiddenActionException;
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
 import com.amboucheba.seriesTemporellesTpWeb.models.Event;
 import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
@@ -20,13 +21,33 @@ public class EventService {
     @Autowired
     SerieTemporelleService serieTemporelleService;
 
-    public List<Event> listEventsBySerieTemporelle(long serieTemporelleId){
+    @Autowired
+    UserService userService;
 
-        SerieTemporelle serieTemporelle = serieTemporelleService.find(serieTemporelleId);
+    @Autowired
+    PartageService partageService;
+
+    List<Event> listEventsBySerieTemporelle(long serieTemporelleId){
+
         return eventRepository.findBySerieTemporelleId(serieTemporelleId);
     }
+    public List<Event> listEventsBySerieTemporelle(long serieTemporelleId, Long initiatorId){
 
-    public Event find( long eventId){
+        SerieTemporelle st = serieTemporelleService.find(serieTemporelleId);
+
+        // initiator is the owner of the targeted serie temporelle
+        boolean isOwner = userService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
+        // Owner shared serie temporelle with initiator with read(r) access
+        boolean hasAccess = partageService.hasAccess(initiatorId, st.getId(), "r");
+
+        if (!isOwner && !hasAccess){
+            throw new ForbiddenActionException("Permission denied: cannot access another user's data");
+        }
+
+        return listEventsBySerieTemporelle(serieTemporelleId);
+    }
+
+    Event find( long eventId){
 
         Optional<Event> event = eventRepository.findById(eventId);
         if (event.isEmpty()){
@@ -34,35 +55,83 @@ public class EventService {
         }
         return event.get();
     }
+    public Event find( long eventId, Long initiatorId){
 
-    public Event addEventToSerieTemporelle(long serieTemporelleId, Event event){
+        Event event = find(eventId);
+        SerieTemporelle st = event.getSerieTemporelle();
 
-        // look for the serie temporelle
-        SerieTemporelle serieTemporelle = serieTemporelleService.find(serieTemporelleId);
+        // initiator is the owner of the targeted serie temporelle
+        boolean isOwner = userService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
+        // Owner shared serie temporelle with initiator with read(r) access
+        boolean hasAccess = partageService.hasAccess(initiatorId, st.getId(), "r");
 
-        // serie temporelle exists
+        if (!isOwner && !hasAccess){
+            throw new ForbiddenActionException("Permission denied: cannot access another user's data");
+        }
+
+        return event;
+    }
+
+    Event addEventToSerieTemporelle(SerieTemporelle serieTemporelle, Event event){
+
         event.setSerieTemporelle(serieTemporelle);
         return eventRepository.save(event);
     }
+    public Event addEventToSerieTemporelle(long serieTemporelleId, Event event, Long initiatorId){
 
-    public Event updateEvent(long eventId, Event newEvent) {
-        Optional<Event> event = eventRepository.findById(eventId);
+        // look for the serie temporelle
+        SerieTemporelle st = serieTemporelleService.find(serieTemporelleId);
 
-        if (event.isEmpty()){
-            throw new NotFoundException("'Event' with id:" + eventId + " not found.");
+        // initiator is the owner of the targeted serie temporelle
+        boolean isOwner = userService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
+        // Owner shared serie temporelle with initiator with read(r) access
+        boolean hasAccess = partageService.hasAccess(initiatorId, st.getId(), "w");
+
+        if (!isOwner && !hasAccess){
+            throw new ForbiddenActionException("Permission denied: cannot access another user's data");
         }
 
-        Event actualEvent = event.get();
-        actualEvent.setDate(newEvent.getDate());
-        actualEvent.setValeur(newEvent.getValeur());
-        actualEvent.setCommentaire(newEvent.getCommentaire());
-        return eventRepository.save(actualEvent);
+        return addEventToSerieTemporelle(st, event);
     }
 
-    public void remove(long eventId) {
-        if (!eventRepository.existsById(eventId)){
-            throw new NotFoundException("'Event' with id " + eventId + " not found");
+
+    Event updateEvent(Event event, Event newEvent) {
+
+        event.setDate(newEvent.getDate());
+        event.setValeur(newEvent.getValeur());
+        event.setCommentaire(newEvent.getCommentaire());
+        return eventRepository.save(event);
+    }
+    public Event updateEvent(long eventId, Event newEvent, Long initiatorId) {
+
+        // handles not found
+        Event event = find(eventId);
+        SerieTemporelle st = event.getSerieTemporelle();
+
+        // initiator is the owner of the targeted serie temporelle
+        boolean isOwner = userService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
+        // Owner shared serie temporelle with initiator with read(r) access
+        boolean hasAccess = partageService.hasAccess(initiatorId, st.getId(), "w");
+
+        if (!isOwner && !hasAccess){
+            throw new ForbiddenActionException("Permission denied: cannot access another user's data");
         }
+
+        return updateEvent(event, newEvent);
+    }
+
+    void remove(long eventId) {
         eventRepository.deleteById(eventId);
+    }
+    public void remove(long eventId, Long initiatorId) {
+
+        Event event = find(eventId);
+        SerieTemporelle st = event.getSerieTemporelle();
+
+        // initiator of the request must the owner of the serie temporelle
+        if (!userService.initiatorIsOwner(st.getOwner().getId(), initiatorId)){
+            throw new ForbiddenActionException("Permission denied: cannot access another user's data");
+        }
+        remove(eventId);
     }
 }

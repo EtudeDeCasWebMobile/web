@@ -1,7 +1,9 @@
 package com.amboucheba.seriesTemporellesTpWeb.services;
 
+import com.amboucheba.seriesTemporellesTpWeb.exceptions.ForbiddenActionException;
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
 import com.amboucheba.seriesTemporellesTpWeb.models.Event;
+import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
 import com.amboucheba.seriesTemporellesTpWeb.models.Tag;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.EventRepository;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.TagRepository;
@@ -22,21 +24,13 @@ public class TagService {
     @Autowired
     EventService eventService;
 
+    @Autowired
+    UserService userService;
 
-    public List<Tag> listTagsByEvent(long eventId) {
+    @Autowired
+    PartageService partageService;
 
-        Event event = eventService.find(eventId);
-        return tagRepository.findByEventId(eventId);
-    }
-
-    public Tag addTagToEvent(long eventId, Tag newTag) {
-
-        Event event = eventService.find(eventId);
-        newTag.setEvent(event);
-        return tagRepository.save(newTag);
-    }
-
-    public Tag find(long tagId) {
+    Tag find(long tagId) {
 
         Optional<Tag> tag = tagRepository.findById(tagId);
         if (tag.isEmpty()){
@@ -45,24 +39,99 @@ public class TagService {
 
         return tag.get();
     }
+    public Tag find(long tagId, Long initiatorId) {
 
-    public Tag updateTag(long tagId, Tag newTag) {
-        Optional<Tag> tag = tagRepository.findById(tagId);
+        Tag tag = find(tagId);
+        SerieTemporelle st = tag.getEvent().getSerieTemporelle();
 
-        if (tag.isEmpty()){
-            throw new NotFoundException("'Tag' with id " + tagId + " not found");
+        // initiator is the owner of the targeted serie temporelle
+        boolean isOwner = userService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
+        // Owner shared serie temporelle with initiator with read(r) access
+        boolean hasAccess = partageService.hasAccess(initiatorId, st.getId(), "r");
+
+        if (!isOwner && !hasAccess){
+            throw new ForbiddenActionException("Permission denied: cannot access another user's data");
         }
 
-        Tag actualTag = tag.get();
-        actualTag.setName(newTag.getName());
-        return tagRepository.save(actualTag);
+        return tag;
     }
 
-    public void remove(long tagId) {
+    List<Tag> listTagsByEvent(long eventId) {
+        return tagRepository.findByEventId(eventId);
+    }
+    public List<Tag> listTagsByEvent(long eventId, Long initiatorId) {
 
-        if (!tagRepository.existsById(tagId)){
-            throw new NotFoundException("'Tag' with id " + tagId + " not found");
+        Event event = eventService.find(eventId);
+        SerieTemporelle st = event.getSerieTemporelle();
+
+        // initiator is the owner of the targeted serie temporelle
+        boolean isOwner = userService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
+        // Owner shared serie temporelle with initiator with read(r) access
+        boolean hasAccess = partageService.hasAccess(initiatorId, st.getId(), "r");
+
+        if (!isOwner && !hasAccess){
+            throw new ForbiddenActionException("Permission denied: cannot access another user's data");
         }
+
+        return listTagsByEvent(eventId);
+    }
+
+    Tag addTagToEvent(Event event, Tag newTag) {
+
+        newTag.setEvent(event);
+        return tagRepository.save(newTag);
+    }
+    public Tag addTagToEvent(long eventId, Tag newTag, Long initiatorId) {
+
+        Event event = eventService.find(eventId);
+        SerieTemporelle st = event.getSerieTemporelle();
+
+        // initiator is the owner of the targeted serie temporelle
+        boolean isOwner = userService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
+        // Owner shared serie temporelle with initiator with read(r) access
+        boolean hasAccess = partageService.hasAccess(initiatorId, st.getId(), "w");
+
+        if (!isOwner && !hasAccess){
+            throw new ForbiddenActionException("Permission denied: cannot access another user's data");
+        }
+
+        return addTagToEvent(event, newTag);
+    }
+
+    Tag updateTag(Tag tag, Tag newTag) {
+
+        tag.setName(newTag.getName());
+        return tagRepository.save(tag);
+    }
+    public Tag updateTag(long tagId, Tag newTag, Long initiatorId) {
+        Tag tag = find(tagId);
+        SerieTemporelle st = tag.getEvent().getSerieTemporelle();
+
+        // initiator is the owner of the targeted serie temporelle
+        boolean isOwner = userService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
+        // Owner shared serie temporelle with initiator with read(r) access
+        boolean hasAccess = partageService.hasAccess(initiatorId, st.getId(), "w");
+
+        if (!isOwner && !hasAccess){
+            throw new ForbiddenActionException("Permission denied: cannot access another user's data");
+        }
+
+        return updateTag(tag, newTag);
+    }
+
+    void remove(long tagId) {
         tagRepository.deleteById(tagId);
+    }
+    public void remove(long tagId, Long initiatorId) {
+
+        Tag tag = find(tagId);
+        SerieTemporelle st = tag.getEvent().getSerieTemporelle();
+
+        // initiator of the request must the owner of the serie temporelle
+        if (!userService.initiatorIsOwner(st.getOwner().getId(), initiatorId)){
+            throw new ForbiddenActionException("Permission denied: cannot access another user's data");
+        }
+
+        remove(tagId);
     }
 }

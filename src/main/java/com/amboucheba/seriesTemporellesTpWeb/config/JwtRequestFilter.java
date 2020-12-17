@@ -4,6 +4,7 @@ import com.amboucheba.seriesTemporellesTpWeb.models.AuthDetails;
 import com.amboucheba.seriesTemporellesTpWeb.services.AuthService;
 import com.amboucheba.seriesTemporellesTpWeb.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

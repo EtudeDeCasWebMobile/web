@@ -34,6 +34,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable(); //we don't make use of cookies
 
+//        http.httpBasic();
+
         http.authorizeRequests()
         .antMatchers(HttpMethod.POST,"/authenticate").permitAll()
         .antMatchers(HttpMethod.POST, "/users").permitAll()

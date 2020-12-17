@@ -48,30 +48,30 @@ public class AddTagToEventTest {
         }
     }
 
-    @Test
-    public void eventExists__addTagToEvent(){
-
-        Event event = new Event(1L, new Date(), 5.0f,"comment", null);
-
-        Tag toSave = new Tag( "tag", event);
-        Tag saved = new Tag(1L, "tag", event);
-
-        Mockito.when(eventService.find(1L)).thenReturn(event);
-        Mockito.when(tagRepository.save(toSave)).thenReturn(saved);
-
-        Tag returned = tagService.addTagToEvent(1L, toSave);
-
-        assertEquals(saved, returned);
-    }
-
-    @Test
-    public void eventDoesNotExist__ThrowNotFoundException(){
-
-        Mockito.when(eventService.find(1L)).thenThrow(NotFoundException.class);
-
-        assertThrows(NotFoundException.class, () -> {
-            tagService.addTagToEvent(1L, new Tag() );
-        });
-    }
+//    @Test
+//    public void eventExists__addTagToEvent(){
+//
+//        Event event = new Event(1L, new Date(), 5.0f,"comment", null);
+//
+//        Tag toSave = new Tag( "tag", event);
+//        Tag saved = new Tag(1L, "tag", event);
+//
+//        Mockito.when(eventService.find(1L)).thenReturn(event);
+//        Mockito.when(tagRepository.save(toSave)).thenReturn(saved);
+//
+//        Tag returned = tagService.addTagToEvent(1L, toSave);
+//
+//        assertEquals(saved, returned);
+//    }
+//
+//    @Test
+//    public void eventDoesNotExist__ThrowNotFoundException(){
+//
+//        Mockito.when(eventService.find(1L)).thenThrow(NotFoundException.class);
+//
+//        assertThrows(NotFoundException.class, () -> {
+//            tagService.addTagToEvent(1L, new Tag() );
+//        });
+//    }
 
 }

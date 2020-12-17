@@ -50,27 +50,27 @@ public class ListPartageBySerieTemporelleIdTest {
         }
     }
 
-    @Test
-    public void stExists__returnPartagesOfSt() {
-        SerieTemporelle st = new SerieTemporelle(1L,"title", "desc", null);
-        List<Partage> toBeReturned = Collections.singletonList(
-                new Partage(1L,  null, st, "r")
-        );
-        Mockito.when(serieTemporelleService.find(1L)).thenReturn(st);
-        Mockito.when(partageRepository.findBySerieTemporelleId(1L)).thenReturn(toBeReturned);
-
-        List<Partage> partages = partageService.listPartageBySerieTemporelleId(1L);
-
-        assertEquals(toBeReturned, partages);
-    }
-
-    @Test
-    public void stDoesNotExist__ThrowNotFoundException(){
-
-        Mockito.when(serieTemporelleService.find(1L)).thenThrow(NotFoundException.class);
-
-        assertThrows(NotFoundException.class, () -> {
-            partageService.listPartageBySerieTemporelleId(1L);
-        });
-    }
+//    @Test
+//    public void stExists__returnPartagesOfSt() {
+//        SerieTemporelle st = new SerieTemporelle(1L,"title", "desc", null);
+//        List<Partage> toBeReturned = Collections.singletonList(
+//                new Partage(1L,  null, st, "r")
+//        );
+//        Mockito.when(serieTemporelleService.find(1L)).thenReturn(st);
+//        Mockito.when(partageRepository.findBySerieTemporelleId(1L)).thenReturn(toBeReturned);
+//
+//        List<Partage> partages = partageService.listPartageBySerieTemporelleId(1L);
+//
+//        assertEquals(toBeReturned, partages);
+//    }
+//
+//    @Test
+//    public void stDoesNotExist__ThrowNotFoundException(){
+//
+//        Mockito.when(serieTemporelleService.find(1L)).thenThrow(NotFoundException.class);
+//
+//        assertThrows(NotFoundException.class, () -> {
+//            partageService.listPartageBySerieTemporelleId(1L);
+//        });
+//    }
 }
