@@ -1,20 +1,24 @@
 package com.amboucheba.seriesTemporellesTpWeb.controllers;
 
+import com.amboucheba.seriesTemporellesTpWeb.models.AuthDetails;
 import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.TagList;
 import com.amboucheba.seriesTemporellesTpWeb.models.Tag;
 import com.amboucheba.seriesTemporellesTpWeb.services.TagService;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 public class TagController {
@@ -27,12 +31,20 @@ public class TagController {
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success, check response body"),
+            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "Event not found"),})
-    public ResponseEntity<TagList> getTagsByEvent(@PathVariable long eventId){
+    public ResponseEntity<TagList> getTagsByEvent(@PathVariable long eventId, @AuthenticationPrincipal AuthDetails userDetails){
 
-        List<Tag> tags = tagService.listTagsByEvent(eventId);
+        List<Tag> tags = tagService.listTagsByEvent(eventId, userDetails.getUserId());
 
-        return ResponseEntity.ok(new TagList(tags));
+        return ResponseEntity
+                .ok()
+                .cacheControl(CacheControl
+                    .maxAge(10, TimeUnit.SECONDS)
+                    .cachePublic()
+                    .proxyRevalidate()
+                    .staleIfError(5, TimeUnit.SECONDS))
+                .body(new TagList(tags));
     }
 
     @PostMapping(
@@ -41,14 +53,19 @@ public class TagController {
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Tag created, check location header for uri"),
+            @ApiResponse(code = 400, message = "Provided Tag info not valid, check response body for more details on error"),
+            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "Event not found"),
-            @ApiResponse(code = 400, message = "Provided Tag info not valid, check response body for more details on error") })
-    public ResponseEntity<Void> addTagToEvent(@Valid @RequestBody Tag newTag, @PathVariable long eventId){
+    })
+    public ResponseEntity<Void> addTagToEvent(
+            @Valid @RequestBody Tag newTag,
+            @PathVariable long eventId,
+            @AuthenticationPrincipal AuthDetails userDetails){
 
-        Tag savedTag = tagService.addTagToEvent(eventId, newTag);
+        Tag savedTag = tagService.addTagToEvent(eventId, newTag, userDetails.getUserId());
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
+        URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .pathSegment("tags", "{id}")
                 .buildAndExpand(savedTag.getId())
                 .toUri();
 
@@ -60,11 +77,20 @@ public class TagController {
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Tag returned in body"),
-            @ApiResponse(code = 404, message = "Tag not found") })
-    public ResponseEntity<Tag> getTagById(@PathVariable long tagId){
+            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
+            @ApiResponse(code = 404, message = "Tag not found")
+    })
+    public ResponseEntity<Tag> getTagById(@PathVariable long tagId, @AuthenticationPrincipal AuthDetails userDetails){
 
-        Tag tag = tagService.find(tagId);
-        return ResponseEntity.ok(tag);
+        Tag tag = tagService.find(tagId, userDetails.getUserId());
+        return ResponseEntity
+                .ok()
+                .cacheControl(CacheControl
+                    .maxAge(10, TimeUnit.SECONDS)
+                    .cachePublic()
+                    .proxyRevalidate()
+                    .staleIfError(5, TimeUnit.SECONDS))
+                .body(tag);
     }
 
     @PutMapping(
@@ -73,11 +99,16 @@ public class TagController {
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Tag updated and returned in response body"),
+            @ApiResponse(code = 400, message = "Provided Tag info not valid, check response body for more details on error"),
+            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "Tag not found"),
-            @ApiResponse(code = 400, message = "Provided Tag info not valid, check response body for more details on error") })
-    public ResponseEntity<Tag> updateTag(@PathVariable long tagId, @Valid @RequestBody Tag newTag){
+    })
+    public ResponseEntity<Tag> updateTag(
+            @PathVariable long tagId,
+            @Valid @RequestBody Tag newTag,
+            @AuthenticationPrincipal AuthDetails userDetails){
 
-        Tag tag = tagService.updateTag(tagId, newTag );
+        Tag tag = tagService.updateTag(tagId, newTag, userDetails.getUserId());
         return ResponseEntity.ok(tag);
     }
 
@@ -85,10 +116,12 @@ public class TagController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "Tag deleted"),
-            @ApiResponse(code = 404, message = "Tag not found") })
-    public ResponseEntity<Void> deleteTag(@PathVariable long tagId){
+            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
+            @ApiResponse(code = 404, message = "Tag not found")
+    })
+    public ResponseEntity<Void> deleteTag(@PathVariable long tagId, @AuthenticationPrincipal AuthDetails userDetails){
 
-        tagService.remove(tagId);
+        tagService.remove(tagId, userDetails.getUserId());
         return ResponseEntity.noContent().build();
     }
 }

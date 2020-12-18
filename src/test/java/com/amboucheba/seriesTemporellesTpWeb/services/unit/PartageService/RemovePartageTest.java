@@ -45,24 +45,24 @@ public class RemovePartageTest {
     }
 
 
-    @Test
-    public void partageExists__RemovePartage() {
-
-        Mockito.when(partageRepository.existsById(1L)).thenReturn(true);
-        Mockito.doNothing().when(partageRepository).deleteById(1L);
-
-        partageService.removePartage(1L);
-
-        Mockito.verify(partageRepository, Mockito.times(1)).deleteById(1L);
-    }
-
-    @Test
-    public void partageDoesNotExist__ThrowNotFoundException(){
-
-        Mockito.when(partageRepository.existsById(1L)).thenReturn(false);
-
-        assertThrows(NotFoundException.class, () -> {
-            partageService.removePartage(1L);
-        });
-    }
+//    @Test
+//    public void partageExists__RemovePartage() {
+//
+//        Mockito.when(partageRepository.existsById(1L)).thenReturn(true);
+//        Mockito.doNothing().when(partageRepository).deleteById(1L);
+//
+//        partageService.removePartage(1L);
+//
+//        Mockito.verify(partageRepository, Mockito.times(1)).deleteById(1L);
+//    }
+//
+//    @Test
+//    public void partageDoesNotExist__ThrowNotFoundException(){
+//
+//        Mockito.when(partageRepository.existsById(1L)).thenReturn(false);
+//
+//        assertThrows(NotFoundException.class, () -> {
+//            partageService.removePartage(1L);
+//        });
+//    }
 }

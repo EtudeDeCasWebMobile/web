@@ -47,27 +47,27 @@ public class UpdateTagTest {
         }
     }
 
-    @Test
-    public void eventExists__returnUpdatedEvent() {
-        Tag toUpdate = new Tag(1L, "tag", null);
-        Mockito.when(tagRepository.findById(1L)).thenReturn(Optional.of(toUpdate));
-
-        Tag newTag = new Tag(1L, "newtag", null);
-        Mockito.when(tagRepository.save(newTag)).thenReturn(newTag);
-
-        Tag updatedTag = tagService.updateTag(1L, newTag);
-
-        assertEquals(newTag, updatedTag);
-    }
-
-    @Test
-    public void tagDoesNotExist__ThrowNotFoundException(){
-
-        Mockito.when(tagRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(NotFoundException.class, () -> {
-            tagService.updateTag(1L,new Tag());
-        });
-    }
+//    @Test
+//    public void eventExists__returnUpdatedEvent() {
+//        Tag toUpdate = new Tag(1L, "tag", null);
+//        Mockito.when(tagRepository.findById(1L)).thenReturn(Optional.of(toUpdate));
+//
+//        Tag newTag = new Tag(1L, "newtag", null);
+//        Mockito.when(tagRepository.save(newTag)).thenReturn(newTag);
+//
+//        Tag updatedTag = tagService.updateTag(1L, newTag);
+//
+//        assertEquals(newTag, updatedTag);
+//    }
+//
+//    @Test
+//    public void tagDoesNotExist__ThrowNotFoundException(){
+//
+//        Mockito.when(tagRepository.findById(1L)).thenReturn(Optional.empty());
+//
+//        assertThrows(NotFoundException.class, () -> {
+//            tagService.updateTag(1L,new Tag());
+//        });
+//    }
 
 }

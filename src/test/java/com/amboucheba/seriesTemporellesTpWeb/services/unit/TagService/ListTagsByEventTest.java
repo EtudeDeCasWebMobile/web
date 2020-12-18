@@ -50,27 +50,27 @@ public class ListTagsByEventTest {
         }
     }
 
-    @Test
-    public void eventExists__returnTagsOfEvent() {
-        Event event = new Event(1L, new Date(), 5.0f, "comment", null);
-        List<Tag> toBeReturned = Collections.singletonList(
-                new Tag(1L, "tag", event)
-        );
-        Mockito.when(eventService.find(1L)).thenReturn(event);
-        Mockito.when(tagRepository.findByEventId(1L)).thenReturn(toBeReturned);
-
-        List<Tag> returned = tagService.listTagsByEvent(1L);
-
-        assertEquals(toBeReturned, returned);
-    }
-
-    @Test
-    public void eventDoesNotExist__ThrowNotFoundException(){
-
-        Mockito.when(eventService.find(1L)).thenThrow(NotFoundException.class);
-
-        assertThrows(NotFoundException.class, () -> {
-            tagService.listTagsByEvent(1L);
-        });
-    }
+//    @Test
+//    public void eventExists__returnTagsOfEvent() {
+//        Event event = new Event(1L, new Date(), 5.0f, "comment", null);
+//        List<Tag> toBeReturned = Collections.singletonList(
+//                new Tag(1L, "tag", event)
+//        );
+//        Mockito.when(eventService.find(1L)).thenReturn(event);
+//        Mockito.when(tagRepository.findByEventId(1L)).thenReturn(toBeReturned);
+//
+//        List<Tag> returned = tagService.listTagsByEvent(1L);
+//
+//        assertEquals(toBeReturned, returned);
+//    }
+//
+//    @Test
+//    public void eventDoesNotExist__ThrowNotFoundException(){
+//
+//        Mockito.when(eventService.find(1L)).thenThrow(NotFoundException.class);
+//
+//        assertThrows(NotFoundException.class, () -> {
+//            tagService.listTagsByEvent(1L);
+//        });
+//    }
 }

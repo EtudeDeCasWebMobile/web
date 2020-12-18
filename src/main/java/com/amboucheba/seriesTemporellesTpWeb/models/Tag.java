@@ -17,6 +17,7 @@ public class Tag implements Serializable {
 
 //    @Column(name = "id_Evenement")
     @ManyToOne
+    @JoinColumn(name = "id_Evenement", nullable = false)
     private Event event;
 
     public Tag(Long id, String name, Event event) {

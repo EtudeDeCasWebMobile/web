@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS messages
 (
-    id integer auto_increment,
+    id integer GENERATED ALWAYS AS IDENTITY,
     username character varying(255)  NOT NULL,
     text character varying(255)  NOT NULL,
     created_at timestamp without time zone DEFAULT now()
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS messages
    id integer GENERATED ALWAYS AS IDENTITY,
    titre VARCHAR(255) not null,
    description varchar(255) not null,
-   owner int,
+   owner integer,
 
    PRIMARY KEY (id),
    FOREIGN KEY (owner) REFERENCES users(id)

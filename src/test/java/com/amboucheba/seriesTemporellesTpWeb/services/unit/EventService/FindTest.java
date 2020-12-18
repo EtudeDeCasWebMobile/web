@@ -49,26 +49,26 @@ public class FindTest {
         }
     }
 
-    @Test
-    public void stExists__returnEventsOfSt() throws Exception {
-
-        long eventId = 1;
-        Event event = new Event(1L, new Date(), 5.0f,"comment", null);
-        Mockito.when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
-
-        Event found = eventService.find(eventId);
-
-        assertEquals(found, event);
-    }
-
-    @Test
-    public void stNotFound__throwNotFoundException() {
-
-        Mockito.when(eventRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(NotFoundException.class, () -> {
-            eventService.find(1L);
-        });
-    }
+//    @Test
+//    public void stExists__returnEventsOfSt() throws Exception {
+//
+//        long eventId = 1;
+//        Event event = new Event(1L, new Date(), 5.0f,"comment", null);
+//        Mockito.when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
+//
+//        Event found = eventService.find(eventId);
+//
+//        assertEquals(found, event);
+//    }
+//
+//    @Test
+//    public void stNotFound__throwNotFoundException() {
+//
+//        Mockito.when(eventRepository.findById(1L)).thenReturn(Optional.empty());
+//
+//        assertThrows(NotFoundException.class, () -> {
+//            eventService.find(1L);
+//        });
+//    }
 
 }

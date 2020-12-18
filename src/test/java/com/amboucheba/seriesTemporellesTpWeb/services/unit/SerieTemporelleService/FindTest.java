@@ -48,26 +48,26 @@ public class FindTest {
         }
     }
 
-    @Test
-    public void serieTemporelleExists() throws Exception {
-
-        long stId = 1;
-        SerieTemporelle st = new SerieTemporelle("title", "description");
-        Mockito.when(stRepository.findById(stId)).thenReturn(Optional.of(st));
-
-        SerieTemporelle found = serieTemporelleService.find(stId);
-
-        assertEquals(found, st);
-    }
-
-    @Test
-    public void serieTemporelleNotFound() {
-
-        Mockito.when(stRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(NotFoundException.class, () -> {
-            serieTemporelleService.find(1L);
-        });
-    }
+//    @Test
+//    public void serieTemporelleExists() throws Exception {
+//
+//        long stId = 1;
+//        SerieTemporelle st = new SerieTemporelle("title", "description");
+//        Mockito.when(stRepository.findById(stId)).thenReturn(Optional.of(st));
+//
+//        SerieTemporelle found = serieTemporelleService.find(stId);
+//
+//        assertEquals(found, st);
+//    }
+//
+//    @Test
+//    public void serieTemporelleNotFound() {
+//
+//        Mockito.when(stRepository.findById(1L)).thenReturn(Optional.empty());
+//
+//        assertThrows(NotFoundException.class, () -> {
+//            serieTemporelleService.find(1L);
+//        });
+//    }
 
 }

@@ -46,28 +46,28 @@ public class ListEventsBySerieTemporelleTest {
         }
     }
 
-    @Test
-    public void stExists__returnEventsOfSt() {
-        SerieTemporelle st = new SerieTemporelle(1L, "title", "desc", null);
-        List<Event> toBeReturned = Collections.singletonList(
-                new Event(1L, new Date(), 5.0f,"comment", st)
-        );
-        Mockito.when(serieTemporelleService.find(1L)).thenReturn(st);
-        Mockito.when(eventRepository.findBySerieTemporelleId(1L)).thenReturn(toBeReturned);
+//    @Test
+//    public void stExists__returnEventsOfSt() {
+//        SerieTemporelle st = new SerieTemporelle(1L, "title", "desc", null);
+//        List<Event> toBeReturned = Collections.singletonList(
+//                new Event(1L, new Date(), 5.0f,"comment", st)
+//        );
+//        Mockito.when(serieTemporelleService.find(1L)).thenReturn(st);
+//        Mockito.when(eventRepository.findBySerieTemporelleId(1L)).thenReturn(toBeReturned);
+//
+//        List<Event> events = eventService.listEventsBySerieTemporelle(1L);
+//
+//        assertEquals(toBeReturned, events);
+//
+//    }
 
-        List<Event> events = eventService.listEventsBySerieTemporelle(1L);
-
-        assertEquals(toBeReturned, events);
-
-    }
-
-    @Test
-    public void stDoesNotExist__ThrowNotFoundException(){
-
-        Mockito.when(serieTemporelleService.find(1L)).thenThrow(NotFoundException.class);
-
-        assertThrows(NotFoundException.class, () -> {
-            eventService.listEventsBySerieTemporelle(1L);
-        });
-    }
+//    @Test
+//    public void stDoesNotExist__ThrowNotFoundException(){
+//
+//        Mockito.when(serieTemporelleService.find(1L)).thenThrow(NotFoundException.class);
+//
+//        assertThrows(NotFoundException.class, () -> {
+//            eventService.listEventsBySerieTemporelle(1L);
+//        });
+//    }
 }

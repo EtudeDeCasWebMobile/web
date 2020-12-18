@@ -1,9 +1,8 @@
 package com.amboucheba.seriesTemporellesTpWeb.services;
 
+import com.amboucheba.seriesTemporellesTpWeb.exceptions.ForbiddenActionException;
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
-import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.PartageList;
 import com.amboucheba.seriesTemporellesTpWeb.models.Partage;
-import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.SerieTemplorelleList;
 import com.amboucheba.seriesTemporellesTpWeb.models.PartageRequest;
 import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
 import com.amboucheba.seriesTemporellesTpWeb.models.User;
@@ -11,11 +10,8 @@ import com.amboucheba.seriesTemporellesTpWeb.repositories.PartageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Part;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class PartageService {
@@ -29,45 +25,115 @@ public class PartageService {
     @Autowired
     SerieTemporelleService serieTemporelleService;
 
-    public List<Partage> listPartageByUserId(long userId) throws NotFoundException {
+    public boolean hasAccess(long userId, long stId, String type){
+        Optional<Partage> partage = partageRepository.findByUserIdAndSerieTemporelleIdAndType(userId, stId, type);
 
-        User user = userService.find(userId);
-        return partageRepository.findByUserId(userId);
+        if(partage.isEmpty()) return false;
+        if (type.equals("r")) return true;
+
+        return partage.get().getType().equals(type);
     }
 
-    public List<Partage> listPartageBySerieTemporelleId(long serieTemporelleId) throws NotFoundException {
+    // Does the find job
+    Partage find(long partageId){
+        Optional<Partage> result = partageRepository.findById(partageId);
 
-        SerieTemporelle serieTemporelle = serieTemporelleService.find(serieTemporelleId);
-        return partageRepository.findBySerieTemporelleId(serieTemporelleId);
-    }
-
-    public Partage createPartage(PartageRequest partage){
-        // Not found is handled inside service call
-        User user = userService.find(partage.getUserId());
-        SerieTemporelle serieTemporelle = serieTemporelleService.find(partage.getSerieTemporelleId());
-
-        Partage savedPartage = new Partage(user, serieTemporelle, partage.getType());
-        return partageRepository.save(savedPartage);
-    }
-
-    public Partage updatePartage(PartageRequest newPartage, long partageId){
-
-        Optional<Partage> partage = partageRepository.findById(partageId);
-
-        if (partage.isPresent()){
-            Partage actualPartage = partage.get();
-            actualPartage.setType(newPartage.getType());
-            return partageRepository.save(actualPartage);
-        }
-
-        throw new NotFoundException("Partage with id " + partageId + " not found");
-    }
-
-    public void removePartage(long partageId) throws NotFoundException{
-        if (!partageRepository.existsById(partageId)){
+        if(result.isEmpty()) {
             throw new NotFoundException("Partage with id " + partageId + " not found");
         }
-        partageRepository.deleteById(partageId);
+        return result.get();
+    }
+    public Partage find(long partageId, Long initiatorId){
+
+        Partage partage = find(partageId);
+        SerieTemporelle st = partage.getSerieTemporelle();
+
+        if (!userService.initiatorIsOwner(st.getOwner().getId(), initiatorId) ){
+            throw new ForbiddenActionException("Permission denied: cannot access another user's data");
+        }
+
+        return partage;
     }
 
+    List<Partage> listPartageByUserId(long userId)  {
+        return partageRepository.findByUserId(userId);
+    }
+    public List<Partage> listPartageByUserId(long userId, Long initiatorId)  {
+
+        // Initiator can only add series temporelles to himself
+        if (!userService.initiatorIsOwner(userId, initiatorId)){
+            throw new ForbiddenActionException("Permission denied: cannot access another user's data");
+        }
+
+        // handles: user not found
+        User user = userService.find(userId);
+        return listPartageByUserId(userId);
+    }
+
+    //
+    List<Partage> listPartageBySerieTemporelleId(long serieTemporelleId) throws NotFoundException {
+        return partageRepository.findBySerieTemporelleId(serieTemporelleId);
+    }
+    public List<Partage> listPartageBySerieTemporelleId(long serieTemporelleId, Long initiatorId) {
+
+        // handles not found
+        SerieTemporelle st = serieTemporelleService.find(serieTemporelleId);
+
+        // initiator must the owner of the serie temporelle to access its partages
+        if (!userService.initiatorIsOwner(st.getOwner().getId(), initiatorId)){
+            throw new ForbiddenActionException("Permission denied: cannot access another user's data");
+        }
+
+        return listPartageBySerieTemporelleId(serieTemporelleId);
+    }
+
+    //
+    Partage createPartage(User user, SerieTemporelle st, String type){
+        Partage savedPartage = new Partage(user, st, type);
+        return partageRepository.save(savedPartage);
+    }
+    public Partage createPartage(PartageRequest partage, Long initiatorId){
+        // Not found is handled inside service call
+        User user = userService.find(partage.getUserId());
+        // owner cannot share serie temporelle with himself
+        if (userService.initiatorIsOwner(user.getId(), initiatorId)){
+            throw new ForbiddenActionException("Permission denied: owner cannot share with himself.");
+        }
+        // initiator must be the owner of serie temporelle to be able to share it
+        SerieTemporelle st = serieTemporelleService.find(partage.getSerieTemporelleId());
+        if (!userService.initiatorIsOwner(st.getOwner().getId(), initiatorId)){
+            throw new ForbiddenActionException("Permission denied: cannot share other users' serie temporelle");
+        }
+
+        return createPartage(user, st, partage.getType());
+    }
+
+    Partage updatePartage(Partage partage, String type){
+        partage.setType(type);
+        return partageRepository.save(partage);
+    }
+    public Partage updatePartage(PartageRequest newPartage, long partageId, Long initiatorId){
+
+        Partage partage = find(partageId);
+        SerieTemporelle st = partage.getSerieTemporelle();
+
+        if (!userService.initiatorIsOwner(st.getOwner().getId(), initiatorId)){
+            throw new ForbiddenActionException("Permission denied: cannot update other users' partages");
+        }
+
+        return updatePartage(partage, newPartage.getType());
+    }
+
+    void removePartage(long partageId){
+        partageRepository.deleteById(partageId);
+    }
+    public void removePartage(long partageId, Long initiatorId) {
+        Partage partage = find(partageId);
+        SerieTemporelle st = partage.getSerieTemporelle();
+
+        if (!userService.initiatorIsOwner(st.getOwner().getId(), initiatorId)){
+            throw new ForbiddenActionException("Permission denied: cannot delete other users' partages");
+        }
+        removePartage(partageId);
+    }
 }

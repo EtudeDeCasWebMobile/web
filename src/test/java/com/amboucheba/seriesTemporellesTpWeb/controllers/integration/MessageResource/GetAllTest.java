@@ -37,7 +37,7 @@ class GetAllTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void getAll() throws Exception {
+    void getAll() {
        String uri = "http://localhost:" + port + "/messages";
        ResponseEntity<MessageList> responseEntity = testRestTemplate.getForEntity(uri, MessageList.class);
        MessageList messageList = responseEntity.getBody();
