@@ -50,7 +50,7 @@ public class UserController {
 
             return ResponseEntity.created(location).build();
         }catch (DBException e){
-            throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST);
+            throw new RestException(e.getMessage(), HttpStatus.CONFLICT);
         }
 
     }

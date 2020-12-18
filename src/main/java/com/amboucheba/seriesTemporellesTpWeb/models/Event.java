@@ -2,6 +2,7 @@ package com.amboucheba.seriesTemporellesTpWeb.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
@@ -16,11 +17,11 @@ public class Event implements Serializable {
     private Long id;
 
     @Column(name = "date")
-    @NotBlank(message = "Field 'date' is required")
+    @NotNull(message = "Field 'date' is required")
     private Date date;
 
     @Column(name = "valeur")
-    @NotBlank(message = "Field 'valeur' is required")
+    @NotNull(message = "Field 'valeur' is required")
     private Float valeur;
 
     @Column(name = "commentaire")
