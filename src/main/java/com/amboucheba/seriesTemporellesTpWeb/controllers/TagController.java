@@ -4,6 +4,7 @@ import com.amboucheba.seriesTemporellesTpWeb.models.AuthDetails;
 import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.TagList;
 import com.amboucheba.seriesTemporellesTpWeb.models.Tag;
 import com.amboucheba.seriesTemporellesTpWeb.services.TagService;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -32,8 +34,12 @@ public class TagController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success, check response body"),
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
-            @ApiResponse(code = 404, message = "Event not found"),})
-    public ResponseEntity<TagList> getTagsByEvent(@PathVariable long eventId, @AuthenticationPrincipal AuthDetails userDetails){
+            @ApiResponse(code = 404, message = "Event not found")
+    })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+    public ResponseEntity<TagList> getTagsByEvent(
+            @PathVariable long eventId,
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         List<Tag> tags = tagService.listTagsByEvent(eventId, userDetails.getUserId());
 
@@ -57,10 +63,11 @@ public class TagController {
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "Event not found"),
     })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
     public ResponseEntity<Void> addTagToEvent(
             @Valid @RequestBody Tag newTag,
             @PathVariable long eventId,
-            @AuthenticationPrincipal AuthDetails userDetails){
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         Tag savedTag = tagService.addTagToEvent(eventId, newTag, userDetails.getUserId());
 
@@ -80,7 +87,10 @@ public class TagController {
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "Tag not found")
     })
-    public ResponseEntity<Tag> getTagById(@PathVariable long tagId, @AuthenticationPrincipal AuthDetails userDetails){
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+    public ResponseEntity<Tag> getTagById(
+            @PathVariable long tagId,
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         Tag tag = tagService.find(tagId, userDetails.getUserId());
         return ResponseEntity
@@ -103,10 +113,11 @@ public class TagController {
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "Tag not found"),
     })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
     public ResponseEntity<Tag> updateTag(
             @PathVariable long tagId,
             @Valid @RequestBody Tag newTag,
-            @AuthenticationPrincipal AuthDetails userDetails){
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         Tag tag = tagService.updateTag(tagId, newTag, userDetails.getUserId());
         return ResponseEntity.ok(tag);
@@ -119,7 +130,10 @@ public class TagController {
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "Tag not found")
     })
-    public ResponseEntity<Void> deleteTag(@PathVariable long tagId, @AuthenticationPrincipal AuthDetails userDetails){
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+    public ResponseEntity<Void> deleteTag(
+            @PathVariable long tagId,
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         tagService.remove(tagId, userDetails.getUserId());
         return ResponseEntity.noContent().build();

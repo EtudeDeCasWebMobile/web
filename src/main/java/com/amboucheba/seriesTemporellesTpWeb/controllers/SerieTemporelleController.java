@@ -5,6 +5,7 @@ import com.amboucheba.seriesTemporellesTpWeb.models.AuthDetails;
 import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.SerieTemplorelleList;
 import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
 import com.amboucheba.seriesTemporellesTpWeb.services.SerieTemporelleService;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -45,10 +47,11 @@ public class SerieTemporelleController {
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "User not found"),
     })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
     public ResponseEntity<SerieTemporelle> addSerieTemporelle(
             @Valid @RequestBody SerieTemporelle newSerieTemporelle,
             @PathVariable long userId,
-            @AuthenticationPrincipal AuthDetails userDetails){
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
         long createdSerieTemporelleId = serieTemporelleService.createSerieTemporelle(newSerieTemporelle, userId, userDetails.getUserId()).getId();
 
         URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -65,8 +68,12 @@ public class SerieTemporelleController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
-            @ApiResponse(code = 404, message = "User not found") })
-    public ResponseEntity<SerieTemplorelleList> getAllOfOwner(@PathVariable long userId, @AuthenticationPrincipal AuthDetails userDetails){
+            @ApiResponse(code = 404, message = "User not found")
+    })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+    public ResponseEntity<SerieTemplorelleList> getAllOfOwner(
+            @PathVariable long userId,
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         List<SerieTemporelle> list = serieTemporelleService.listSerieTemporelleOfOwner(userId, userDetails.getUserId());
         return ResponseEntity
@@ -85,10 +92,12 @@ public class SerieTemporelleController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "SerieTemporelle returned in body"),
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
-            @ApiResponse(code = 404, message = "SerieTemporelle not found") })
+            @ApiResponse(code = 404, message = "SerieTemporelle not found")
+    })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
     public ResponseEntity<SerieTemporelle> getSerieTemporelleById(
             @PathVariable long serieTemporelleId,
-            @AuthenticationPrincipal AuthDetails userDetails){
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         SerieTemporelle serieTemporelle = serieTemporelleService.find(serieTemporelleId, userDetails.getUserId());
         return ResponseEntity
@@ -102,7 +111,7 @@ public class SerieTemporelleController {
     }
 
     @PutMapping(
-            value = "/seriestemporelles/{serieTemporelleId}",
+            value = "/seriesTemporelles/{serieTemporelleId}",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
@@ -112,10 +121,11 @@ public class SerieTemporelleController {
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "SerieTemporelle not found"),
     })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
     public ResponseEntity<SerieTemporelle> updateSerieTemporelle(
             @PathVariable long serieTemporelleId,
             @Valid @RequestBody SerieTemporelle newSerieTemporelle,
-            @AuthenticationPrincipal AuthDetails userDetails){
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         SerieTemporelle modifiedSerieTemporelle = serieTemporelleService.updateSerieTemporelle(
                 newSerieTemporelle, serieTemporelleId, userDetails.getUserId()
@@ -123,14 +133,17 @@ public class SerieTemporelleController {
         return ResponseEntity.ok(modifiedSerieTemporelle);
     }
 
-    @DeleteMapping(value = "/seriestemporelles/{serieTemporelleId}")
+    @DeleteMapping(value = "/seriesTemporelles/{serieTemporelleId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "SerieTemporelle deleted"),
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "SerieTemporelle not found")
     })
-    public ResponseEntity<Void> deleteSerieTemporelle(@PathVariable long serieTemporelleId, @AuthenticationPrincipal AuthDetails userDetails){
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+    public ResponseEntity<Void> deleteSerieTemporelle(
+            @PathVariable long serieTemporelleId,
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         serieTemporelleService.removeSerieTemporelle(serieTemporelleId, userDetails.getUserId());
         return ResponseEntity.noContent().build();

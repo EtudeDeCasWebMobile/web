@@ -1,14 +1,13 @@
 package com.amboucheba.seriesTemporellesTpWeb.controllers;
 
-import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
 import com.amboucheba.seriesTemporellesTpWeb.models.AuthDetails;
 import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.PartageList;
 import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.PartagesByUser;
 import com.amboucheba.seriesTemporellesTpWeb.models.Partage;
 import com.amboucheba.seriesTemporellesTpWeb.models.PartageRequest;
 import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
-import com.amboucheba.seriesTemporellesTpWeb.repositories.PartageRepository;
 import com.amboucheba.seriesTemporellesTpWeb.services.PartageService;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +18,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @RestController
 public class PartageController {
@@ -43,7 +41,10 @@ public class PartageController {
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "Partage not found")
     })
-    public ResponseEntity<Partage> getPartageById(@PathVariable long partageId, @AuthenticationPrincipal AuthDetails userDetails){
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+    public ResponseEntity<Partage> getPartageById(
+            @PathVariable long partageId,
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
         Partage partage = partageService.find(partageId, userDetails.getUserId());
         return ResponseEntity.ok(partage);
     }
@@ -54,9 +55,12 @@ public class PartageController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
-            @ApiResponse(code = 404, message = "Serie Temporelle not found") })
+            @ApiResponse(code = 404, message = "Serie Temporelle not found")
+    })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
     public ResponseEntity<PartageList> getAllBySerieTemporelleId(
-            @PathVariable long serieTemporelleId, @AuthenticationPrincipal AuthDetails userDetails){
+            @PathVariable long serieTemporelleId,
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         List<Partage> partages = partageService.listPartageBySerieTemporelleId(serieTemporelleId, userDetails.getUserId());
         return ResponseEntity
@@ -74,8 +78,12 @@ public class PartageController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
-            @ApiResponse(code = 404, message = "User not found") })
-    public ResponseEntity<PartageList> getAllByUserId(@PathVariable long userId, @AuthenticationPrincipal AuthDetails userDetails){
+            @ApiResponse(code = 404, message = "User not found")
+    })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+    public ResponseEntity<PartageList> getAllByUserId(
+            @PathVariable long userId,
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         List<Partage> partages = partageService.listPartageByUserId(userId, userDetails.getUserId());
         List<SerieTemporelle> serieTemporelles = partages.stream().map(Partage::getSerieTemporelle).collect(Collectors.toList());
@@ -99,9 +107,10 @@ public class PartageController {
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "User or Serie Temporelle not found")
     })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
     public ResponseEntity<Void> addPartage(
-            @Valid @RequestBody PartageRequest newPartage, @AuthenticationPrincipal AuthDetails userDetails
-    ){
+            @Valid @RequestBody PartageRequest newPartage,
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
         Partage partage = partageService.createPartage(newPartage, userDetails.getUserId());
 
         URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -123,10 +132,11 @@ public class PartageController {
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "Partage not found")
     })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
     public ResponseEntity<Partage> updatePartage(
             @PathVariable long partageId,
             @Valid @RequestBody PartageRequest newPartage,
-            @AuthenticationPrincipal AuthDetails userDetails){
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         Partage partage = partageService.updatePartage(newPartage, partageId, userDetails.getUserId());
         return ResponseEntity.ok(partage);
@@ -139,7 +149,10 @@ public class PartageController {
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "Partage not found")
     })
-    public ResponseEntity<Void> deletePartage(@PathVariable long partageId, @AuthenticationPrincipal AuthDetails userDetails){
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+    public ResponseEntity<Void> deletePartage(
+            @PathVariable long partageId,
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         partageService.removePartage(partageId, userDetails.getUserId());
         return ResponseEntity.noContent().build();
