@@ -1,6 +1,9 @@
 package com.amboucheba.seriesTemporellesTpWeb.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -25,7 +28,7 @@ public class User implements Serializable {
     @Column(name = "password")
     @NotBlank(message = "Field 'password' is required")
     @Size( min = 0, max = 255, message = "Password length must be between 6 and 255")
-//    @Transient
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     public User(Long id, String username, String password) {

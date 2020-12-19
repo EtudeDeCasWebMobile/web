@@ -3,8 +3,10 @@ package com.amboucheba.seriesTemporellesTpWeb.controllers;
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
 import com.amboucheba.seriesTemporellesTpWeb.models.AuthDetails;
 import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.PartageList;
+import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.PartagesByUser;
 import com.amboucheba.seriesTemporellesTpWeb.models.Partage;
 import com.amboucheba.seriesTemporellesTpWeb.models.PartageRequest;
+import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.PartageRepository;
 import com.amboucheba.seriesTemporellesTpWeb.services.PartageService;
 import io.swagger.annotations.ApiResponse;
@@ -76,6 +78,8 @@ public class PartageController {
     public ResponseEntity<PartageList> getAllByUserId(@PathVariable long userId, @AuthenticationPrincipal AuthDetails userDetails){
 
         List<Partage> partages = partageService.listPartageByUserId(userId, userDetails.getUserId());
+        List<SerieTemporelle> serieTemporelles = partages.stream().map(Partage::getSerieTemporelle).collect(Collectors.toList());
+        PartagesByUser partagesByUser = new PartagesByUser(userDetails.getUserId(), serieTemporelles);
         return ResponseEntity
                 .ok()
                 .cacheControl(CacheControl

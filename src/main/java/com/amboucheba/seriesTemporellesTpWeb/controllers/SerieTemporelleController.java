@@ -78,6 +78,7 @@ public class SerieTemporelleController {
                 .body(new SerieTemplorelleList(list));
     }
 
+
     @GetMapping(
             value = "/seriesTemporelles/{serieTemporelleId}",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
