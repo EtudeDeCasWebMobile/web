@@ -58,7 +58,7 @@ public class GetSerieTemporelleByIdTest {
         AuthenticationRequest authenticationRequest = new AuthenticationRequest("user", "pass");
 
         String uri = "http://localhost:" + port + "/authenticate";
-        ResponseEntity<Void> response = testRestTemplate.postForEntity(uri, authenticationRequest, Void.class);
+        ResponseEntity<User> response = testRestTemplate.postForEntity(uri, authenticationRequest, User.class);
         token = response.getHeaders().getFirst("token");
     }
 
