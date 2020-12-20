@@ -26,7 +26,7 @@ public class SeriesTemporellesTpWebApplication {
 		return "<html><body><h1>Welcome " + user + "</h1><p>Serie Temporelle Service: Home page </p></body></html>";
 	}
 
-	@GetMapping("/doc")
+	@GetMapping("/documentation")
 	public ModelAndView redirectToSwaggerUI(ModelMap model) {
 		model.addAttribute("attribute", "redirectWithRedirectPrefix");
 		return new ModelAndView("redirect:/swagger-ui/", model);

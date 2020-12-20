@@ -1,10 +1,3 @@
-CREATE TABLE IF NOT EXISTS messages
-(
-    id integer GENERATED ALWAYS AS IDENTITY,
-    username character varying(255)  NOT NULL,
-    text character varying(255)  NOT NULL,
-    created_at timestamp without time zone DEFAULT now()
-);
 
  CREATE TABLE if not EXISTS users(
    id  integer GENERATED ALWAYS AS IDENTITY,
