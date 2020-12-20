@@ -1,56 +1,26 @@
 package com.amboucheba.seriesTemporellesTpWeb.models;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.util.Date;
 import java.util.Objects;
-import java.util.Set;
 
-@Entity
-@Table(name = "users") // create the table in public schema
-public class User implements Serializable {
+public class RegisterUserInput {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "username", unique = true)
     @NotBlank(message = "Field 'username' is required")
     @Size( min = 0, max = 255, message = "Username length must be between 6 and 255")
     private String username;
 
-    @Column(name = "password")
     @NotBlank(message = "Field 'password' is required")
     @Size( min = 0, max = 255, message = "Password length must be between 6 and 255")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    public User(Long id, String username, String password) {
-        this.id = id;
+
+    public RegisterUserInput(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-
-    public User() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public RegisterUserInput() {
     }
 
     public String getUsername() {
@@ -60,7 +30,6 @@ public class User implements Serializable {
     public void setUsername(String username) {
         this.username = username;
     }
-
 
     public String getPassword() {
         return password;
@@ -74,12 +43,13 @@ public class User implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return username.equals(user.username);
+        RegisterUserInput that = (RegisterUserInput) o;
+        return username.equals(that.username) &&
+                password.equals(that.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(username, password);
     }
 }

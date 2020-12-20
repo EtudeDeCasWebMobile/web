@@ -25,7 +25,7 @@ class SoaTp2ApplicationTests {
 
 		ResponseEntity<String> response = testRestTemplate.getForEntity(uri, String.class);
 
-		String expected = "<html><body><h1>Welcome </h1><p>Message Service: Home page </p></body></html>";
+		String expected = "<html><body><h1>Welcome </h1><p>Serie Temporelle Service: Home page </p></body></html>";
 		String received = response.getBody();
 
 		assertEquals(expected, received);
@@ -38,7 +38,7 @@ class SoaTp2ApplicationTests {
 
 		ResponseEntity<String> response = testRestTemplate.getForEntity(uri, String.class);
 
-		String expected = "<html><body><h1>Welcome " + user + "</h1><p>Message Service: Home page </p></body></html>";
+		String expected = "<html><body><h1>Welcome " + user + "</h1><p>Serie Temporelle Service: Home page </p></body></html>";
 		String received = response.getBody();
 
 		assertEquals(expected, received);
@@ -51,7 +51,7 @@ class SoaTp2ApplicationTests {
 
 		ResponseEntity<String> response = testRestTemplate.getForEntity(uri, String.class);
 
-		String expected = "<html><body><h1>Welcome </h1><p>Message Service: Home page </p></body></html>";
+		String expected = "<html><body><h1>Welcome </h1><p>Serie Temporelle Service: Home page </p></body></html>";
 		String received = response.getBody();
 
 		assertEquals(expected, received);

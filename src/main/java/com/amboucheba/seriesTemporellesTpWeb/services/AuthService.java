@@ -32,6 +32,7 @@ public class AuthService implements UserDetailsService {
         if (user.isEmpty()){
             throw new UsernameNotFoundException("User with username = " + username + " not found.");
         }
+
         User _user = user.get();
 
         return new AuthDetails(_user.getId(), _user.getUsername(), _user.getPassword());

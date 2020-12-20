@@ -35,7 +35,7 @@ public class SerieTemporelleService {
         return new SerieTemplorelleList(liste);
     }
 
-    SerieTemporelle find(long serieTemporelleId){
+    public SerieTemporelle find(long serieTemporelleId){
         Optional<SerieTemporelle> result = serieTemporelleRepository.findById(serieTemporelleId);
 
         if (result.isEmpty()){

@@ -3,11 +3,12 @@ package com.amboucheba.seriesTemporellesTpWeb.services.unit.EventService;
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
 import com.amboucheba.seriesTemporellesTpWeb.models.Event;
 import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
+import com.amboucheba.seriesTemporellesTpWeb.models.User;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.EventRepository;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.SerieTemporelleRepository;
-import com.amboucheba.seriesTemporellesTpWeb.services.EventService;
-import com.amboucheba.seriesTemporellesTpWeb.services.SerieTemporelleService;
-import com.amboucheba.seriesTemporellesTpWeb.services.UserService;
+import com.amboucheba.seriesTemporellesTpWeb.repositories.UserRepository;
+import com.amboucheba.seriesTemporellesTpWeb.services.*;
+import com.amboucheba.seriesTemporellesTpWeb.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,8 +41,27 @@ public class FindTest {
     @Autowired
     private EventService eventService;
 
+    @MockBean
+    UserService userService;
+
+    @MockBean
+    PartageService partageService;
+
     @TestConfiguration
     static class Config{
+
+        @MockBean
+        public UserRepository userRepository;
+
+        @Bean
+        public JwtUtil getUtil(){
+            return new JwtUtil();
+        }
+
+        @Bean
+        public AuthService getAuth(){
+            return new AuthService();
+        }
 
         @Bean
         public EventService getService(){
@@ -49,26 +69,31 @@ public class FindTest {
         }
     }
 
-//    @Test
-//    public void stExists__returnEventsOfSt() throws Exception {
-//
-//        long eventId = 1;
-//        Event event = new Event(1L, new Date(), 5.0f,"comment", null);
-//        Mockito.when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
-//
-//        Event found = eventService.find(eventId);
-//
-//        assertEquals(found, event);
-//    }
-//
-//    @Test
-//    public void stNotFound__throwNotFoundException() {
-//
-//        Mockito.when(eventRepository.findById(1L)).thenReturn(Optional.empty());
-//
-//        assertThrows(NotFoundException.class, () -> {
-//            eventService.find(1L);
-//        });
-//    }
+    @Test
+    public void stExists__returnEventsOfSt() throws Exception {
+
+        User user = new User(1L, "user", "pass");
+        SerieTemporelle st = new SerieTemporelle(1L,"event", "pass", user);
+
+        long eventId = 1;
+        Event event = new Event(1L, new Date(), 5.0f,"comment", st);
+        Mockito.when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
+        // Suppose user is authenticated
+        Mockito.when(userService.initiatorIsOwner(1L, 1L)).thenReturn(true);
+
+        Event found = eventService.find(eventId, 1L);
+
+        assertEquals(found, event);
+    }
+
+    @Test
+    public void stNotFound__throwNotFoundException() {
+
+        Mockito.when(eventRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> {
+            eventService.find(1L, 1L);
+        });
+    }
 
 }

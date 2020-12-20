@@ -1,15 +1,12 @@
 package com.amboucheba.seriesTemporellesTpWeb.services.unit.PartageService;
 
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
-import com.amboucheba.seriesTemporellesTpWeb.models.Event;
-import com.amboucheba.seriesTemporellesTpWeb.models.Partage;
-import com.amboucheba.seriesTemporellesTpWeb.models.PartageRequest;
+import com.amboucheba.seriesTemporellesTpWeb.models.*;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.EventRepository;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.PartageRepository;
-import com.amboucheba.seriesTemporellesTpWeb.services.EventService;
-import com.amboucheba.seriesTemporellesTpWeb.services.PartageService;
-import com.amboucheba.seriesTemporellesTpWeb.services.SerieTemporelleService;
-import com.amboucheba.seriesTemporellesTpWeb.services.UserService;
+import com.amboucheba.seriesTemporellesTpWeb.repositories.UserRepository;
+import com.amboucheba.seriesTemporellesTpWeb.services.*;
+import com.amboucheba.seriesTemporellesTpWeb.util.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -47,35 +44,53 @@ public class UpdatePartageTest {
     @TestConfiguration
     static class Config{
 
+        @MockBean
+        public UserRepository userRepository;
+
+        @Bean
+        public JwtUtil getUtil(){
+            return new JwtUtil();
+        }
+
+        @Bean
+        public AuthService getAuth(){
+            return new AuthService();
+        }
+
         @Bean
         public PartageService getService(){
             return new PartageService();
         }
     }
 
+    @Test
+    public void partageExists__returnUpdatedPartage() {
+        User user = new User(1L, "user", "pass");
+        User shareWith = new User(2L, "user2", "pass");
+        SerieTemporelle st = new SerieTemporelle(1L, "st", "desc", user);
+        Partage partage = new Partage(1L, shareWith, st, "r");
+        Mockito.when(partageRepository.findById(1L)).thenReturn(Optional.of(partage));
 
-//    @Test
-//    public void partageExists__returnUpdatedPartage() {
-//        Partage partage = new Partage(1L, null, null, "r");
-//        Mockito.when(partageRepository.findById(1L)).thenReturn(Optional.of(partage));
-//
-//        Partage newPartage = new Partage(1L, null, null, "w");
-//        Mockito.when(partageRepository.save(newPartage)).thenReturn(newPartage);
-//
-//        PartageRequest pr = new PartageRequest( 1L, 1L, "w");
-//        Partage updatedPartage = partageService.updatePartage(pr, 1L);
-//
-//        assertEquals(newPartage, updatedPartage);
-//    }
-//
-//    @Test
-//    public void partageDoesNotExist__ThrowNotFoundException(){
-//
-//        Mockito.when(partageRepository.findById(1L)).thenReturn(Optional.empty());
-//
-//        assertThrows(NotFoundException.class, () -> {
-//            partageService.updatePartage( new PartageRequest(), 1L);
-//        });
-//    }
+        Partage newPartage = new Partage(1L, shareWith, st, "w");
+        Mockito.when(partageRepository.save(newPartage)).thenReturn(newPartage);
+
+        // Suppose user is authenticated
+        Mockito.when(userService.initiatorIsOwner(1L, 1L)).thenReturn(true);
+
+        PartageRequest pr = new PartageRequest( 1L, 1L, "w");
+        Partage updatedPartage = partageService.updatePartage(pr, 1L, 1L);
+
+        assertEquals(newPartage, updatedPartage);
+    }
+
+    @Test
+    public void partageDoesNotExist__ThrowNotFoundException(){
+
+        Mockito.when(partageRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> {
+            partageService.updatePartage( new PartageRequest(), 1L, 1L);
+        });
+    }
 
 }

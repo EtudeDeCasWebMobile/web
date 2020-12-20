@@ -1,7 +1,9 @@
 package com.amboucheba.seriesTemporellesTpWeb.services;
 
+import com.amboucheba.seriesTemporellesTpWeb.exceptions.DuplicateResourceException;
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.ForbiddenActionException;
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
+import com.amboucheba.seriesTemporellesTpWeb.models.RegisterUserInput;
 import com.amboucheba.seriesTemporellesTpWeb.models.User;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +24,12 @@ public class UserService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    boolean initiatorIsOwner(long userId, Long initiatorId){
+    public boolean initiatorIsOwner(long userId, Long initiatorId){
         return userId == initiatorId;
     }
 
     // does the find work
-    User find(long userId){
+    public User find(long userId){
         Optional<User> result = userRepository.findById(userId);
         // check that targeted user exists
         if (result.isEmpty()){
@@ -55,16 +57,15 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public User registerUser(User user){
+    public User registerUser(RegisterUserInput user){
 
         Optional<User> _user = userRepository.findByUsername(user.getUsername());
 
         if (_user.isPresent()){
-            throw new NotFoundException("'User' with username " + user.getUsername() + " already exists");
+            throw new DuplicateResourceException("'User' with username " + user.getUsername() + " already exists");
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        return userRepository.save(new User(user.getUsername(), passwordEncoder.encode(user.getPassword())));
 
     }
 
