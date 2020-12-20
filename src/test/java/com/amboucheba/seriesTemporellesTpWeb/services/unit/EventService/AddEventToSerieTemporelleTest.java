@@ -6,9 +6,9 @@ import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
 import com.amboucheba.seriesTemporellesTpWeb.models.User;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.EventRepository;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.SerieTemporelleRepository;
-import com.amboucheba.seriesTemporellesTpWeb.services.EventService;
-import com.amboucheba.seriesTemporellesTpWeb.services.SerieTemporelleService;
-import com.amboucheba.seriesTemporellesTpWeb.services.UserService;
+import com.amboucheba.seriesTemporellesTpWeb.repositories.UserRepository;
+import com.amboucheba.seriesTemporellesTpWeb.services.*;
+import com.amboucheba.seriesTemporellesTpWeb.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,8 +41,27 @@ public class AddEventToSerieTemporelleTest {
     @Autowired
     private EventService eventService;
 
+    @MockBean
+    UserService userService;
+
+    @MockBean
+    PartageService partageService;
+
     @TestConfiguration
     static class Config{
+
+        @MockBean
+        public UserRepository userRepository;
+
+        @Bean
+        public JwtUtil getUtil(){
+            return new JwtUtil();
+        }
+
+        @Bean
+        public AuthService getAuth(){
+            return new AuthService();
+        }
 
         @Bean
         public EventService getService(){
@@ -50,29 +69,32 @@ public class AddEventToSerieTemporelleTest {
         }
     }
 
-//    @Test
-//    public void stExists__addEventToSt(){
-//        SerieTemporelle st = new SerieTemporelle("event", "pass");
-//        Event event = new Event(new Date(), 5.0f,"comment");
-//        Event toSave = new Event( new Date(), 5.0f,"comment", st);
-//        Event saved = new Event( 1L,new Date(), 5.0f,"comment", st);
-//
-//        Mockito.when(serieTemporelleService.find(1L)).thenReturn(st);
-//        Mockito.when(eventRepository.save(toSave)).thenReturn(saved);
-//
-//        Event returned = eventService.addEventToSerieTemporelle(1L, event);
-//
-//        assertEquals(saved, returned);
-//    }
+    @Test
+    public void stExists__addEventToSt(){
+        User user = new User(1L, "user", "pass");
+        SerieTemporelle st = new SerieTemporelle(1L,"event", "pass", user);
+        Event event = new Event(new Date(), 5.0f,"comment");
+        Event toSave = new Event( new Date(), 5.0f,"comment", st);
+        Event saved = new Event( 1L,new Date(), 5.0f,"comment", st);
 
-//    @Test
-//    public void stDoesNotExist__ThrowNotFoundException(){
-//
-//        Mockito.when(serieTemporelleService.find(1L)).thenThrow(NotFoundException.class);
-//
-//        assertThrows(NotFoundException.class, () -> {
-//            eventService.addEventToSerieTemporelle(1L, new Event() );
-//        });
-//    }
+        // Suppose user is authenticated
+        Mockito.when(userService.initiatorIsOwner(1L, 1L)).thenReturn(true);
+        Mockito.when(serieTemporelleService.find(1L)).thenReturn(st);
+        Mockito.when(eventRepository.save(toSave)).thenReturn(saved);
+
+        Event returned = eventService.addEventToSerieTemporelle(1L, event, 1L);
+
+        assertEquals(saved, returned);
+    }
+
+    @Test
+    public void stDoesNotExist__ThrowNotFoundException(){
+
+        Mockito.when(serieTemporelleService.find(1L)).thenThrow(NotFoundException.class);
+
+        assertThrows(NotFoundException.class, () -> {
+            eventService.addEventToSerieTemporelle(1L, new Event(), 1L );
+        });
+    }
 
 }

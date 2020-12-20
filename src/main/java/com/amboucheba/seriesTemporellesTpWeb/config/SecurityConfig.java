@@ -37,11 +37,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable(); //we don't make use of cookies
 
         http.authorizeRequests()
-        .antMatchers(HttpMethod.POST,"/authenticate").permitAll()
-        .antMatchers(HttpMethod.POST, "/users").permitAll()
-        .anyRequest().authenticated();
+            .antMatchers(HttpMethod.POST,"/authenticate").permitAll()
+            .antMatchers(HttpMethod.POST, "/users").permitAll()
+            .anyRequest().authenticated();
 
         http.exceptionHandling().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore( jwtRequestFilter , UsernamePasswordAuthenticationFilter.class);

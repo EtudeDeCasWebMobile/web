@@ -47,7 +47,7 @@ public class EventService {
         return listEventsBySerieTemporelle(serieTemporelleId);
     }
 
-    Event find( long eventId){
+    public Event find( long eventId){
 
         Optional<Event> event = eventRepository.findById(eventId);
         if (event.isEmpty()){

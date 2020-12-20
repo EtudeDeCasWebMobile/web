@@ -6,6 +6,7 @@ import com.amboucheba.seriesTemporellesTpWeb.models.Event;
 import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.EventList;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.EventRepository;
 import com.amboucheba.seriesTemporellesTpWeb.services.EventService;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -37,8 +39,10 @@ public class EventController {
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "Serie Temporelle not found"),
     })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
     public ResponseEntity<EventList> getEventsBySerieTemporelle(
-            @PathVariable("serieTemporelleId") long serieTemporelleId, @AuthenticationPrincipal AuthDetails userDetails){
+            @PathVariable("serieTemporelleId") long serieTemporelleId,
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         List<Event> events = eventService.listEventsBySerieTemporelle(serieTemporelleId, userDetails.getUserId());
 
@@ -62,10 +66,11 @@ public class EventController {
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "Serie Temporelle not found"),
     })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
     public ResponseEntity<Void> addEventToSerieTemporelle(
             @PathVariable("serieTemporelleId") long serieTemporelleId,
             @Valid @RequestBody Event newEvent,
-            @AuthenticationPrincipal AuthDetails userDetails){
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         Event savedEvent = eventService.addEventToSerieTemporelle(serieTemporelleId, newEvent, userDetails.getUserId());
 
@@ -83,8 +88,12 @@ public class EventController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Event returned in body"),
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
-            @ApiResponse(code = 404, message = "Event not found") })
-    public ResponseEntity<Event> getEventById(@PathVariable("eventId") long eventId, @AuthenticationPrincipal AuthDetails userDetails){
+            @ApiResponse(code = 404, message = "Event not found")
+    })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+    public ResponseEntity<Event> getEventById(
+            @PathVariable("eventId") long eventId,
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         Event event = eventService.find(eventId, userDetails.getUserId());
         return ResponseEntity
@@ -108,10 +117,11 @@ public class EventController {
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "Event not found"),
     })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
     public ResponseEntity<Event> updateEvent(
             @PathVariable("eventId") long eventId,
             @Valid @RequestBody Event newEvent,
-            @AuthenticationPrincipal AuthDetails userDetails){
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         Event updatedEvent = eventService.updateEvent(eventId, newEvent, userDetails.getUserId());
         return ResponseEntity.ok(updatedEvent);
@@ -124,7 +134,10 @@ public class EventController {
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "Event not found")
     })
-    public ResponseEntity<Void> deleteEvent(@PathVariable("eventId") long eventId, @AuthenticationPrincipal AuthDetails userDetails){
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+    public ResponseEntity<Void> deleteEvent(
+            @PathVariable("eventId") long eventId,
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         eventService.remove(eventId, userDetails.getUserId());
         return ResponseEntity.noContent().build();

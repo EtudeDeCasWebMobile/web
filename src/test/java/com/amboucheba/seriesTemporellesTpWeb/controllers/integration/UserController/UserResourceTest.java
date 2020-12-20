@@ -1,16 +1,21 @@
 package com.amboucheba.seriesTemporellesTpWeb.controllers.integration.UserController;
 
 import com.amboucheba.seriesTemporellesTpWeb.SeriesTemporellesTpWebApplication;
+import com.amboucheba.seriesTemporellesTpWeb.exceptions.ApiException;
+import com.amboucheba.seriesTemporellesTpWeb.models.AuthenticationRequest;
 import com.amboucheba.seriesTemporellesTpWeb.models.ModelLists.UserList;
+import com.amboucheba.seriesTemporellesTpWeb.models.RegisterUserInput;
+import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
 import com.amboucheba.seriesTemporellesTpWeb.models.User;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 
@@ -33,53 +38,80 @@ class UserResourceTest {
     @Autowired
     UserRepository userRepository;
 
-    @Test
-    void getAllTest() throws Exception {
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
-        // create users
-        userRepository.save(new User("user1", "pass"));
-        userRepository.save(new User("user2", "pass"));
+    User user;
+    String token;
 
-        // get users through /users endpoint
-        String uri = "http://localhost:" + port + "/users/";
-        ResponseEntity<UserList> response = testRestTemplate.getForEntity(uri, UserList.class);
-        UserList userList = response.getBody();
+    @BeforeEach
+    void setAuthHeader(){
+        user = new User("user", passwordEncoder.encode("pass"));
+        user = userRepository.save(user);
 
-        // assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(userList.getCount(), 2);
+        AuthenticationRequest authenticationRequest = new AuthenticationRequest("user", "pass");
+
+        String uri = "http://localhost:" + port + "/authenticate";
+        ResponseEntity<Void> response = testRestTemplate.postForEntity(uri, authenticationRequest, Void.class);
+        token = response.getHeaders().getFirst("token");
     }
+
+    //To delete
+//    @Test
+//    void getAllTest() throws Exception {
+//
+//        // create users
+//        userRepository.save(new User("user1", "pass"));
+//        userRepository.save(new User("user2", "pass"));
+//
+//        // get users through /users endpoint
+//        String uri = "http://localhost:" + port + "/users/";
+//        ResponseEntity<UserList> response = testRestTemplate.getForEntity(uri, UserList.class);
+//        UserList userList = response.getBody();
+//
+//        // assert
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        assertEquals(userList.getCount(), 2);
+//    }
 
     @Test
     void getUserByIdTest() throws Exception {
 
-        User user = new User("user", "pass");
-        user = userRepository.save(user);
 
         String uri = "http://localhost:" + port + "/users/" + user.getId();
-        ResponseEntity<User> response = testRestTemplate.getForEntity(uri, User.class);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token);
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+        // Send request and get response
+        ResponseEntity<User> response = testRestTemplate.exchange(uri, HttpMethod.GET, entity, User.class);
+
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(user, response.getBody());
+
+        User returned = response.getBody();
+
+        assertEquals(user.getUsername(), returned.getUsername());
     }
 
     @Test
     void addUserTest() throws Exception {
-        String username = "user3";
+        String username = "user3p";
         String password = "password3";
+        RegisterUserInput input = new RegisterUserInput(username, password);
         User user = new User(username, password);
 
-        String uri = "http://localhost:" + port + "/users/";
-        ResponseEntity<Void> response = testRestTemplate.postForEntity(uri, user, Void.class);
+        String uri = "http://localhost:" + port + "/users";
+        ResponseEntity<Void> response = testRestTemplate.postForEntity(uri, input, Void.class);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
-        String location = response.getHeaders().getFirst("location");
-        User savedUser = testRestTemplate.getForObject(location, User.class);
-
-        assertNotNull(savedUser.getId());
-        assertEquals(username, savedUser.getUsername());
-        assertEquals(password, savedUser.getPassword());
+//        String location = response.getHeaders().getFirst("location");
+//        User savedUser = testRestTemplate.getForObject(location, User.class);
+//
+//        assertNotNull(savedUser.getId());
+//        assertEquals(username, savedUser.getUsername());
     }
 
 }

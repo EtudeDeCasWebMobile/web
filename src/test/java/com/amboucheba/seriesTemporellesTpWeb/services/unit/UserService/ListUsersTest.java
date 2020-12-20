@@ -2,7 +2,9 @@ package com.amboucheba.seriesTemporellesTpWeb.services.unit.UserService;
 
 import com.amboucheba.seriesTemporellesTpWeb.models.User;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.UserRepository;
+import com.amboucheba.seriesTemporellesTpWeb.services.AuthService;
 import com.amboucheba.seriesTemporellesTpWeb.services.UserService;
+import com.amboucheba.seriesTemporellesTpWeb.util.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -32,22 +34,32 @@ public class ListUsersTest {
     static class Config{
 
         @Bean
+        public JwtUtil getUtil(){
+            return new JwtUtil();
+        }
+
+        @Bean
+        public AuthService getpE(){
+            return new AuthService();
+        }
+
+        @Bean
         public UserService getSTService(){
             return new UserService();
         }
     }
 
-//    @Test
-//    public void __returnUserList(){
-//
-//        List<User> expected = Collections.singletonList(
-//                new User("user", "pass")
-//        );
-//        Mockito.when(userRepository.findAll()).thenReturn(expected);
-//
-//        List<User> users = userService.listUsers();
-//
-//        assertEquals(expected, users);
-//    }
+    @Test
+    public void __returnUserList(){
+
+        List<User> expected = Collections.singletonList(
+                new User("user", "pass")
+        );
+        Mockito.when(userRepository.findAll()).thenReturn(expected);
+
+        List<User> users = userService.listUsers();
+
+        assertEquals(expected, users);
+    }
 
 }

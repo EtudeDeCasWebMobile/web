@@ -35,7 +35,7 @@ public class SerieTemporelleService {
         return new SerieTemplorelleList(liste);
     }
 
-    SerieTemporelle find(long serieTemporelleId){
+    public SerieTemporelle find(long serieTemporelleId){
         Optional<SerieTemporelle> result = serieTemporelleRepository.findById(serieTemporelleId);
 
         if (result.isEmpty()){
@@ -87,7 +87,7 @@ public class SerieTemporelleService {
     public List<SerieTemporelle> listSerieTemporelleOfOwner(long userId, Long initiatorId){
 
         // Initiator can only add series temporelles to himself
-        if (userService.initiatorIsOwner(userId, initiatorId)){
+        if (!userService.initiatorIsOwner(userId, initiatorId)){
             throw new ForbiddenActionException("Permission denied: cannot access another user's data");
         }
 

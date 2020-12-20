@@ -3,10 +3,14 @@ package com.amboucheba.seriesTemporellesTpWeb.services.unit.PartageService;
 import com.amboucheba.seriesTemporellesTpWeb.exceptions.NotFoundException;
 import com.amboucheba.seriesTemporellesTpWeb.models.Partage;
 import com.amboucheba.seriesTemporellesTpWeb.models.SerieTemporelle;
+import com.amboucheba.seriesTemporellesTpWeb.models.User;
 import com.amboucheba.seriesTemporellesTpWeb.repositories.PartageRepository;
+import com.amboucheba.seriesTemporellesTpWeb.repositories.UserRepository;
+import com.amboucheba.seriesTemporellesTpWeb.services.AuthService;
 import com.amboucheba.seriesTemporellesTpWeb.services.PartageService;
 import com.amboucheba.seriesTemporellesTpWeb.services.SerieTemporelleService;
 import com.amboucheba.seriesTemporellesTpWeb.services.UserService;
+import com.amboucheba.seriesTemporellesTpWeb.util.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -43,29 +47,46 @@ public class FindTest {
     @TestConfiguration
     static class Config{
 
+        @MockBean
+        public UserRepository userRepository;
+
+        @Bean
+        public JwtUtil getUtil(){
+            return new JwtUtil();
+        }
+
+        @Bean
+        public AuthService getAuth(){
+            return new AuthService();
+        }
+
         @Bean
         public PartageService getService(){
             return new PartageService();
         }
     }
 
-//    @Test
-//    public void partageExists__returnPartage() {
-//        Partage partage = new Partage(1L, null, null, "r");
-//        Mockito.when(partageRepository.findById(1L)).thenReturn(Optional.of(partage));
-//
-//        Partage returned = partageService.find(1L);
-//
-//        assertEquals(partage, returned);
-//    }
-//
-//    @Test
-//    public void partageDoesNotExist__ThrowNotFoundException(){
-//
-//        Mockito.when(partageRepository.findById(1L)).thenReturn(Optional.empty());
-//
-//        assertThrows(NotFoundException.class, () -> {
-//            partageService.find(1L);
-//        });
-//    }
+    @Test
+    public void partageExists__returnPartage() {
+        User user = new User(1L, "user", "pass");
+        SerieTemporelle st = new SerieTemporelle(1L, "st", "desc", user);
+
+        Partage partage = new Partage(1L, user, st, "r");
+        Mockito.when(partageRepository.findById(1L)).thenReturn(Optional.of(partage));
+        Mockito.when(userService.initiatorIsOwner(1L, 1L)).thenReturn(true);
+
+        Partage returned = partageService.find(1L, 1L);
+
+        assertEquals(partage, returned);
+    }
+
+    @Test
+    public void partageDoesNotExist__ThrowNotFoundException(){
+
+        Mockito.when(partageRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> {
+            partageService.find(1L, 1L);
+        });
+    }
 }

@@ -23,10 +23,10 @@ public class SeriesTemporellesTpWebApplication {
 
 	@GetMapping(produces = "text/html")
 	public String home(@RequestParam(value = "user", required = false, defaultValue = "") String user){
-		return "<html><body><h1>Welcome " + user + "</h1><p>Message Service: Home page </p></body></html>";
+		return "<html><body><h1>Welcome " + user + "</h1><p>Serie Temporelle Service: Home page </p></body></html>";
 	}
 
-	@GetMapping("/documentation")
+	@GetMapping("/doc")
 	public ModelAndView redirectToSwaggerUI(ModelMap model) {
 		model.addAttribute("attribute", "redirectWithRedirectPrefix");
 		return new ModelAndView("redirect:/swagger-ui/", model);

@@ -28,7 +28,7 @@ public class SerieTemporelleController {
     SerieTemporelleService serieTemporelleService;
 
     // Should be removed -> or change to series temporelle to which user has access(owned + shared)
-    @GetMapping(value = "/seriestemporelles", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(value = "/seriesTemporelles", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<SerieTemplorelleList> getAll(){
 
         SerieTemplorelleList liste = serieTemporelleService.listSerieTemporelle();
@@ -36,7 +36,7 @@ public class SerieTemporelleController {
     }
 
     @PostMapping(
-            value = "/users/{userId}/seriestemporelles",
+            value = "/users/{userId}/seriesTemporelles",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
@@ -49,19 +49,18 @@ public class SerieTemporelleController {
             @Valid @RequestBody SerieTemporelle newSerieTemporelle,
             @PathVariable long userId,
             @AuthenticationPrincipal AuthDetails userDetails){
+        long createdSerieTemporelleId = serieTemporelleService.createSerieTemporelle(newSerieTemporelle, userId, userDetails.getUserId()).getId();
 
-        SerieTemporelle s = serieTemporelleService.createSerieTemporelle(newSerieTemporelle, userId, userDetails.getUserId());
-        long createdSerieTemporelleId = s.getId();
-                URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+        URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .pathSegment("seriesTemporelles", "{id}")
                 .buildAndExpand(createdSerieTemporelleId)
                 .toUri();
 
-        return ResponseEntity.created(location).body(s);
+        return ResponseEntity.created(location).build();
     }
 
     @GetMapping(
-            value = "/users/{userId}/seriestemporelles",
+            value = "/users/{userId}/seriesTemporelles",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -81,7 +80,7 @@ public class SerieTemporelleController {
 
 
     @GetMapping(
-            value = "/seriestemporelles/{serieTemporelleId}",
+            value = "/seriesTemporelles/{serieTemporelleId}",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "SerieTemporelle returned in body"),
@@ -103,7 +102,7 @@ public class SerieTemporelleController {
     }
 
     @PutMapping(
-            value = "/seriestemporelles/{serieTemporelleId}",
+            value = "/seriesTemporelles/{serieTemporelleId}",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
@@ -124,7 +123,7 @@ public class SerieTemporelleController {
         return ResponseEntity.ok(modifiedSerieTemporelle);
     }
 
-    @DeleteMapping(value = "/seriestemporelles/{serieTemporelleId}")
+    @DeleteMapping(value = "/seriesTemporelles/{serieTemporelleId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "SerieTemporelle deleted"),
