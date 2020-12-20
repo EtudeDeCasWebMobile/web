@@ -33,21 +33,21 @@ public class PartageController {
     PartageService partageService;
 
     // is this endpoint really useful
-    @GetMapping(
-            value = "/partages/{partageId}",
-            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
-            @ApiResponse(code = 404, message = "Partage not found")
-    })
-    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
-    public ResponseEntity<Partage> getPartageById(
-            @PathVariable long partageId,
-            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
-        Partage partage = partageService.find(partageId, userDetails.getUserId());
-        return ResponseEntity.ok(partage);
-    }
+//    @GetMapping(
+//            value = "/partages/{partageId}",
+//            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "OK"),
+//            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
+//            @ApiResponse(code = 404, message = "Partage not found")
+//    })
+//    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+//    public ResponseEntity<Partage> getPartageById(
+//            @PathVariable long partageId,
+//            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
+//        Partage partage = partageService.find(partageId, userDetails.getUserId());
+//        return ResponseEntity.ok(partage);
+//    }
 
     @GetMapping(
             value = "/seriesTemporelles/{serieTemporelleId}/partages",

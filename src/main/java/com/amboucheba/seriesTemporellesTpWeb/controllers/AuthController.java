@@ -44,7 +44,7 @@ public class AuthController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("token", token);
-        return new ResponseEntity(_user, headers, HttpStatus.FOUND);
+        return new ResponseEntity<User>(_user, headers, HttpStatus.OK);
     }
 
 }
