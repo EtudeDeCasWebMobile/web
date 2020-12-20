@@ -32,7 +32,7 @@ public class EventController {
     EventService eventService;
 
     @GetMapping(
-            value = "/seriesTemporelles/{serieTemporelleId}/events",
+            value = "/seriestemporelles/{serieTemporelleId}/events",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -57,7 +57,7 @@ public class EventController {
     }
 
     @PostMapping(
-            value = "/seriesTemporelles/{serieTemporelleId}/events",
+            value = "/seriestemporelles/{serieTemporelleId}/events",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
