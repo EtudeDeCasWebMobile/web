@@ -9,13 +9,13 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.amboucheba</groupId>
-	<artifactId>series-temporelles-tp-web</artifactId>
+	<artifactId>etude-de-cas-web</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>series-temporelles-tp-web</name>
-	<description>Projet technologie web: Series temporelles</description>
+	<name>etude-de-cas-web</name>
+	<description>Projet Etude de cas web/mobile: partie server</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>15</java.version>
 	</properties>
 
 	<dependencies>

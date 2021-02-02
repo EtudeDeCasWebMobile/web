@@ -1,0 +1,90 @@
+package com.amboucheba.etudeDeCasWeb.Services.Unit.PartageService;
+
+import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
+import com.amboucheba.etudeDeCasWeb.Models.Partage;
+import com.amboucheba.etudeDeCasWeb.Models.SerieTemporelle;
+import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Repositories.PartageRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
+import com.amboucheba.etudeDeCasWeb.Services.AuthService;
+import com.amboucheba.etudeDeCasWeb.Services.PartageService;
+import com.amboucheba.etudeDeCasWeb.Services.SerieTemporelleService;
+import com.amboucheba.etudeDeCasWeb.Services.UserService;
+import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(PartageService.class)
+public class FindTest {
+
+    @MockBean
+    private PartageRepository partageRepository;
+
+    @MockBean
+    SerieTemporelleService serieTemporelleService;
+
+    @MockBean
+    UserService userService;
+
+    @Autowired
+    private PartageService partageService;
+
+    @TestConfiguration
+    static class Config{
+
+        @MockBean
+        public UserRepository userRepository;
+
+        @Bean
+        public JwtUtil getUtil(){
+            return new JwtUtil();
+        }
+
+        @Bean
+        public AuthService getAuth(){
+            return new AuthService();
+        }
+
+        @Bean
+        public PartageService getService(){
+            return new PartageService();
+        }
+    }
+
+    @Test
+    public void partageExists__returnPartage() {
+        User user = new User(1L, "user", "pass");
+        SerieTemporelle st = new SerieTemporelle(1L, "st", "desc", user);
+
+        Partage partage = new Partage(1L, user, st, "r");
+        Mockito.when(partageRepository.findById(1L)).thenReturn(Optional.of(partage));
+        Mockito.when(userService.initiatorIsOwner(1L, 1L)).thenReturn(true);
+
+        Partage returned = partageService.find(1L, 1L);
+
+        assertEquals(partage, returned);
+    }
+
+    @Test
+    public void partageDoesNotExist__ThrowNotFoundException(){
+
+        Mockito.when(partageRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> {
+            partageService.find(1L, 1L);
+        });
+    }
+}

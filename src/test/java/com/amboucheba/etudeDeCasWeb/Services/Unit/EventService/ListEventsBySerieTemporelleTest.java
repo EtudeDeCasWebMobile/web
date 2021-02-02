@@ -1,0 +1,98 @@
+package com.amboucheba.etudeDeCasWeb.Services.Unit.EventService;
+
+import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
+import com.amboucheba.etudeDeCasWeb.Models.Event;
+import com.amboucheba.etudeDeCasWeb.Models.SerieTemporelle;
+import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Repositories.EventRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
+import com.amboucheba.etudeDeCasWeb.Services.*;
+import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(EventService.class)
+public class ListEventsBySerieTemporelleTest {
+
+
+    @MockBean
+    private EventRepository eventRepository;
+
+    @MockBean
+    SerieTemporelleService serieTemporelleService;
+
+    @Autowired
+    private EventService eventService;
+
+    @MockBean
+    UserService userService;
+
+    @MockBean
+    PartageService partageService;
+
+    @TestConfiguration
+    static class Config{
+
+        @MockBean
+        public UserRepository userRepository;
+
+        @Bean
+        public JwtUtil getUtil(){
+            return new JwtUtil();
+        }
+
+        @Bean
+        public AuthService getAuth(){
+            return new AuthService();
+        }
+
+        @Bean
+        public EventService getService(){
+            return new EventService();
+        }
+    }
+
+    @Test
+    public void stExists__returnEventsOfSt() {
+        User user = new User(1L, "user", "pass");
+        SerieTemporelle st = new SerieTemporelle(1L, "title", "desc", user);
+        List<Event> toBeReturned = Collections.singletonList(
+                new Event(1L, new Date(), 5.0f,"comment", st)
+        );
+
+        // Suppose user is authenticated
+        Mockito.when(userService.initiatorIsOwner(1L, 1L)).thenReturn(true);
+        Mockito.when(serieTemporelleService.find(1L)).thenReturn(st);
+        Mockito.when(eventRepository.findBySerieTemporelleId(1L)).thenReturn(toBeReturned);
+
+        List<Event> events = eventService.listEventsBySerieTemporelle(1L, 1L);
+
+        assertEquals(toBeReturned, events);
+
+    }
+
+    @Test
+    public void stDoesNotExist__ThrowNotFoundException(){
+
+        Mockito.when(serieTemporelleService.find(1L)).thenThrow(NotFoundException.class);
+
+        assertThrows(NotFoundException.class, () -> {
+            eventService.listEventsBySerieTemporelle(1L, 1L);
+        });
+    }
+}
