@@ -1,4 +1,4 @@
-package com.amboucheba.etudeDeCasWeb.Controllers;
+package com.amboucheba.etudeDeCasWeb.Controllers.ToDelete;
 
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.ModelLists.PartageList;
@@ -6,7 +6,7 @@ import com.amboucheba.etudeDeCasWeb.Models.ToDelete.ModelLists.PartagesByUser;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Partage;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.PartageRequest;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
-import com.amboucheba.etudeDeCasWeb.Services.PartageService;
+import com.amboucheba.etudeDeCasWeb.Services.ToDelete.PartageService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;

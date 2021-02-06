@@ -1,9 +1,9 @@
-package com.amboucheba.etudeDeCasWeb.Controllers;
+package com.amboucheba.etudeDeCasWeb.Controllers.ToDelete;
 
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
-import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Event;
-import com.amboucheba.etudeDeCasWeb.Models.ToDelete.ModelLists.EventList;
-import com.amboucheba.etudeDeCasWeb.Services.EventService;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.ModelLists.TagList;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Tag;
+import com.amboucheba.etudeDeCasWeb.Services.ToDelete.TagService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -23,25 +23,25 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-public class EventController {
+public class TagController {
 
     @Autowired
-    EventService eventService;
+    TagService tagService;
 
     @GetMapping(
-            value = "/seriestemporelles/{serieTemporelleId}/events",
+            value = "/events/{eventId}/tags",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 200, message = "Success, check response body"),
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
-            @ApiResponse(code = 404, message = "Serie Temporelle not found"),
+            @ApiResponse(code = 404, message = "Event not found")
     })
     @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
-    public ResponseEntity<EventList> getEventsBySerieTemporelle(
-            @PathVariable("serieTemporelleId") long serieTemporelleId,
+    public ResponseEntity<TagList> getTagsByEvent(
+            @PathVariable long eventId,
             @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
-        List<Event> events = eventService.listEventsBySerieTemporelle(serieTemporelleId, userDetails.getUserId());
+        List<Tag> tags = tagService.listTagsByEvent(eventId, userDetails.getUserId());
 
         return ResponseEntity
                 .ok()
@@ -50,49 +50,49 @@ public class EventController {
                     .cachePublic()
                     .proxyRevalidate()
                     .staleIfError(5, TimeUnit.SECONDS))
-                .body(new EventList(events));
+                .body(new TagList(tags));
     }
 
     @PostMapping(
-            value = "/seriestemporelles/{serieTemporelleId}/events",
-            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+            value = "/events/{eventId}/tags",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE} )
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Event created, check location header for uri"),
-            @ApiResponse(code = 400, message = "Provided Event info not valid, check response body for more details on error"),
+            @ApiResponse(code = 201, message = "Tag created, check location header for uri"),
+            @ApiResponse(code = 400, message = "Provided Tag info not valid, check response body for more details on error"),
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
-            @ApiResponse(code = 404, message = "Serie Temporelle not found"),
+            @ApiResponse(code = 404, message = "Event not found"),
     })
     @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
-    public ResponseEntity<Void> addEventToSerieTemporelle(
-            @PathVariable("serieTemporelleId") long serieTemporelleId,
-            @Valid @RequestBody Event newEvent,
+    public ResponseEntity<Void> addTagToEvent(
+            @Valid @RequestBody Tag newTag,
+            @PathVariable long eventId,
             @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
-        Event savedEvent = eventService.addEventToSerieTemporelle(serieTemporelleId, newEvent, userDetails.getUserId());
+        Tag savedTag = tagService.addTagToEvent(eventId, newTag, userDetails.getUserId());
 
         URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .pathSegment("events", "{id}")
-                .buildAndExpand(savedEvent.getId())
+                .pathSegment("tags", "{id}")
+                .buildAndExpand(savedTag.getId())
                 .toUri();
 
         return ResponseEntity.created(location).build();
     }
 
     @GetMapping(
-            value = "/events/{eventId}",
+            value = "/tags/{tagId}",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Event returned in body"),
+            @ApiResponse(code = 200, message = "Tag returned in body"),
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
-            @ApiResponse(code = 404, message = "Event not found")
+            @ApiResponse(code = 404, message = "Tag not found")
     })
     @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
-    public ResponseEntity<Event> getEventById(
-            @PathVariable("eventId") long eventId,
+    public ResponseEntity<Tag> getTagById(
+            @PathVariable long tagId,
             @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
-        Event event = eventService.find(eventId, userDetails.getUserId());
+        Tag tag = tagService.find(tagId, userDetails.getUserId());
         return ResponseEntity
                 .ok()
                 .cacheControl(CacheControl
@@ -100,43 +100,42 @@ public class EventController {
                     .cachePublic()
                     .proxyRevalidate()
                     .staleIfError(5, TimeUnit.SECONDS))
-                .body(event);
+                .body(tag);
     }
 
     @PutMapping(
-            value = "/events/{eventId}",
+            value = "/tags/{tagId}",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
-    )
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Event updated and returned in response body"),
-            @ApiResponse(code = 400, message = "Provided Event info not valid, check response body for more details on error"),
+            @ApiResponse(code = 200, message = "Tag updated and returned in response body"),
+            @ApiResponse(code = 400, message = "Provided Tag info not valid, check response body for more details on error"),
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
-            @ApiResponse(code = 404, message = "Event not found"),
+            @ApiResponse(code = 404, message = "Tag not found"),
     })
     @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
-    public ResponseEntity<Event> updateEvent(
-            @PathVariable("eventId") long eventId,
-            @Valid @RequestBody Event newEvent,
+    public ResponseEntity<Tag> updateTag(
+            @PathVariable long tagId,
+            @Valid @RequestBody Tag newTag,
             @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
-        Event updatedEvent = eventService.updateEvent(eventId, newEvent, userDetails.getUserId());
-        return ResponseEntity.ok(updatedEvent);
+        Tag tag = tagService.updateTag(tagId, newTag, userDetails.getUserId());
+        return ResponseEntity.ok(tag);
     }
 
-    @DeleteMapping(value = "/events/{eventId}")
+    @DeleteMapping(value = "/tags/{tagId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "Event has been deleted"),
+            @ApiResponse(code = 204, message = "Tag deleted"),
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
-            @ApiResponse(code = 404, message = "Event not found")
+            @ApiResponse(code = 404, message = "Tag not found")
     })
     @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
-    public ResponseEntity<Void> deleteEvent(
-            @PathVariable("eventId") long eventId,
+    public ResponseEntity<Void> deleteTag(
+            @PathVariable long tagId,
             @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
-        eventService.remove(eventId, userDetails.getUserId());
+        tagService.remove(tagId, userDetails.getUserId());
         return ResponseEntity.noContent().build();
     }
 }

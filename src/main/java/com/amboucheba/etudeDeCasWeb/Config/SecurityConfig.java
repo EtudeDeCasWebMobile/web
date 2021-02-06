@@ -1,6 +1,6 @@
 package com.amboucheba.etudeDeCasWeb.Config;
 
-import com.amboucheba.etudeDeCasWeb.Services.AuthService;
+import com.amboucheba.etudeDeCasWeb.Services.ToDelete.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;

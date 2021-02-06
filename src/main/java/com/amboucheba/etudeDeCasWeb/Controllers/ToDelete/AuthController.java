@@ -1,9 +1,9 @@
-package com.amboucheba.etudeDeCasWeb.Controllers;
+package com.amboucheba.etudeDeCasWeb.Controllers.ToDelete;
 
 import com.amboucheba.etudeDeCasWeb.Models.AuthenticationRequest;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.UsersRepository;
-import com.amboucheba.etudeDeCasWeb.Services.AuthService;
+import com.amboucheba.etudeDeCasWeb.Services.ToDelete.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

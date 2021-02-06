@@ -1,7 +1,7 @@
 package com.amboucheba.etudeDeCasWeb.Config;
 
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
-import com.amboucheba.etudeDeCasWeb.Services.AuthService;
+import com.amboucheba.etudeDeCasWeb.Services.ToDelete.AuthService;
 import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

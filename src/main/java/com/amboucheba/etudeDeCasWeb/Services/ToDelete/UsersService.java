@@ -1,4 +1,4 @@
-package com.amboucheba.etudeDeCasWeb.Services;
+package com.amboucheba.etudeDeCasWeb.Services.ToDelete;
 
 import com.amboucheba.etudeDeCasWeb.Exceptions.DuplicateResourceException;
 import com.amboucheba.etudeDeCasWeb.Exceptions.ForbiddenActionException;

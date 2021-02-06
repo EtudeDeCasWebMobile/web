@@ -2,8 +2,8 @@ package com.amboucheba.etudeDeCasWeb.Services.Unit.UserService;
 
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.UsersRepository;
-import com.amboucheba.etudeDeCasWeb.Services.AuthService;
-import com.amboucheba.etudeDeCasWeb.Services.UsersService;
+import com.amboucheba.etudeDeCasWeb.Services.ToDelete.AuthService;
+import com.amboucheba.etudeDeCasWeb.Services.ToDelete.UsersService;
 import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

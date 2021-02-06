@@ -7,7 +7,7 @@ import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Tag;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.TagRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.UsersRepository;
-import com.amboucheba.etudeDeCasWeb.Services.*;
+import com.amboucheba.etudeDeCasWeb.Services.ToDelete.*;
 import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

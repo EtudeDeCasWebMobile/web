@@ -1,9 +1,9 @@
-package com.amboucheba.etudeDeCasWeb.Controllers;
+package com.amboucheba.etudeDeCasWeb.Controllers.ToDelete;
 
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.ModelLists.SerieTemplorelleList;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
-import com.amboucheba.etudeDeCasWeb.Services.SerieTemporelleService;
+import com.amboucheba.etudeDeCasWeb.Services.ToDelete.SerieTemporelleService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
