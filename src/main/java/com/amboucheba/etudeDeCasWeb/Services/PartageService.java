@@ -2,10 +2,10 @@ package com.amboucheba.etudeDeCasWeb.Services;
 
 import com.amboucheba.etudeDeCasWeb.Exceptions.ForbiddenActionException;
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
-import com.amboucheba.etudeDeCasWeb.Models.Partage;
-import com.amboucheba.etudeDeCasWeb.Models.PartageRequest;
-import com.amboucheba.etudeDeCasWeb.Models.SerieTemporelle;
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Partage;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.PartageRequest;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.PartageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class PartageService {
     SerieTemporelleService serieTemporelleService;
 
     public boolean hasAccess(long userId, long stId, String type){
-        Optional<Partage> partage = partageRepository.findByUserIdAndSerieTemporelleIdAndType(userId, stId, type);
+        Optional<Partage> partage = partageRepository.findByUsersIdAndSerieTemporelleIdAndType(userId, stId, type);
 
         if(partage.isEmpty()) return false;
         if (type.equals("r")) return true;
@@ -56,7 +56,7 @@ public class PartageService {
     }
 
     List<Partage> listPartageByUserId(long userId)  {
-        return partageRepository.findByUserId(userId);
+        return partageRepository.findByUsersId(userId);
     }
     public List<Partage> listPartageByUserId(long userId, Long initiatorId)  {
 
@@ -66,7 +66,7 @@ public class PartageService {
         }
 
         // handles: user not found
-        User user = userService.find(userId);
+        Users users = userService.find(userId);
         return listPartageByUserId(userId);
     }
 
@@ -88,15 +88,15 @@ public class PartageService {
     }
 
     //
-    Partage createPartage(User user, SerieTemporelle st, String type){
-        Partage savedPartage = new Partage(user, st, type);
+    Partage createPartage(Users users, SerieTemporelle st, String type){
+        Partage savedPartage = new Partage(users, st, type);
         return partageRepository.save(savedPartage);
     }
     public Partage createPartage(PartageRequest partage, Long initiatorId){
         // Not found is handled inside service call
-        User user = userService.find(partage.getUserId());
+        Users users = userService.find(partage.getUserId());
         // owner cannot share serie temporelle with himself
-        if (userService.initiatorIsOwner(user.getId(), initiatorId)){
+        if (userService.initiatorIsOwner(users.getId(), initiatorId)){
             throw new ForbiddenActionException("Permission denied: owner cannot share with himself.");
         }
         // initiator must be the owner of serie temporelle to be able to share it
@@ -105,7 +105,7 @@ public class PartageService {
             throw new ForbiddenActionException("Permission denied: cannot share other users' serie temporelle");
         }
 
-        return createPartage(user, st, partage.getType());
+        return createPartage(users, st, partage.getType());
     }
 
     Partage updatePartage(Partage partage, String type){

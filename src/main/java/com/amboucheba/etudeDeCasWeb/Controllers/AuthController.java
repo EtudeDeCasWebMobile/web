@@ -1,7 +1,7 @@
 package com.amboucheba.etudeDeCasWeb.Controllers;
 
 import com.amboucheba.etudeDeCasWeb.Models.AuthenticationRequest;
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import com.amboucheba.etudeDeCasWeb.Services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,20 +26,20 @@ public class AuthController {
 
 
     @PostMapping("/authenticate")
-    ResponseEntity<User> authenticate (@RequestBody AuthenticationRequest auth){
+    ResponseEntity<Users> authenticate (@RequestBody AuthenticationRequest auth){
 
         String token = authService.authenticate(auth);
-        Optional<User> user = userRepository.findByUsername(auth.getUsername());
+        Optional<Users> user = userRepository.findByUsername(auth.getUsername());
         if (user.isEmpty()){
             throw new UsernameNotFoundException("User with username = " + auth.getUsername() + " not found.");
         }
-        User _user = user.get();
-        _user.setPassword("");
-        _user.setUsername("");
+        Users _users = user.get();
+        _users.setPassword("");
+        _users.setUsername("");
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("token", token);
-        return new ResponseEntity<User>(_user, headers, HttpStatus.OK);
+        return new ResponseEntity<Users>(_users, headers, HttpStatus.OK);
     }
 
 }

@@ -3,9 +3,9 @@ package com.amboucheba.etudeDeCasWeb.Services;
 import com.amboucheba.etudeDeCasWeb.Exceptions.ForbiddenActionException;
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
 
-import com.amboucheba.etudeDeCasWeb.Models.ModelLists.SerieTemplorelleList;
-import com.amboucheba.etudeDeCasWeb.Models.SerieTemporelle;
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.ModelLists.SerieTemplorelleList;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.SerieTemporelleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,8 +64,8 @@ public class SerieTemporelleService {
     }
 
     // Does the creation job
-    SerieTemporelle createSerieTemporelle(SerieTemporelle serieTemporelle, User user){
-        serieTemporelle.setOwner(user);
+    SerieTemporelle createSerieTemporelle(SerieTemporelle serieTemporelle, Users users){
+        serieTemporelle.setOwner(users);
         return serieTemporelleRepository.save(serieTemporelle);
     }
     public SerieTemporelle createSerieTemporelle(SerieTemporelle serieTemporelle, long userId, Long initiatorId){
@@ -75,9 +75,9 @@ public class SerieTemporelleService {
         }
 
         // this handles : user not found
-        User user = userService.find(userId);
+        Users users = userService.find(userId);
 
-        return createSerieTemporelle(serieTemporelle, user);
+        return createSerieTemporelle(serieTemporelle, users);
     }
 
     // Does the finding job
@@ -92,7 +92,7 @@ public class SerieTemporelleService {
         }
 
         // this handles : user not found
-        User user = userService.find(userId);
+        Users users = userService.find(userId);
 
         return listSerieTemporelleOfOwner(userId);
     }

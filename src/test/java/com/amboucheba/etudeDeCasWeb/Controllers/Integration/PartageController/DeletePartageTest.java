@@ -3,6 +3,9 @@ package com.amboucheba.etudeDeCasWeb.Controllers.Integration.PartageController;
 import com.amboucheba.etudeDeCasWeb.EtudeDeCasWebApplication;
 import com.amboucheba.etudeDeCasWeb.Exceptions.ApiException;
 import com.amboucheba.etudeDeCasWeb.Models.*;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Partage;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.PartageRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.SerieTemporelleRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
@@ -22,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = EtudeDeCasWebApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SqlGroup({
-        @Sql(scripts = { "classpath:schema.sql" }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+        @Sql(scripts = { "classpath:schema121.sql" }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = { "classpath:reset.sql" }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 })
 public class DeletePartageTest {
@@ -48,13 +51,13 @@ public class DeletePartageTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    User user;
+    Users users;
     String token;
 
     @BeforeEach
     void setAuthHeader(){
-        user = new User("user", passwordEncoder.encode("pass"));
-        user = userRepository.save(user);
+        users = new Users("user", passwordEncoder.encode("pass"));
+        users = userRepository.save(users);
 
         AuthenticationRequest authenticationRequest = new AuthenticationRequest("user", "pass");
 
@@ -66,12 +69,12 @@ public class DeletePartageTest {
     @Test
     void partageExists__removePartage(){
 
-        User user2 = new User("user2", "pass");
-        userRepository.save(user2);
-        SerieTemporelle st = new SerieTemporelle("title", "desc", user);
+        Users users2 = new Users("user2", "pass");
+        userRepository.save(users2);
+        SerieTemporelle st = new SerieTemporelle("title", "desc", users);
         stRepository.save(st);
 
-        Partage partage = new Partage(user2, st, "w");
+        Partage partage = new Partage(users2, st, "w");
         partage = partageRepository.save(partage);
 
 

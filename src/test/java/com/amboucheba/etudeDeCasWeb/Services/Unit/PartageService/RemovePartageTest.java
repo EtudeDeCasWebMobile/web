@@ -1,9 +1,9 @@
 package com.amboucheba.etudeDeCasWeb.Services.Unit.PartageService;
 
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
-import com.amboucheba.etudeDeCasWeb.Models.Partage;
-import com.amboucheba.etudeDeCasWeb.Models.SerieTemporelle;
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Partage;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.PartageRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import com.amboucheba.etudeDeCasWeb.Services.*;
@@ -64,9 +64,9 @@ public class RemovePartageTest {
     @Test
     public void partageExists__RemovePartage() {
 
-        User user = new User(1L, "user", "pass");
-        User shareWith = new User(2L, "user2", "pass");
-        SerieTemporelle st = new SerieTemporelle(1L, "st", "desc", user);
+        Users users = new Users(1L, "user", "pass");
+        Users shareWith = new Users(2L, "user2", "pass");
+        SerieTemporelle st = new SerieTemporelle(1L, "st", "desc", users);
 
         Partage partage = new Partage(1L, shareWith, st, "r");
 

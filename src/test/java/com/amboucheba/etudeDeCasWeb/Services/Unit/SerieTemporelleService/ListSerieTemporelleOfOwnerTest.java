@@ -1,8 +1,8 @@
 package com.amboucheba.etudeDeCasWeb.Services.Unit.SerieTemporelleService;
 
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
-import com.amboucheba.etudeDeCasWeb.Models.SerieTemporelle;
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.SerieTemporelleRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import com.amboucheba.etudeDeCasWeb.Services.AuthService;
@@ -66,13 +66,13 @@ public class ListSerieTemporelleOfOwnerTest {
 
     @Test
     public void userExists__returnSTsOfUser() {
-        User user = new User(1L, "user", "pass");
+        Users users = new Users(1L, "user", "pass");
         List<SerieTemporelle> toBeReturned = Collections.singletonList(
-                new SerieTemporelle(1L, "title", "desc", user)
+                new SerieTemporelle(1L, "title", "desc", users)
         );
         // Suppose user is authenticated
         Mockito.when(userService.initiatorIsOwner(1L, 1L)).thenReturn(true);
-        Mockito.when(userService.find(1L, null)).thenReturn(user);
+        Mockito.when(userService.find(1L, null)).thenReturn(users);
         Mockito.when(stRepository.findByOwnerId(1L)).thenReturn(toBeReturned);
 
         List<SerieTemporelle> sts = serieTemporelleService.listSerieTemporelleOfOwner(1L, 1L);

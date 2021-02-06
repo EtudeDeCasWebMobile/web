@@ -1,8 +1,8 @@
 package com.amboucheba.etudeDeCasWeb.Services.Unit.SerieTemporelleService;
 
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
-import com.amboucheba.etudeDeCasWeb.Models.SerieTemporelle;
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.SerieTemporelleRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import com.amboucheba.etudeDeCasWeb.Services.AuthService;
@@ -65,11 +65,11 @@ public class UpdateSerieTemporelleTest {
 
     @Test
     public void stExists__returnUpdatedST() {
-        User user = new User(1L, "", "");
-        SerieTemporelle toUpdate = new SerieTemporelle(1L, "title", "desc", user);
+        Users users = new Users(1L, "", "");
+        SerieTemporelle toUpdate = new SerieTemporelle(1L, "title", "desc", users);
         Mockito.when(stRepository.findById(1L)).thenReturn(Optional.of(toUpdate));
 
-        SerieTemporelle newSerieTemporelle = new SerieTemporelle(1L, "newTitle", "newDesc", user);
+        SerieTemporelle newSerieTemporelle = new SerieTemporelle(1L, "newTitle", "newDesc", users);
         Mockito.when(stRepository.save(newSerieTemporelle)).thenReturn(newSerieTemporelle);
 
         // Suppose user is authenticated

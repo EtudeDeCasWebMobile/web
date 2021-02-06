@@ -1,9 +1,9 @@
 package com.amboucheba.etudeDeCasWeb.Controllers;
 
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
-import com.amboucheba.etudeDeCasWeb.Models.RegisterUserInput;
-import com.amboucheba.etudeDeCasWeb.Models.User;
-import com.amboucheba.etudeDeCasWeb.Models.ModelLists.UserList;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.RegisterUserInput;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.ModelLists.UserList;
 import com.amboucheba.etudeDeCasWeb.Services.UserService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiResponse;
@@ -34,7 +34,7 @@ public class UserController {
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<UserList> getAll(){
 
-        List<User> users = userService.listUsers();
+        List<Users> users = userService.listUsers();
 
         return ResponseEntity.ok(new UserList(users));
     }
@@ -65,7 +65,7 @@ public class UserController {
             @ApiResponse(code = 404, message = "User not found")
     })
     @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
-    public ResponseEntity<User> getUserById(@PathVariable("userId") long userId, @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
+    public ResponseEntity<Users> getUserById(@PathVariable("userId") long userId, @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         return ResponseEntity
                 .ok()

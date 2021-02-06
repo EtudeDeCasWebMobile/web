@@ -1,7 +1,7 @@
 package com.amboucheba.etudeDeCasWeb.Services.Unit.UserService;
 
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import com.amboucheba.etudeDeCasWeb.Services.AuthService;
 import com.amboucheba.etudeDeCasWeb.Services.UserService;
@@ -54,12 +54,12 @@ public class FindTest {
     public void userExists__returnUser(){
 
         long userId = 1;
-        User user = new User("user", "pass");
-        Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        Users users = new Users("user", "pass");
+        Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(users));
 
-        User found = userService.find(userId, userId);
+        Users found = userService.find(userId, userId);
 
-        assertEquals(found, user);
+        assertEquals(found, users);
     }
 
     @Test

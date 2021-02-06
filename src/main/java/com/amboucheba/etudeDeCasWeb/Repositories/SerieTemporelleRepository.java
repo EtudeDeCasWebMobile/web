@@ -1,6 +1,6 @@
 package com.amboucheba.etudeDeCasWeb.Repositories;
 
-import com.amboucheba.etudeDeCasWeb.Models.SerieTemporelle;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

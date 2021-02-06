@@ -1,4 +1,4 @@
-package com.amboucheba.etudeDeCasWeb.Models;
+package com.amboucheba.etudeDeCasWeb.Models.ToDelete;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -26,18 +26,18 @@ public class SerieTemporelle implements Serializable {
 
     @JoinColumn(name = "owner", nullable = false)
     @ManyToOne
-    private User owner;
+    private Users owner;
 
 
 
-    public SerieTemporelle(Long id, String titre, String description, User owner) {
+    public SerieTemporelle(Long id, String titre, String description, Users owner) {
         this.id = id;
         this.titre = titre;
         this.description = description;
         this.owner = owner;
     }
 
-    public SerieTemporelle(  String titre, String description, User owner) {
+    public SerieTemporelle(  String titre, String description, Users owner) {
         this.titre = titre;
         this.description = description;
         this.owner = owner;
@@ -51,11 +51,11 @@ public class SerieTemporelle implements Serializable {
     public SerieTemporelle() {
     }
 
-    public User getOwner() {
+    public Users getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(Users owner) {
         this.owner = owner;
     }
 

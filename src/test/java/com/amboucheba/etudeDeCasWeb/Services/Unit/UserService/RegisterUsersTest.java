@@ -1,8 +1,8 @@
 package com.amboucheba.etudeDeCasWeb.Services.Unit.UserService;
 
 import com.amboucheba.etudeDeCasWeb.Exceptions.DuplicateResourceException;
-import com.amboucheba.etudeDeCasWeb.Models.RegisterUserInput;
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.RegisterUserInput;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import com.amboucheba.etudeDeCasWeb.Services.AuthService;
 import com.amboucheba.etudeDeCasWeb.Services.UserService;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(UserService.class)
-public class RegisterUserTest {
+public class RegisterUsersTest {
 
     @MockBean
     UserRepository userRepository;
@@ -53,22 +53,22 @@ public class RegisterUserTest {
 
     @Test
     public void usernameDoesNotExist__createUser(){
-        User toSave = new User("user", "pass");
-        User expected = new User( 1L,"user", "pass");
+        Users toSave = new Users("user", "pass");
+        Users expected = new Users( 1L,"user", "pass");
 
         Mockito.when(userRepository.findByUsername("user")).thenReturn(Optional.empty());
 
         Mockito.when(userRepository.save(toSave)).thenReturn(expected);
 
         RegisterUserInput r = new RegisterUserInput("user", "pass");
-        User returned = userService.registerUser(r);
+        Users returned = userService.registerUser(r);
 
         assertEquals(expected.getUsername(), returned.getUsername());
     }
 
     @Test
     public void usernameAlreadyExists__throwDuplicateResourceException(){
-        User toSave = new User("user", "pass");
+        Users toSave = new Users("user", "pass");
         RegisterUserInput r = new RegisterUserInput(toSave.getUsername(), "pass");
         Mockito.when(userRepository.findByUsername("user")).thenReturn(Optional.of(toSave));
 

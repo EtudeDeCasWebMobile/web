@@ -1,11 +1,11 @@
 package com.amboucheba.etudeDeCasWeb.Repositories;
 
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface UserRepository extends CrudRepository<User, Long> {
+public interface UserRepository extends CrudRepository<Users, Long> {
 
-    Optional<User> findByUsername(String username);
+    Optional<Users> findByUsername(String username);
 }

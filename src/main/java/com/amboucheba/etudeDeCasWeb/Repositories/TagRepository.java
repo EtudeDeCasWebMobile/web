@@ -1,6 +1,6 @@
 package com.amboucheba.etudeDeCasWeb.Repositories;
 
-import com.amboucheba.etudeDeCasWeb.Models.Tag;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Tag;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

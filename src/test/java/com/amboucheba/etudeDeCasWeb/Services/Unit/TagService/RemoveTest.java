@@ -1,10 +1,10 @@
 package com.amboucheba.etudeDeCasWeb.Services.Unit.TagService;
 
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
-import com.amboucheba.etudeDeCasWeb.Models.Event;
-import com.amboucheba.etudeDeCasWeb.Models.SerieTemporelle;
-import com.amboucheba.etudeDeCasWeb.Models.Tag;
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Event;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Tag;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.TagRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import com.amboucheba.etudeDeCasWeb.Services.*;
@@ -69,8 +69,8 @@ public class RemoveTest {
     @Test
     public void tagExists__removeTag() {
 
-        User user = new User(1L, "user", "pass");
-        SerieTemporelle st = new SerieTemporelle(1L,"event", "pass", user);
+        Users users = new Users(1L, "user", "pass");
+        SerieTemporelle st = new SerieTemporelle(1L,"event", "pass", users);
         Event event = new Event(1L, new Date(), 5.f, "st", st);
         Tag tag = new Tag(1L,"", event);
 

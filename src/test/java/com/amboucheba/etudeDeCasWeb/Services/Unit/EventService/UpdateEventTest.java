@@ -1,9 +1,9 @@
 package com.amboucheba.etudeDeCasWeb.Services.Unit.EventService;
 
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
-import com.amboucheba.etudeDeCasWeb.Models.Event;
-import com.amboucheba.etudeDeCasWeb.Models.SerieTemporelle;
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Event;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.EventRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import com.amboucheba.etudeDeCasWeb.Services.*;
@@ -69,8 +69,8 @@ public class UpdateEventTest {
 
     @Test
     public void eventExists__returnUpdatedEvent() {
-        User user = new User(1L, "user", "pass");
-        SerieTemporelle st = new SerieTemporelle(1L,"event", "pass", user);
+        Users users = new Users(1L, "user", "pass");
+        SerieTemporelle st = new SerieTemporelle(1L,"event", "pass", users);
         Event toUpdate = new Event(1L, new Date(), 5.0f,"comment", st);
         Mockito.when(eventRepository.findById(1L)).thenReturn(Optional.of(toUpdate));
 

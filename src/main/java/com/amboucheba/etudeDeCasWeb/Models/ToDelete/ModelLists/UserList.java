@@ -1,15 +1,15 @@
-package com.amboucheba.etudeDeCasWeb.Models.ModelLists;
+package com.amboucheba.etudeDeCasWeb.Models.ToDelete.ModelLists;
 
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 
 import java.util.List;
 
 public class UserList {
 
-    private List<User> users;
+    private List<Users> users;
     private int count;
 
-    public UserList(List<User> users) {
+    public UserList(List<Users> users) {
         this.users = users;
         this.count = users.size();
     }
@@ -17,11 +17,11 @@ public class UserList {
     public UserList() {
     }
 
-    public List<User> getUsers() {
+    public List<Users> getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(List<Users> users) {
         this.users = users;
     }
 

@@ -1,4 +1,4 @@
-package com.amboucheba.etudeDeCasWeb.Models;
+package com.amboucheba.etudeDeCasWeb.Models.ToDelete;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,8 +10,8 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "users") // create the table in public schema
-public class User implements Serializable {
+@Table(name = "users_") // create the table in public schema
+public class Users implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,18 +28,18 @@ public class User implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    public User(Long id, String username, String password) {
+    public Users(Long id, String username, String password) {
         this.id = id;
         this.username = username;
         this.password = password;
     }
 
-    public User(String username, String password) {
+    public Users(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
-    public User() {
+    public Users() {
     }
 
     public Long getId() {
@@ -71,8 +71,8 @@ public class User implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return username.equals(user.username);
+        Users users = (Users) o;
+        return username.equals(users.username);
     }
 
     @Override

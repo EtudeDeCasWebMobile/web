@@ -2,10 +2,10 @@ package com.amboucheba.etudeDeCasWeb.Controllers.Integration.PartageController;
 
 import com.amboucheba.etudeDeCasWeb.EtudeDeCasWebApplication;
 import com.amboucheba.etudeDeCasWeb.Models.AuthenticationRequest;
-import com.amboucheba.etudeDeCasWeb.Models.ModelLists.PartageList;
-import com.amboucheba.etudeDeCasWeb.Models.Partage;
-import com.amboucheba.etudeDeCasWeb.Models.SerieTemporelle;
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.ModelLists.PartageList;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Partage;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.PartageRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.SerieTemporelleRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
@@ -25,10 +25,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = EtudeDeCasWebApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SqlGroup({
-        @Sql(scripts = { "classpath:schema.sql" }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+        @Sql(scripts = { "classpath:schema121.sql" }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = { "classpath:reset.sql" }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 })
-public class GetAllByUserIdTest {
+public class GetAllByUsersIdTest {
 
     @LocalServerPort
     private int port;
@@ -51,13 +51,13 @@ public class GetAllByUserIdTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    User user;
+    Users users;
     String token;
 
     @BeforeEach
     void setAuthHeader(){
-        user = new User("user", passwordEncoder.encode("pass"));
-        user = userRepository.save(user);
+        users = new Users("user", passwordEncoder.encode("pass"));
+        users = userRepository.save(users);
 
         AuthenticationRequest authenticationRequest = new AuthenticationRequest("user", "pass");
 
@@ -68,16 +68,16 @@ public class GetAllByUserIdTest {
 
     @Test
     void userExists__returnPartagesOfUser() throws Exception {
-        User user2 = new User("user2", "pass");
-        user2 = userRepository.save(user2);
-        SerieTemporelle st = new SerieTemporelle("title", "desc", user2);
+        Users users2 = new Users("user2", "pass");
+        users2 = userRepository.save(users2);
+        SerieTemporelle st = new SerieTemporelle("title", "desc", users2);
         stRepository.save(st);
-        Partage partage = new Partage(user, st, "w");
+        Partage partage = new Partage(users, st, "w");
         partage = partageRepository.save(partage);
 
         System.out.println(partage.getId());
 
-        String uri = "http://localhost:" + port + "/users/" + user.getId() + "/partages" ;
+        String uri = "http://localhost:" + port + "/users/" + users.getId() + "/partages" ;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

@@ -1,8 +1,8 @@
 package com.amboucheba.etudeDeCasWeb.Controllers;
 
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
-import com.amboucheba.etudeDeCasWeb.Models.ModelLists.TagList;
-import com.amboucheba.etudeDeCasWeb.Models.Tag;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.ModelLists.TagList;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Tag;
 import com.amboucheba.etudeDeCasWeb.Services.TagService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiResponse;

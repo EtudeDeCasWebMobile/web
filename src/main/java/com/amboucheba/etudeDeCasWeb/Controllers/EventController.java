@@ -1,8 +1,8 @@
 package com.amboucheba.etudeDeCasWeb.Controllers;
 
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
-import com.amboucheba.etudeDeCasWeb.Models.Event;
-import com.amboucheba.etudeDeCasWeb.Models.ModelLists.EventList;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Event;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.ModelLists.EventList;
 import com.amboucheba.etudeDeCasWeb.Services.EventService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiResponse;

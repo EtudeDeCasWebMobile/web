@@ -1,9 +1,9 @@
 package com.amboucheba.etudeDeCasWeb.Services.Unit.EventService;
 
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
-import com.amboucheba.etudeDeCasWeb.Models.Event;
-import com.amboucheba.etudeDeCasWeb.Models.SerieTemporelle;
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Event;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.EventRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import com.amboucheba.etudeDeCasWeb.Services.*;
@@ -69,8 +69,8 @@ public class ListEventsBySerieTemporelleTest {
 
     @Test
     public void stExists__returnEventsOfSt() {
-        User user = new User(1L, "user", "pass");
-        SerieTemporelle st = new SerieTemporelle(1L, "title", "desc", user);
+        Users users = new Users(1L, "user", "pass");
+        SerieTemporelle st = new SerieTemporelle(1L, "title", "desc", users);
         List<Event> toBeReturned = Collections.singletonList(
                 new Event(1L, new Date(), 5.0f,"comment", st)
         );

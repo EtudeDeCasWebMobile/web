@@ -1,9 +1,9 @@
 package com.amboucheba.etudeDeCasWeb.Services.Unit.PartageService;
 
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
-import com.amboucheba.etudeDeCasWeb.Models.Partage;
-import com.amboucheba.etudeDeCasWeb.Models.SerieTemporelle;
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Partage;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.PartageRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import com.amboucheba.etudeDeCasWeb.Services.AuthService;
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(PartageService.class)
-public class ListPartageByUserIdTest {
+public class ListPartageByUsersIdTest {
 
 
     @MockBean
@@ -68,16 +68,16 @@ public class ListPartageByUserIdTest {
 
     @Test
     public void userExists__returnPartagesOfUser() {
-        User user = new User(1L, "user", "pass");
-        User shareWith = new User(2L, "user2", "pass");
-        SerieTemporelle st = new SerieTemporelle(1L, "st", "desc", user);
+        Users users = new Users(1L, "user", "pass");
+        Users shareWith = new Users(2L, "user2", "pass");
+        SerieTemporelle st = new SerieTemporelle(1L, "st", "desc", users);
         List<Partage> toBeReturned = Collections.singletonList(
                 new Partage(1L,  shareWith, st, "r")
         );
         // Suppose user is authenticated
         Mockito.when(userService.initiatorIsOwner(1L, 1L)).thenReturn(true);
-        Mockito.when(userService.find(1L)).thenReturn(user);
-        Mockito.when(partageRepository.findByUserId(1L)).thenReturn(toBeReturned);
+        Mockito.when(userService.find(1L)).thenReturn(users);
+        Mockito.when(partageRepository.findByUsersId(1L)).thenReturn(toBeReturned);
 
         List<Partage> partages = partageService.listPartageByUserId(1L, 1L);
 

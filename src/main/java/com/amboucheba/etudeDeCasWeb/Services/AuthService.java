@@ -2,7 +2,7 @@ package com.amboucheba.etudeDeCasWeb.Services;
 
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
 import com.amboucheba.etudeDeCasWeb.Models.AuthenticationRequest;
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +28,14 @@ public class AuthService implements UserDetailsService {
 
     @Override
     public AuthDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByUsername(username);
+        Optional<Users> user = userRepository.findByUsername(username);
         if (user.isEmpty()){
             throw new UsernameNotFoundException("User with username = " + username + " not found.");
         }
 
-        User _user = user.get();
+        Users _users = user.get();
 
-        return new AuthDetails(_user.getId(), _user.getUsername(), _user.getPassword());
+        return new AuthDetails(_users.getId(), _users.getUsername(), _users.getPassword());
     }
 
     public String authenticate(AuthenticationRequest auth){

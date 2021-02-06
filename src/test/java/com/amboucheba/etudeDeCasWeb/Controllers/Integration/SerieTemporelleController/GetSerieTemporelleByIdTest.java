@@ -3,8 +3,8 @@ package com.amboucheba.etudeDeCasWeb.Controllers.Integration.SerieTemporelleCont
 import com.amboucheba.etudeDeCasWeb.EtudeDeCasWebApplication;
 import com.amboucheba.etudeDeCasWeb.Exceptions.ApiException;
 import com.amboucheba.etudeDeCasWeb.Models.AuthenticationRequest;
-import com.amboucheba.etudeDeCasWeb.Models.SerieTemporelle;
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.SerieTemporelleRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = EtudeDeCasWebApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SqlGroup({
-        @Sql(scripts = { "classpath:schema.sql" }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+        @Sql(scripts = { "classpath:schema121.sql" }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = { "classpath:reset.sql" }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 })
 public class GetSerieTemporelleByIdTest {
@@ -46,25 +46,25 @@ public class GetSerieTemporelleByIdTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    User user;
+    Users users;
     String token;
 
     @BeforeEach
     void setAuthHeader(){
-        user = new User("user", passwordEncoder.encode("pass"));
-        user = userRepository.save(user);
+        users = new Users("user", passwordEncoder.encode("pass"));
+        users = userRepository.save(users);
 
         AuthenticationRequest authenticationRequest = new AuthenticationRequest("user", "pass");
 
         String uri = "http://localhost:" + port + "/authenticate";
-        ResponseEntity<User> response = testRestTemplate.postForEntity(uri, authenticationRequest, User.class);
+        ResponseEntity<Users> response = testRestTemplate.postForEntity(uri, authenticationRequest, Users.class);
         token = response.getHeaders().getFirst("token");
     }
 
     @Test
     void stExists__returnSt() throws Exception {
 
-        SerieTemporelle st = new SerieTemporelle("t1", "d1", user);
+        SerieTemporelle st = new SerieTemporelle("t1", "d1", users);
         st = serieTemporelleRepository.save(st);
 
         String uri = "http://localhost:" + port + "/seriesTemporelles/" + st.getId();

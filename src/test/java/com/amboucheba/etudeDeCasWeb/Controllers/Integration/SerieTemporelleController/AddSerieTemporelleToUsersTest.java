@@ -2,8 +2,8 @@ package com.amboucheba.etudeDeCasWeb.Controllers.Integration.SerieTemporelleCont
 
 import com.amboucheba.etudeDeCasWeb.EtudeDeCasWebApplication;
 import com.amboucheba.etudeDeCasWeb.Models.AuthenticationRequest;
-import com.amboucheba.etudeDeCasWeb.Models.SerieTemporelle;
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.SerieTemporelleRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,10 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = EtudeDeCasWebApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SqlGroup({
-        @Sql(scripts = { "classpath:schema.sql" }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+        @Sql(scripts = { "classpath:schema121.sql" }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = { "classpath:reset.sql" }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 })
-public class AddSerieTemporelleToUserTest {
+public class AddSerieTemporelleToUsersTest {
 
     @LocalServerPort
     private int port;
@@ -46,13 +46,13 @@ public class AddSerieTemporelleToUserTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    User user;
+    Users users;
     String token;
 
     @BeforeEach
     void setAuthHeader(){
-        user = new User("user", passwordEncoder.encode("pass"));
-        user = userRepository.save(user);
+        users = new Users("user", passwordEncoder.encode("pass"));
+        users = userRepository.save(users);
 
         AuthenticationRequest authenticationRequest = new AuthenticationRequest("user", "pass");
 
@@ -66,7 +66,7 @@ public class AddSerieTemporelleToUserTest {
 
         SerieTemporelle st = new SerieTemporelle("title", "desc");
 
-        String uri = "http://localhost:" + port + "/users/" + user.getId() + "/seriesTemporelles";
+        String uri = "http://localhost:" + port + "/users/" + users.getId() + "/seriesTemporelles";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

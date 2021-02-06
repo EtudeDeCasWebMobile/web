@@ -1,4 +1,4 @@
-package com.amboucheba.etudeDeCasWeb.Models;
+package com.amboucheba.etudeDeCasWeb.Models.ToDelete;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

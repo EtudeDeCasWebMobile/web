@@ -1,6 +1,6 @@
 package com.amboucheba.etudeDeCasWeb.Services.Unit.UserService;
 
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import com.amboucheba.etudeDeCasWeb.Services.AuthService;
 import com.amboucheba.etudeDeCasWeb.Services.UserService;
@@ -52,12 +52,12 @@ public class ListUsersTest {
     @Test
     public void __returnUserList(){
 
-        List<User> expected = Collections.singletonList(
-                new User("user", "pass")
+        List<Users> expected = Collections.singletonList(
+                new Users("user", "pass")
         );
         Mockito.when(userRepository.findAll()).thenReturn(expected);
 
-        List<User> users = userService.listUsers();
+        List<Users> users = userService.listUsers();
 
         assertEquals(expected, users);
     }

@@ -2,8 +2,8 @@ package com.amboucheba.etudeDeCasWeb.Controllers.Integration.UserController;
 
 import com.amboucheba.etudeDeCasWeb.EtudeDeCasWebApplication;
 import com.amboucheba.etudeDeCasWeb.Models.AuthenticationRequest;
-import com.amboucheba.etudeDeCasWeb.Models.RegisterUserInput;
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.RegisterUserInput;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = EtudeDeCasWebApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SqlGroup({
-        @Sql(scripts = { "classpath:schema.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+        @Sql(scripts = { "classpath:schema121.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = { "classpath:reset.sql" }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 })
-class UserResourceTest {
+class UsersResourceTest {
 
     @LocalServerPort
     private int port;
@@ -38,13 +38,13 @@ class UserResourceTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    User user;
+    Users users;
     String token;
 
     @BeforeEach
     void setAuthHeader(){
-        user = new User("user", passwordEncoder.encode("pass"));
-        user = userRepository.save(user);
+        users = new Users("user", passwordEncoder.encode("pass"));
+        users = userRepository.save(users);
 
         AuthenticationRequest authenticationRequest = new AuthenticationRequest("user", "pass");
 
@@ -75,21 +75,21 @@ class UserResourceTest {
     void getUserByIdTest() throws Exception {
 
 
-        String uri = "http://localhost:" + port + "/users/" + user.getId();
+        String uri = "http://localhost:" + port + "/users/" + users.getId();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(token);
         HttpEntity<Void> entity = new HttpEntity<>(headers);
         // Send request and get response
-        ResponseEntity<User> response = testRestTemplate.exchange(uri, HttpMethod.GET, entity, User.class);
+        ResponseEntity<Users> response = testRestTemplate.exchange(uri, HttpMethod.GET, entity, Users.class);
 
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        User returned = response.getBody();
+        Users returned = response.getBody();
 
-        assertEquals(user.getUsername(), returned.getUsername());
+        assertEquals(users.getUsername(), returned.getUsername());
     }
 
     @Test
@@ -97,7 +97,7 @@ class UserResourceTest {
         String username = "user3p";
         String password = "password3";
         RegisterUserInput input = new RegisterUserInput(username, password);
-        User user = new User(username, password);
+        Users users = new Users(username, password);
 
         String uri = "http://localhost:" + port + "/users";
         ResponseEntity<Void> response = testRestTemplate.postForEntity(uri, input, Void.class);

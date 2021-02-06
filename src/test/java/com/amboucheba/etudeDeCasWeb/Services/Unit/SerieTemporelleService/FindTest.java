@@ -1,8 +1,8 @@
 package com.amboucheba.etudeDeCasWeb.Services.Unit.SerieTemporelleService;
 
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
-import com.amboucheba.etudeDeCasWeb.Models.SerieTemporelle;
-import com.amboucheba.etudeDeCasWeb.Models.User;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.SerieTemporelleRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import com.amboucheba.etudeDeCasWeb.Services.AuthService;
@@ -65,8 +65,8 @@ public class FindTest {
     public void serieTemporelleExists() throws Exception {
 
         long stId = 1;
-        User user = new User(1L, "", "");
-        SerieTemporelle st = new SerieTemporelle("title", "description", user);
+        Users users = new Users(1L, "", "");
+        SerieTemporelle st = new SerieTemporelle("title", "description", users);
 
         // Suppose user is authenticated
         Mockito.when(userService.initiatorIsOwner(1L, 1L)).thenReturn(true);

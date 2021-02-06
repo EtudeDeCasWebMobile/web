@@ -1,6 +1,6 @@
-package com.amboucheba.etudeDeCasWeb.Models.ModelLists;
+package com.amboucheba.etudeDeCasWeb.Models.ToDelete.ModelLists;
 
-import com.amboucheba.etudeDeCasWeb.Models.Partage;
+import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Partage;
 
 import java.util.List;
 

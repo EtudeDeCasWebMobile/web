@@ -1,4 +1,4 @@
-package com.amboucheba.etudeDeCasWeb.Models;
+package com.amboucheba.etudeDeCasWeb.Models.ToDelete;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,7 +15,7 @@ public class Partage implements Serializable {
 //    @Column(name = "id_user")
     @JoinColumn(name = "id_user", nullable = false)
     @ManyToOne
-    private User user;
+    private Users users;
 
 //    @Column(name = "id_SerieTemporelle")
     @ManyToOne
@@ -25,15 +25,15 @@ public class Partage implements Serializable {
     @Column(name = "type")
     private String type;
 
-    public Partage(Long id, User user, SerieTemporelle serieTemporelle, String type) {
+    public Partage(Long id, Users users, SerieTemporelle serieTemporelle, String type) {
         this.id = id;
-        this.user = user;
+        this.users = users;
         this.serieTemporelle = serieTemporelle;
         this.type = type;
     }
 
-    public Partage(User user, SerieTemporelle serieTemporelle, String type) {
-        this.user = user;
+    public Partage(Users users, SerieTemporelle serieTemporelle, String type) {
+        this.users = users;
         this.serieTemporelle = serieTemporelle;
         this.type = type;
     }
@@ -49,12 +49,12 @@ public class Partage implements Serializable {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public Users getUser() {
+        return users;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(Users users) {
+        this.users = users;
     }
 
     public SerieTemporelle getSerieTemporelle() {
@@ -79,7 +79,7 @@ public class Partage implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Partage partage = (Partage) o;
         return Objects.equals(id, partage.id) &&
-                Objects.equals(user, partage.user) &&
+                Objects.equals(users, partage.users) &&
                 Objects.equals(serieTemporelle, partage.serieTemporelle) &&
                 type.equals(partage.type);
     }
