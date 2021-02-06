@@ -6,7 +6,7 @@ import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.ModelLists.SerieTemplorelleList;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
-import com.amboucheba.etudeDeCasWeb.Repositories.SerieTemporelleRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.SerieTemporelleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ public class SerieTemporelleService {
     SerieTemporelleRepository serieTemporelleRepository;
 
     @Autowired
-    UserService userService;
+    UsersService usersService;
 
     @Autowired
     PartageService partageService;
@@ -49,7 +49,7 @@ public class SerieTemporelleService {
         SerieTemporelle st = find(serieTemporelleId);
 
         // initiator is the owner of the targeted serie temporelle
-        boolean isOwner = userService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
+        boolean isOwner = usersService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
         // Owner shared serie temporelle with initiator with read(r) access
         boolean hasAccess = partageService.hasAccess(initiatorId, serieTemporelleId, "r");
 
@@ -70,12 +70,12 @@ public class SerieTemporelleService {
     }
     public SerieTemporelle createSerieTemporelle(SerieTemporelle serieTemporelle, long userId, Long initiatorId){
         // Initiator can only add series temporelles to himself
-        if (!userService.initiatorIsOwner(userId, initiatorId)){
+        if (!usersService.initiatorIsOwner(userId, initiatorId)){
             throw new ForbiddenActionException("Permission denied: cannot access another user's data");
         }
 
         // this handles : user not found
-        Users users = userService.find(userId);
+        Users users = usersService.find(userId);
 
         return createSerieTemporelle(serieTemporelle, users);
     }
@@ -87,12 +87,12 @@ public class SerieTemporelleService {
     public List<SerieTemporelle> listSerieTemporelleOfOwner(long userId, Long initiatorId){
 
         // Initiator can only add series temporelles to himself
-        if (!userService.initiatorIsOwner(userId, initiatorId)){
+        if (!usersService.initiatorIsOwner(userId, initiatorId)){
             throw new ForbiddenActionException("Permission denied: cannot access another user's data");
         }
 
         // this handles : user not found
-        Users users = userService.find(userId);
+        Users users = usersService.find(userId);
 
         return listSerieTemporelleOfOwner(userId);
     }
@@ -109,7 +109,7 @@ public class SerieTemporelleService {
         SerieTemporelle st = find(serieTemporelleId);
 
         // initiator is the owner of the targeted serie temporelle
-        boolean isOwner = userService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
+        boolean isOwner = usersService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
         // Owner shared serie temporelle with initiator with write(w) access
         boolean hasAccess = partageService.hasAccess(initiatorId, serieTemporelleId, "w");
 
@@ -131,7 +131,7 @@ public class SerieTemporelleService {
 
         SerieTemporelle st = find(serieTemporelleId);
         // initiator of the request must the owner of the serie temporelle
-        if (!userService.initiatorIsOwner(st.getOwner().getId(), initiator)){
+        if (!usersService.initiatorIsOwner(st.getOwner().getId(), initiator)){
             throw new ForbiddenActionException("Permission denied: cannot access another user's data");
         }
 

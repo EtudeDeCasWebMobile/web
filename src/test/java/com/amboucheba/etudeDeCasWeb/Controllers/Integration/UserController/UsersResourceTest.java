@@ -4,7 +4,7 @@ import com.amboucheba.etudeDeCasWeb.EtudeDeCasWebApplication;
 import com.amboucheba.etudeDeCasWeb.Models.AuthenticationRequest;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.RegisterUserInput;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
-import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.UsersRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ class UsersResourceTest {
     private TestRestTemplate testRestTemplate;
 
     @Autowired
-    UserRepository userRepository;
+    UsersRepository usersRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -44,7 +44,7 @@ class UsersResourceTest {
     @BeforeEach
     void setAuthHeader(){
         users = new Users("user", passwordEncoder.encode("pass"));
-        users = userRepository.save(users);
+        users = usersRepository.save(users);
 
         AuthenticationRequest authenticationRequest = new AuthenticationRequest("user", "pass");
 

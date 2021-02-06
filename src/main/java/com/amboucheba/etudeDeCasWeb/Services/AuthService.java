@@ -3,7 +3,7 @@ package com.amboucheba.etudeDeCasWeb.Services;
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
 import com.amboucheba.etudeDeCasWeb.Models.AuthenticationRequest;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
-import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.UsersRepository;
 import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public class AuthService implements UserDetailsService {
 
     @Autowired
-    UserRepository userRepository;
+    UsersRepository usersRepository;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -28,7 +28,7 @@ public class AuthService implements UserDetailsService {
 
     @Override
     public AuthDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Users> user = userRepository.findByUsername(username);
+        Optional<Users> user = usersRepository.findByUsername(username);
         if (user.isEmpty()){
             throw new UsernameNotFoundException("User with username = " + username + " not found.");
         }

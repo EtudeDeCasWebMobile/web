@@ -4,12 +4,12 @@ import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Partage;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
-import com.amboucheba.etudeDeCasWeb.Repositories.PartageRepository;
-import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.PartageRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.UsersRepository;
 import com.amboucheba.etudeDeCasWeb.Services.AuthService;
 import com.amboucheba.etudeDeCasWeb.Services.PartageService;
 import com.amboucheba.etudeDeCasWeb.Services.SerieTemporelleService;
-import com.amboucheba.etudeDeCasWeb.Services.UserService;
+import com.amboucheba.etudeDeCasWeb.Services.UsersService;
 import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +39,7 @@ public class ListPartageByUsersIdTest {
     SerieTemporelleService serieTemporelleService;
 
     @MockBean
-    UserService userService;
+    UsersService usersService;
 
     @Autowired
     private PartageService partageService;
@@ -48,7 +48,7 @@ public class ListPartageByUsersIdTest {
     static class Config{
 
         @MockBean
-        public UserRepository userRepository;
+        public UsersRepository usersRepository;
 
         @Bean
         public JwtUtil getUtil(){
@@ -75,8 +75,8 @@ public class ListPartageByUsersIdTest {
                 new Partage(1L,  shareWith, st, "r")
         );
         // Suppose user is authenticated
-        Mockito.when(userService.initiatorIsOwner(1L, 1L)).thenReturn(true);
-        Mockito.when(userService.find(1L)).thenReturn(users);
+        Mockito.when(usersService.initiatorIsOwner(1L, 1L)).thenReturn(true);
+        Mockito.when(usersService.find(1L)).thenReturn(users);
         Mockito.when(partageRepository.findByUsersId(1L)).thenReturn(toBeReturned);
 
         List<Partage> partages = partageService.listPartageByUserId(1L, 1L);
@@ -88,8 +88,8 @@ public class ListPartageByUsersIdTest {
     public void userDoesNotExist__ThrowNotFoundException(){
 
         // Suppose user is authenticated
-        Mockito.when(userService.initiatorIsOwner(1L, 1L)).thenReturn(true);
-        Mockito.when(userService.find(1L)).thenThrow(NotFoundException.class);
+        Mockito.when(usersService.initiatorIsOwner(1L, 1L)).thenReturn(true);
+        Mockito.when(usersService.find(1L)).thenThrow(NotFoundException.class);
 
         assertThrows(NotFoundException.class, () -> {
             partageService.listPartageByUserId(1L, 1L);

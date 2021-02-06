@@ -3,12 +3,12 @@ package com.amboucheba.etudeDeCasWeb.Services.Unit.SerieTemporelleService;
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
-import com.amboucheba.etudeDeCasWeb.Repositories.SerieTemporelleRepository;
-import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.SerieTemporelleRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.UsersRepository;
 import com.amboucheba.etudeDeCasWeb.Services.AuthService;
 import com.amboucheba.etudeDeCasWeb.Services.PartageService;
 import com.amboucheba.etudeDeCasWeb.Services.SerieTemporelleService;
-import com.amboucheba.etudeDeCasWeb.Services.UserService;
+import com.amboucheba.etudeDeCasWeb.Services.UsersService;
 import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +34,7 @@ public class CreateSerieTemporelleTest {
     PartageService partageService;
 
     @MockBean
-    private UserService userService;
+    private UsersService usersService;
 
     @Autowired
     private SerieTemporelleService serieTemporelleService;
@@ -43,7 +43,7 @@ public class CreateSerieTemporelleTest {
     static class Config{
 
         @MockBean
-        public UserRepository userRepository;
+        public UsersRepository usersRepository;
 
         @Bean
         public JwtUtil getUtil(){
@@ -69,8 +69,8 @@ public class CreateSerieTemporelleTest {
         SerieTemporelle saved = new SerieTemporelle( 1L,"title", "desc", users);
 
         // Suppose user is authenticated
-        Mockito.when(userService.initiatorIsOwner(1L, 1L)).thenReturn(true);
-        Mockito.when(userService.find(1L)).thenReturn(users);
+        Mockito.when(usersService.initiatorIsOwner(1L, 1L)).thenReturn(true);
+        Mockito.when(usersService.find(1L)).thenReturn(users);
         Mockito.when(stRepository.save(toSave)).thenReturn(saved);
 
         SerieTemporelle returned = serieTemporelleService.createSerieTemporelle(st, 1L, 1L);
@@ -82,8 +82,8 @@ public class CreateSerieTemporelleTest {
     public void userDoesNotExist__ThrowNotFoundException(){
 
         // Suppose user is authenticated
-        Mockito.when(userService.initiatorIsOwner(1L, 1L)).thenReturn(true);
-        Mockito.when(userService.find(1L)).thenThrow(NotFoundException.class);
+        Mockito.when(usersService.initiatorIsOwner(1L, 1L)).thenReturn(true);
+        Mockito.when(usersService.find(1L)).thenThrow(NotFoundException.class);
 
         assertThrows(NotFoundException.class, () -> {
             serieTemporelleService.createSerieTemporelle(new SerieTemporelle(), 1L, 1L);

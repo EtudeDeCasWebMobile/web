@@ -1,9 +1,9 @@
 package com.amboucheba.etudeDeCasWeb.Services.Unit.UserService;
 
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
-import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.UsersRepository;
 import com.amboucheba.etudeDeCasWeb.Services.AuthService;
-import com.amboucheba.etudeDeCasWeb.Services.UserService;
+import com.amboucheba.etudeDeCasWeb.Services.UsersService;
 import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,14 +21,14 @@ import java.util.Collections;
 import java.util.List;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(UserService.class)
+@WebMvcTest(UsersService.class)
 public class ListUsersTest {
 
     @MockBean
-    UserRepository userRepository;
+    UsersRepository usersRepository;
 
     @Autowired
-    UserService userService;
+    UsersService usersService;
 
     @TestConfiguration
     static class Config{
@@ -44,8 +44,8 @@ public class ListUsersTest {
         }
 
         @Bean
-        public UserService getSTService(){
-            return new UserService();
+        public UsersService getSTService(){
+            return new UsersService();
         }
     }
 
@@ -55,9 +55,9 @@ public class ListUsersTest {
         List<Users> expected = Collections.singletonList(
                 new Users("user", "pass")
         );
-        Mockito.when(userRepository.findAll()).thenReturn(expected);
+        Mockito.when(usersRepository.findAll()).thenReturn(expected);
 
-        List<Users> users = userService.listUsers();
+        List<Users> users = usersService.listUsers();
 
         assertEquals(expected, users);
     }

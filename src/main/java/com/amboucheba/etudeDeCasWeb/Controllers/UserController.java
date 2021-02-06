@@ -4,7 +4,7 @@ import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.RegisterUserInput;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.ModelLists.UserList;
-import com.amboucheba.etudeDeCasWeb.Services.UserService;
+import com.amboucheba.etudeDeCasWeb.Services.UsersService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -28,13 +28,13 @@ import java.util.concurrent.TimeUnit;
 public class UserController {
 
     @Autowired
-    UserService userService;
+    UsersService usersService;
 
     // Should be removed
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<UserList> getAll(){
 
-        List<Users> users = userService.listUsers();
+        List<Users> users = usersService.listUsers();
 
         return ResponseEntity.ok(new UserList(users));
     }
@@ -47,7 +47,7 @@ public class UserController {
     })
     public ResponseEntity<Void> addUser(@Valid @RequestBody RegisterUserInput newUser){
 
-        long newUserId = userService.registerUser(newUser).getId();
+        long newUserId = usersService.registerUser(newUser).getId();
 
         URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .pathSegment("users", "{id}")
@@ -74,7 +74,7 @@ public class UserController {
                         .cachePrivate()
                         .noTransform()
                         .staleIfError(1, TimeUnit.HOURS))
-                .body(userService.find(userId, userDetails.getUserId()));
+                .body(usersService.find(userId, userDetails.getUserId()));
     }
 
 //    @PutMapping(value = "/{userId}", consumes = "application/json", produces = "application/json")

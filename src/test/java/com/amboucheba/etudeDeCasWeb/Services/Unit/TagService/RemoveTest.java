@@ -5,8 +5,8 @@ import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Event;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Tag;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
-import com.amboucheba.etudeDeCasWeb.Repositories.TagRepository;
-import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.TagRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.UsersRepository;
 import com.amboucheba.etudeDeCasWeb.Services.*;
 import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ public class RemoveTest {
     private EventService eventService;
 
     @MockBean
-    UserService userService;
+    UsersService usersService;
 
     @MockBean
     PartageService partageService;
@@ -47,7 +47,7 @@ public class RemoveTest {
     static class Config{
 
         @MockBean
-        public UserRepository userRepository;
+        public UsersRepository usersRepository;
 
         @Bean
         public JwtUtil getUtil(){
@@ -75,7 +75,7 @@ public class RemoveTest {
         Tag tag = new Tag(1L,"", event);
 
         // Suppose user is authenticated
-        Mockito.when(userService.initiatorIsOwner(1L, 1L)).thenReturn(true);
+        Mockito.when(usersService.initiatorIsOwner(1L, 1L)).thenReturn(true);
         Mockito.when(tagRepository.findById(1L)).thenReturn(Optional.of(tag));
         Mockito.doNothing().when(tagRepository).deleteById(1L);
 

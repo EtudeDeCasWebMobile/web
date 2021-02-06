@@ -5,7 +5,7 @@ import com.amboucheba.etudeDeCasWeb.Exceptions.ForbiddenActionException;
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.RegisterUserInput;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
-import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,10 +16,10 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
-public class UserService {
+public class UsersService {
 
     @Autowired
-    UserRepository userRepository;
+    UsersRepository usersRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -30,7 +30,7 @@ public class UserService {
 
     // does the find work
     public Users find(long userId){
-        Optional<Users> result = userRepository.findById(userId);
+        Optional<Users> result = usersRepository.findById(userId);
         // check that targeted user exists
         if (result.isEmpty()){
             throw new NotFoundException("'User' with id " + userId + " not found");
@@ -53,19 +53,19 @@ public class UserService {
     }
 
     public List<Users> listUsers(){
-        return StreamSupport.stream(userRepository.findAll().spliterator(), false)
+        return StreamSupport.stream(usersRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
     }
 
     public Users registerUser(RegisterUserInput user){
 
-        Optional<Users> _user = userRepository.findByUsername(user.getUsername());
+        Optional<Users> _user = usersRepository.findByUsername(user.getUsername());
 
         if (_user.isPresent()){
             throw new DuplicateResourceException("'User' with username " + user.getUsername() + " already exists");
         }
 
-        return userRepository.save(new Users(user.getUsername(), passwordEncoder.encode(user.getPassword())));
+        return usersRepository.save(new Users(user.getUsername(), passwordEncoder.encode(user.getPassword())));
 
     }
 

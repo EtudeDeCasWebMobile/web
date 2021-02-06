@@ -6,7 +6,7 @@ import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Partage;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.PartageRequest;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
-import com.amboucheba.etudeDeCasWeb.Repositories.PartageRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.PartageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ public class PartageService {
     PartageRepository partageRepository;
 
     @Autowired
-    UserService userService;
+    UsersService usersService;
 
     @Autowired
     SerieTemporelleService serieTemporelleService;
@@ -48,7 +48,7 @@ public class PartageService {
         Partage partage = find(partageId);
         SerieTemporelle st = partage.getSerieTemporelle();
 
-        if (!userService.initiatorIsOwner(st.getOwner().getId(), initiatorId) ){
+        if (!usersService.initiatorIsOwner(st.getOwner().getId(), initiatorId) ){
             throw new ForbiddenActionException("Permission denied: cannot access another user's data");
         }
 
@@ -61,12 +61,12 @@ public class PartageService {
     public List<Partage> listPartageByUserId(long userId, Long initiatorId)  {
 
         // Initiator can only add series temporelles to himself
-        if (!userService.initiatorIsOwner(userId, initiatorId)){
+        if (!usersService.initiatorIsOwner(userId, initiatorId)){
             throw new ForbiddenActionException("Permission denied: cannot access another user's data");
         }
 
         // handles: user not found
-        Users users = userService.find(userId);
+        Users users = usersService.find(userId);
         return listPartageByUserId(userId);
     }
 
@@ -80,7 +80,7 @@ public class PartageService {
         SerieTemporelle st = serieTemporelleService.find(serieTemporelleId);
 
         // initiator must the owner of the serie temporelle to access its partages
-        if (!userService.initiatorIsOwner(st.getOwner().getId(), initiatorId)){
+        if (!usersService.initiatorIsOwner(st.getOwner().getId(), initiatorId)){
             throw new ForbiddenActionException("Permission denied: cannot access another user's data");
         }
 
@@ -94,14 +94,14 @@ public class PartageService {
     }
     public Partage createPartage(PartageRequest partage, Long initiatorId){
         // Not found is handled inside service call
-        Users users = userService.find(partage.getUserId());
+        Users users = usersService.find(partage.getUserId());
         // owner cannot share serie temporelle with himself
-        if (userService.initiatorIsOwner(users.getId(), initiatorId)){
+        if (usersService.initiatorIsOwner(users.getId(), initiatorId)){
             throw new ForbiddenActionException("Permission denied: owner cannot share with himself.");
         }
         // initiator must be the owner of serie temporelle to be able to share it
         SerieTemporelle st = serieTemporelleService.find(partage.getSerieTemporelleId());
-        if (!userService.initiatorIsOwner(st.getOwner().getId(), initiatorId)){
+        if (!usersService.initiatorIsOwner(st.getOwner().getId(), initiatorId)){
             throw new ForbiddenActionException("Permission denied: cannot share other users' serie temporelle");
         }
 
@@ -117,7 +117,7 @@ public class PartageService {
         Partage partage = find(partageId);
         SerieTemporelle st = partage.getSerieTemporelle();
 
-        if (!userService.initiatorIsOwner(st.getOwner().getId(), initiatorId)){
+        if (!usersService.initiatorIsOwner(st.getOwner().getId(), initiatorId)){
             throw new ForbiddenActionException("Permission denied: cannot update other users' partages");
         }
 
@@ -131,7 +131,7 @@ public class PartageService {
         Partage partage = find(partageId);
         SerieTemporelle st = partage.getSerieTemporelle();
 
-        if (!userService.initiatorIsOwner(st.getOwner().getId(), initiatorId)){
+        if (!usersService.initiatorIsOwner(st.getOwner().getId(), initiatorId)){
             throw new ForbiddenActionException("Permission denied: cannot delete other users' partages");
         }
         removePartage(partageId);

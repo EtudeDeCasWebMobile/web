@@ -4,7 +4,7 @@ import com.amboucheba.etudeDeCasWeb.Exceptions.ForbiddenActionException;
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Event;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
-import com.amboucheba.etudeDeCasWeb.Repositories.EventRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ public class EventService {
     SerieTemporelleService serieTemporelleService;
 
     @Autowired
-    UserService userService;
+    UsersService usersService;
 
     @Autowired
     PartageService partageService;
@@ -36,7 +36,7 @@ public class EventService {
         SerieTemporelle st = serieTemporelleService.find(serieTemporelleId);
 
         // initiator is the owner of the targeted serie temporelle
-        boolean isOwner = userService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
+        boolean isOwner = usersService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
         // Owner shared serie temporelle with initiator with read(r) access
         boolean hasAccess = partageService.hasAccess(initiatorId, st.getId(), "r");
 
@@ -61,7 +61,7 @@ public class EventService {
         SerieTemporelle st = event.getSerieTemporelle();
 
         // initiator is the owner of the targeted serie temporelle
-        boolean isOwner = userService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
+        boolean isOwner = usersService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
         // Owner shared serie temporelle with initiator with read(r) access
         boolean hasAccess = partageService.hasAccess(initiatorId, st.getId(), "r");
 
@@ -83,7 +83,7 @@ public class EventService {
         SerieTemporelle st = serieTemporelleService.find(serieTemporelleId);
 
         // initiator is the owner of the targeted serie temporelle
-        boolean isOwner = userService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
+        boolean isOwner = usersService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
         // Owner shared serie temporelle with initiator with read(r) access
         boolean hasAccess = partageService.hasAccess(initiatorId, st.getId(), "w");
 
@@ -109,7 +109,7 @@ public class EventService {
         SerieTemporelle st = event.getSerieTemporelle();
 
         // initiator is the owner of the targeted serie temporelle
-        boolean isOwner = userService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
+        boolean isOwner = usersService.initiatorIsOwner(st.getOwner().getId(), initiatorId);
         // Owner shared serie temporelle with initiator with read(r) access
         boolean hasAccess = partageService.hasAccess(initiatorId, st.getId(), "w");
 
@@ -129,7 +129,7 @@ public class EventService {
         SerieTemporelle st = event.getSerieTemporelle();
 
         // initiator of the request must the owner of the serie temporelle
-        if (!userService.initiatorIsOwner(st.getOwner().getId(), initiatorId)){
+        if (!usersService.initiatorIsOwner(st.getOwner().getId(), initiatorId)){
             throw new ForbiddenActionException("Permission denied: cannot access another user's data");
         }
         remove(eventId);

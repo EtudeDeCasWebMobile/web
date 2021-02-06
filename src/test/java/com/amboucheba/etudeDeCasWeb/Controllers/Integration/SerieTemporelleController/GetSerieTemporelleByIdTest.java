@@ -5,8 +5,8 @@ import com.amboucheba.etudeDeCasWeb.Exceptions.ApiException;
 import com.amboucheba.etudeDeCasWeb.Models.AuthenticationRequest;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
-import com.amboucheba.etudeDeCasWeb.Repositories.SerieTemporelleRepository;
-import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.SerieTemporelleRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.UsersRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ public class GetSerieTemporelleByIdTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    UserRepository userRepository;
+    UsersRepository usersRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -52,7 +52,7 @@ public class GetSerieTemporelleByIdTest {
     @BeforeEach
     void setAuthHeader(){
         users = new Users("user", passwordEncoder.encode("pass"));
-        users = userRepository.save(users);
+        users = usersRepository.save(users);
 
         AuthenticationRequest authenticationRequest = new AuthenticationRequest("user", "pass");
 

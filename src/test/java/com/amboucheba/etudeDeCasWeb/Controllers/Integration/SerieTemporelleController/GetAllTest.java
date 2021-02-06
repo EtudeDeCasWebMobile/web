@@ -2,8 +2,8 @@ package com.amboucheba.etudeDeCasWeb.Controllers.Integration.SerieTemporelleCont
 
 
 import com.amboucheba.etudeDeCasWeb.EtudeDeCasWebApplication;
-import com.amboucheba.etudeDeCasWeb.Repositories.SerieTemporelleRepository;
-import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.SerieTemporelleRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.UsersRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,7 +34,7 @@ public class GetAllTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    UserRepository userRepository;
+    UsersRepository usersRepository;
 
     //TO delete
 //    @Test

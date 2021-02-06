@@ -3,12 +3,12 @@ package com.amboucheba.etudeDeCasWeb.Services.Unit.SerieTemporelleService;
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
-import com.amboucheba.etudeDeCasWeb.Repositories.SerieTemporelleRepository;
-import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.SerieTemporelleRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.UsersRepository;
 import com.amboucheba.etudeDeCasWeb.Services.AuthService;
 import com.amboucheba.etudeDeCasWeb.Services.PartageService;
 import com.amboucheba.etudeDeCasWeb.Services.SerieTemporelleService;
-import com.amboucheba.etudeDeCasWeb.Services.UserService;
+import com.amboucheba.etudeDeCasWeb.Services.UsersService;
 import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +33,7 @@ public class RemoveSerieTemporelleTest {
     private SerieTemporelleRepository stRepository;
 
     @MockBean
-    private UserService userService;
+    private UsersService usersService;
 
     @MockBean
     PartageService partageService;
@@ -45,7 +45,7 @@ public class RemoveSerieTemporelleTest {
     static class Config{
 
         @MockBean
-        public UserRepository userRepository;
+        public UsersRepository usersRepository;
 
         @Bean
         public JwtUtil getUtil(){
@@ -71,7 +71,7 @@ public class RemoveSerieTemporelleTest {
         SerieTemporelle st = new SerieTemporelle("", "", users);
 
         // Suppose user is authenticated
-        Mockito.when(userService.initiatorIsOwner(1L, 1L)).thenReturn(true);
+        Mockito.when(usersService.initiatorIsOwner(1L, 1L)).thenReturn(true);
         Mockito.when(stRepository.findById(1L)).thenReturn(Optional.of(st));
         Mockito.doNothing().when(stRepository).deleteById(1L);
 
@@ -84,7 +84,7 @@ public class RemoveSerieTemporelleTest {
     public void stDoesNotExist__ThrowNotFoundException(){
 
         // Suppose user is authenticated
-        Mockito.when(userService.initiatorIsOwner(1L, 1L)).thenReturn(true);
+        Mockito.when(usersService.initiatorIsOwner(1L, 1L)).thenReturn(true);
         Mockito.when(stRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> {

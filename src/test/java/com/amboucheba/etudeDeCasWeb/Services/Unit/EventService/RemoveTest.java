@@ -4,8 +4,8 @@ import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Event;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
-import com.amboucheba.etudeDeCasWeb.Repositories.EventRepository;
-import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.EventRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.UsersRepository;
 import com.amboucheba.etudeDeCasWeb.Services.*;
 import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ public class RemoveTest {
     private EventService eventService;
 
     @MockBean
-    UserService userService;
+    UsersService usersService;
 
     @MockBean
     PartageService partageService;
@@ -46,7 +46,7 @@ public class RemoveTest {
     static class Config{
 
         @MockBean
-        public UserRepository userRepository;
+        public UsersRepository usersRepository;
 
         @Bean
         public JwtUtil getUtil(){
@@ -72,7 +72,7 @@ public class RemoveTest {
         Event event = new Event(1L, new Date(), 5.f, "st", st);
 
         // Suppose user is authenticated
-        Mockito.when(userService.initiatorIsOwner(1L, 1L)).thenReturn(true);
+        Mockito.when(usersService.initiatorIsOwner(1L, 1L)).thenReturn(true);
         Mockito.when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
         Mockito.doNothing().when(eventRepository).deleteById(1L);
 

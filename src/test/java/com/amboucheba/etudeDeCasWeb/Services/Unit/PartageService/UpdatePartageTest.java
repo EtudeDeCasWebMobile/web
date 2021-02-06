@@ -5,8 +5,8 @@ import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Partage;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.PartageRequest;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
-import com.amboucheba.etudeDeCasWeb.Repositories.PartageRepository;
-import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.PartageRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.UsersRepository;
 import com.amboucheba.etudeDeCasWeb.Services.*;
 import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ public class UpdatePartageTest {
     SerieTemporelleService serieTemporelleService;
 
     @MockBean
-    UserService userService;
+    UsersService usersService;
 
     @Autowired
     private PartageService partageService;
@@ -45,7 +45,7 @@ public class UpdatePartageTest {
     static class Config{
 
         @MockBean
-        public UserRepository userRepository;
+        public UsersRepository usersRepository;
 
         @Bean
         public JwtUtil getUtil(){
@@ -75,7 +75,7 @@ public class UpdatePartageTest {
         Mockito.when(partageRepository.save(newPartage)).thenReturn(newPartage);
 
         // Suppose user is authenticated
-        Mockito.when(userService.initiatorIsOwner(1L, 1L)).thenReturn(true);
+        Mockito.when(usersService.initiatorIsOwner(1L, 1L)).thenReturn(true);
 
         PartageRequest pr = new PartageRequest( 1L, 1L, "w");
         Partage updatedPartage = partageService.updatePartage(pr, 1L, 1L);

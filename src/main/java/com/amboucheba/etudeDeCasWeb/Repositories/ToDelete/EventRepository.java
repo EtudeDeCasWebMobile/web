@@ -1,4 +1,4 @@
-package com.amboucheba.etudeDeCasWeb.Repositories;
+package com.amboucheba.etudeDeCasWeb.Repositories.ToDelete;
 
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Event;
 import org.springframework.data.repository.CrudRepository;

@@ -6,9 +6,9 @@ import com.amboucheba.etudeDeCasWeb.Models.*;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Partage;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.SerieTemporelle;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
-import com.amboucheba.etudeDeCasWeb.Repositories.PartageRepository;
-import com.amboucheba.etudeDeCasWeb.Repositories.SerieTemporelleRepository;
-import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.PartageRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.SerieTemporelleRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.UsersRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,7 +43,7 @@ public class DeletePartageTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    UserRepository userRepository;
+    UsersRepository usersRepository;
 
     @Autowired
     SerieTemporelleRepository stRepository;
@@ -57,7 +57,7 @@ public class DeletePartageTest {
     @BeforeEach
     void setAuthHeader(){
         users = new Users("user", passwordEncoder.encode("pass"));
-        users = userRepository.save(users);
+        users = usersRepository.save(users);
 
         AuthenticationRequest authenticationRequest = new AuthenticationRequest("user", "pass");
 
@@ -70,7 +70,7 @@ public class DeletePartageTest {
     void partageExists__removePartage(){
 
         Users users2 = new Users("user2", "pass");
-        userRepository.save(users2);
+        usersRepository.save(users2);
         SerieTemporelle st = new SerieTemporelle("title", "desc", users);
         stRepository.save(st);
 
