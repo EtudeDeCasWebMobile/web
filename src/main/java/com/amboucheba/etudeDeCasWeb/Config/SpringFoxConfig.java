@@ -20,7 +20,7 @@ public class SpringFoxConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .useDefaultResponseMessages(false)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.amboucheba.seriesTemporellesTpWeb"))
+                .apis(RequestHandlerSelectors.basePackage("com.amboucheba"))
                 .paths(PathSelectors.any())
                 .paths(Predicate.not(PathSelectors.ant("/documentation")) )
 
@@ -30,8 +30,8 @@ public class SpringFoxConfig {
 
     private ApiInfo apiInfo(){
         return new ApiInfo(
-                "Series Temporelles Api Documentation",
-                "This is the 'Series Temporelles' api implemented for Web Technologies's  Homework, it describes the crud operation of the series temporelles, events and tag entity",
+                "Etude de cas web mobile Api Documentation",
+                "This is the 'Etude de cas web mobile' api implemented a school project",
                 "1.0",
                 null,
                 new Contact("Amine Bouchebaba", null, "bouchebaba.amine@gmail.com"),
