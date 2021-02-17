@@ -1,6 +1,6 @@
 package com.amboucheba.etudeDeCasWeb.Config;
 
-import com.amboucheba.etudeDeCasWeb.Services.ToDelete.AuthService;
+import com.amboucheba.etudeDeCasWeb.Services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable(); //we don't make use of cookies
 
         http.authorizeRequests()
-            .antMatchers(HttpMethod.POST,"/authenticate").permitAll()
+            .antMatchers(HttpMethod.POST,"/auth").permitAll()
             .antMatchers(HttpMethod.POST, "/users").permitAll()
             .anyRequest().authenticated();
 

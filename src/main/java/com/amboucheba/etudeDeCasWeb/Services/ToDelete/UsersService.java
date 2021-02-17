@@ -3,7 +3,7 @@ package com.amboucheba.etudeDeCasWeb.Services.ToDelete;
 import com.amboucheba.etudeDeCasWeb.Exceptions.DuplicateResourceException;
 import com.amboucheba.etudeDeCasWeb.Exceptions.ForbiddenActionException;
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
-import com.amboucheba.etudeDeCasWeb.Models.ToDelete.RegisterUserInput;
+import com.amboucheba.etudeDeCasWeb.Models.Inputs.RegisterInput;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +57,7 @@ public class UsersService {
                 .collect(Collectors.toList());
     }
 
-    public Users registerUser(RegisterUserInput user){
+    public Users registerUser(RegisterInput user){
 
         Optional<Users> _user = usersRepository.findByUsername(user.getUsername());
 

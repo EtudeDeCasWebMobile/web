@@ -1,10 +1,11 @@
 package com.amboucheba.etudeDeCasWeb.Controllers.Integration.UserController;
 
 import com.amboucheba.etudeDeCasWeb.EtudeDeCasWebApplication;
-import com.amboucheba.etudeDeCasWeb.Models.AuthenticationRequest;
-import com.amboucheba.etudeDeCasWeb.Models.ToDelete.RegisterUserInput;
+import com.amboucheba.etudeDeCasWeb.Models.Entities.User;
+import com.amboucheba.etudeDeCasWeb.Models.Inputs.AuthInput;
+import com.amboucheba.etudeDeCasWeb.Models.Inputs.RegisterInput;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
-import com.amboucheba.etudeDeCasWeb.Repositories.ToDelete.UsersRepository;
+import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,17 +14,15 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlGroup;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = EtudeDeCasWebApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@SqlGroup({
-        @Sql(scripts = { "classpath:schema121.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
-        @Sql(scripts = { "classpath:reset.sql" }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-})
+//@SqlGroup({
+//        @Sql(scripts = { "classpath:schema121.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+//        @Sql(scripts = { "classpath:reset.sql" }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+//})
 class UsersResourceTest {
 
     @LocalServerPort
@@ -33,70 +32,53 @@ class UsersResourceTest {
     private TestRestTemplate testRestTemplate;
 
     @Autowired
-    UsersRepository usersRepository;
+    UserRepository userRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    Users users;
+    User user;
     String token;
 
     @BeforeEach
     void setAuthHeader(){
-        users = new Users("user", passwordEncoder.encode("pass"));
-        users = usersRepository.save(users);
+        user = new User("email@salut.com", "user", passwordEncoder.encode("pass"));
+        user = userRepository.save(user);
 
-        AuthenticationRequest authenticationRequest = new AuthenticationRequest("user", "pass");
+        AuthInput authInput = new AuthInput("user", "pass");
 
-        String uri = "http://localhost:" + port + "/authenticate";
-        ResponseEntity<Void> response = testRestTemplate.postForEntity(uri, authenticationRequest, Void.class);
-        token = response.getHeaders().getFirst("token");
+        String uri = "http://localhost:" + port + "/auth";
+        ResponseEntity<Void> response = testRestTemplate.postForEntity(uri, authInput, Void.class);
+        token = response.getHeaders().getFirst("AuthToken");
     }
 
-    //To delete
-//    @Test
-//    void getAllTest() throws Exception {
-//
-//        // create users
-//        userRepository.save(new User("user1", "pass"));
-//        userRepository.save(new User("user2", "pass"));
-//
-//        // get users through /users endpoint
-//        String uri = "http://localhost:" + port + "/users/";
-//        ResponseEntity<UserList> response = testRestTemplate.getForEntity(uri, UserList.class);
-//        UserList userList = response.getBody();
-//
-//        // assert
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertEquals(userList.getCount(), 2);
-//    }
-
     @Test
-    void getUserByIdTest() throws Exception {
+    void getUserMeTest() throws Exception {
 
 
-        String uri = "http://localhost:" + port + "/users/" + users.getId();
+        String uri = "http://localhost:" + port + "/users/me" ;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(token);
         HttpEntity<Void> entity = new HttpEntity<>(headers);
         // Send request and get response
-        ResponseEntity<Users> response = testRestTemplate.exchange(uri, HttpMethod.GET, entity, Users.class);
-
+        ResponseEntity<User> response = testRestTemplate.exchange(uri, HttpMethod.GET, entity, User.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        Users returned = response.getBody();
+        User returned = response.getBody();
 
-        assertEquals(users.getUsername(), returned.getUsername());
+        assertEquals(user.getUsername(), returned.getUsername());
+        assertEquals(user.getEmail(), returned.getEmail());
     }
 
     @Test
     void addUserTest() throws Exception {
         String username = "user3p";
         String password = "password3";
-        RegisterUserInput input = new RegisterUserInput(username, password);
+        String email = "email@salut2.com";
+        RegisterInput input = new RegisterInput(email, username, password);
         Users users = new Users(username, password);
 
         String uri = "http://localhost:" + port + "/users";

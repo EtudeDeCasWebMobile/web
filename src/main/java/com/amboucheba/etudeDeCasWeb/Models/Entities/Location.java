@@ -10,6 +10,8 @@ import java.util.Objects;
 @Table(name = "locations")
 public class Location {
 
+    // Long to UUID
+    // Add Lat long
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

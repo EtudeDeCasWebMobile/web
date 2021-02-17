@@ -1,7 +1,7 @@
 package com.amboucheba.etudeDeCasWeb.Controllers.ToDelete;
 
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
-import com.amboucheba.etudeDeCasWeb.Models.ToDelete.RegisterUserInput;
+import com.amboucheba.etudeDeCasWeb.Models.Inputs.RegisterInput;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.ModelLists.UserList;
 import com.amboucheba.etudeDeCasWeb.Services.ToDelete.UsersService;
@@ -45,7 +45,7 @@ public class UsersController {
             @ApiResponse(code = 201, message = "User created, check location header for uri"),
             @ApiResponse(code = 400, message = "Provided User info not valid, check response body for more details on error")
     })
-    public ResponseEntity<Void> addUser(@Valid @RequestBody RegisterUserInput newUser){
+    public ResponseEntity<Void> addUser(@Valid @RequestBody RegisterInput newUser){
 
         long newUserId = usersService.registerUser(newUser).getId();
 
