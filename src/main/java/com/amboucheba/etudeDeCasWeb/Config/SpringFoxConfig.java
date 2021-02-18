@@ -20,10 +20,9 @@ public class SpringFoxConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .useDefaultResponseMessages(false)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.amboucheba"))
+                .apis(RequestHandlerSelectors.basePackage("com.amboucheba.etudeDeCasWeb"))
                 .paths(PathSelectors.any())
                 .paths(Predicate.not(PathSelectors.ant("/documentation")) )
-
                 .build()
                 .apiInfo(apiInfo());
     }
