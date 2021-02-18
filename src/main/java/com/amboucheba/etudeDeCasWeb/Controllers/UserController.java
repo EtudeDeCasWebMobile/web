@@ -3,6 +3,7 @@ package com.amboucheba.etudeDeCasWeb.Controllers;
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
 import com.amboucheba.etudeDeCasWeb.Models.Entities.User;
 import com.amboucheba.etudeDeCasWeb.Models.Inputs.RegisterInput;
+import com.amboucheba.etudeDeCasWeb.Models.Outputs.Users;
 import com.amboucheba.etudeDeCasWeb.Services.UserService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiResponse;
@@ -44,6 +45,25 @@ public class UserController {
                 .toUri();
 
         return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping( produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "User returned in body"),
+            @ApiResponse(code = 401, message = "User unauthenticated: access restricted to authenticated users")
+    })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+    public ResponseEntity<Users> getUsers(@ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
+
+        Users users = new Users(userService.listUsers());
+        return ResponseEntity
+                .ok()
+                .cacheControl(CacheControl
+                        .maxAge(60, TimeUnit.SECONDS)
+                        .cachePrivate()
+                        .noTransform()
+                        .staleIfError(1, TimeUnit.HOURS))
+                .body(users);
     }
 
     @GetMapping(value = "/me", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
