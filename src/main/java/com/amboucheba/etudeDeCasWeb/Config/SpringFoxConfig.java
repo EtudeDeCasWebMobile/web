@@ -33,7 +33,7 @@ public class SpringFoxConfig {
                 "This is the 'Etude de cas web mobile' api implemented a school project",
                 "1.0",
                 null,
-                new Contact("Amine Bouchebaba", null, "bouchebaba.amine@gmail.com"),
+                new Contact("Team 4", null, "kechEmail@gmail.com"),
                 null,
                 null,
                 Collections.emptyList()

@@ -35,6 +35,10 @@ public class UserService {
 
     public List<User> listUsers(){
         return StreamSupport.stream(userRepository.findAll().spliterator(), false)
+                .peek(user -> {
+                    user.setPassword(null);
+                    user.setPosition(null);
+                })
                 .collect(Collectors.toList());
     }
 
