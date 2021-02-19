@@ -4,6 +4,7 @@ package com.amboucheba.etudeDeCasWeb.Models.Entities;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,10 +16,14 @@ public class Collection {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "tag", unique = true)
+    @Column(name = "tag")
     @NotBlank(message = "Field 'tag' is required")
     @Size( min = 0, max = 50, message = "Tag length must be between 1 and 50")
     private String tag;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
 
     @ManyToMany
     @JoinTable(
@@ -27,9 +32,16 @@ public class Collection {
         inverseJoinColumns = @JoinColumn(name = "location_id"))
     List<Location> locations;
 
-    public Collection(Long id, @NotBlank(message = "Field 'tag' is required") @Size(min = 0, max = 50, message = "Tag length must be between 1 and 50") String tag) {
-        this.id = id;
+    public Collection(@NotBlank(message = "Field 'tag' is required") @Size(min = 0, max = 50, message = "Tag length must be between 1 and 50") String tag, User owner, List<Location> locations) {
         this.tag = tag;
+        this.owner = owner;
+        this.locations = locations;
+    }
+
+    public Collection(@NotBlank(message = "Field 'tag' is required") @Size(min = 0, max = 50, message = "Tag length must be between 1 and 50") String tag, User owner) {
+        this.tag = tag;
+        this.owner = owner;
+        this.locations = new ArrayList<>();
     }
 
     public Collection() {
@@ -51,6 +63,14 @@ public class Collection {
         this.tag = tag;
     }
 
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
     public List<Location> getLocations() {
         return locations;
     }
@@ -64,13 +84,15 @@ public class Collection {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Collection that = (Collection) o;
-        return id.equals(that.id) &&
-                tag.equals(that.tag);
+        return Objects.equals(id, that.id) &&
+                tag.equals(that.tag) &&
+                owner.equals(that.owner) &&
+                Objects.equals(locations, that.locations);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tag);
+        return Objects.hash(id, tag, owner, locations);
     }
 }
 
