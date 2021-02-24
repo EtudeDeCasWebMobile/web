@@ -80,7 +80,6 @@ public class CollectionService {
 
         if (collection.getOwner().getId().equals(userId)){
             // user is owner --> update the collection
-
             collection.setTag(newCollection.getTag());
             return collectionRepository.save(collection);
         }
