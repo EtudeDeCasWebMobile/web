@@ -7,7 +7,7 @@ import java.util.Objects;
 public class CollectionInput {
 
     @NotBlank(message = "Field 'tag' is required")
-    @Size( min = 0, max = 50, message = "Tag length must be between 1 and 50")
+    @Size( min = 1, max = 50, message = "Tag length must be between 1 and 50")
     private String tag;
 
     public CollectionInput(@NotBlank(message = "Field 'tag' is required") @Size(min = 0, max = 50, message = "Tag length must be between 1 and 50") String tag) {

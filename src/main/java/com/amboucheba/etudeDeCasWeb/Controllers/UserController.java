@@ -33,7 +33,8 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "User created, check location header for uri"),
-            @ApiResponse(code = 400, message = "Provided User info not valid, check response body for more details on error")
+            @ApiResponse(code = 400, message = "Provided User info not valid, check response body for more details on error"),
+            @ApiResponse(code = 409, message = "Provided email is already taken.")
     })
     public ResponseEntity<Void> addUser(@Valid @RequestBody RegisterInput newUser){
 
@@ -69,7 +70,7 @@ public class UserController {
     @GetMapping(value = "/me", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User returned in body"),
-            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
+            @ApiResponse(code = 401, message = "User unauthenticated: access restricted to authenticated users"),
             @ApiResponse(code = 404, message = "User not found")
     })
     @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")

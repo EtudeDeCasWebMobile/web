@@ -9,15 +9,15 @@ import java.util.Objects;
 
 public class RegisterInput {
 
-    @Email
+    @Email(message = "Email is not valid")
     @NotEmpty(message = "Field 'email' is required")
     private String email;
 
     @NotBlank(message = "Field 'password' is required")
-    @Size( min = 0, max = 255, message = "Password length must be between 6 and 255")
+    @Size( min = 6, max = 50, message = "Password length must be between 6 and 50")
     private String password;
 
-    public RegisterInput(@Email @NotEmpty(message = "Field 'email' is required") String email,  @NotBlank(message = "Field 'password' is required") @Size(min = 0, max = 255, message = "Password length must be between 6 and 255") String password) {
+    public RegisterInput( String email, String password) {
         this.email = email;
         this.password = password;
     }

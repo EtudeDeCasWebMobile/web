@@ -57,7 +57,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(value = {BadCredentialsException.class})
     public ResponseEntity<ApiException> handleBadCredentialsException(BadCredentialsException e){
-        ApiException apiException = new ApiException("Invalid email or password", HttpStatus.BAD_REQUEST);
+        ApiException apiException = new ApiException(e.getMessage(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST );
     }
 

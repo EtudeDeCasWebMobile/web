@@ -34,7 +34,8 @@ public class CollectionController {
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE
     })
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Collection returned in body"),
+            @ApiResponse(code = 200, message = "Collections returned in body"),
+            @ApiResponse(code = 401, message = "User unauthenticated: access restricted to authenticated users"),
             @ApiResponse(code = 404, message = "User not found")
     })
     @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
@@ -52,6 +53,7 @@ public class CollectionController {
                 .body(collections);
     }
 
+
     // Get collections by id --> uri to share with other users
     @GetMapping(
             value = "/collections/{collectionId}",
@@ -59,8 +61,8 @@ public class CollectionController {
     })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Collection returned in body"),
-            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data without token"),
-            @ApiResponse(code = 404, message = "User not found")
+            @ApiResponse(code = 401, message = "User unauthenticated: access restricted to authenticated users"),
+            @ApiResponse(code = 404, message = "Collection not found")
     })
     @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
     public ResponseEntity<Collection> getCollectionById(
@@ -89,7 +91,7 @@ public class CollectionController {
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Collection created, check location header for uri"),
             @ApiResponse(code = 400, message = "Provided Collection info not valid, check response body for more details on error"),
-            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
+            @ApiResponse(code = 401, message = "User unauthenticated: access restricted to authenticated users"),
             @ApiResponse(code = 404, message = "User not found"),
             @ApiResponse(code = 409, message = "A collection with the same tag name already exists for this user"),
     })
@@ -117,8 +119,9 @@ public class CollectionController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Collection updated and returned in response body"),
             @ApiResponse(code = 400, message = "Provided Collection info not valid, check response body for more details on error"),
-            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
+            @ApiResponse(code = 401, message = "User unauthenticated: access restricted to authenticated users"),
             @ApiResponse(code = 404, message = "Collection not found"),
+            @ApiResponse(code = 409, message = "A collection with the same tag name already exists for this user"),
     })
     @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
     public ResponseEntity<Collection> updateCollection(
@@ -138,7 +141,8 @@ public class CollectionController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "Collection deleted"),
-            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
+            @ApiResponse(code = 401, message = "User unauthenticated: access restricted to authenticated users"),
+            @ApiResponse(code = 403, message = "Permission denied: Only owner of the collection can delete it"),
             @ApiResponse(code = 404, message = "Collection not found")
     })
     @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")

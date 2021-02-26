@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -35,7 +36,7 @@ public class AuthController {
             @ApiResponse(code = 200, message = "Auth token returned in AuthToken response header"),
             @ApiResponse(code = 400, message = "Bad Credentials, check email and password ")
     })
-    ResponseEntity<User> authenticate (@RequestBody AuthInput auth){
+    ResponseEntity<User> authenticate (@Valid @RequestBody AuthInput auth){
 
         String token = authService.authenticate(auth);
 

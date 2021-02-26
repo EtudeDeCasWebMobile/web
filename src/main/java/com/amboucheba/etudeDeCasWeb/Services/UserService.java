@@ -37,7 +37,7 @@ public class UserService {
         return StreamSupport.stream(userRepository.findAll().spliterator(), false)
                 .peek(user -> {
                     user.setPassword(null);
-                    user.setPosition(null);
+//                    user.setPosition(null);
                 })
                 .collect(Collectors.toList());
     }
@@ -47,7 +47,7 @@ public class UserService {
         Optional<User> byEmail = userRepository.findByEmail(user.getEmail());
 
         if (byEmail.isPresent()){
-            throw new DuplicateResourceException("'User' with username " + user.getEmail() + " already exists");
+            throw new DuplicateResourceException("User with email " + user.getEmail() + " already exists");
         }
 
         return userRepository.save(new User(user.getEmail(), passwordEncoder.encode(user.getPassword())));

@@ -45,9 +45,9 @@ class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
 
         Map<String,Object> response = new HashMap<>();
-        response.put("status","404");
-        response.put("message","Invalid token, user does not exist");
-        httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        response.put("status","401");
+        response.put("message","Missing or invalid auth token");
+        httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         OutputStream out = httpServletResponse.getOutputStream();
         ObjectMapper mapper = new ObjectMapper();
         mapper.writerWithDefaultPrettyPrinter().writeValue(out, response);
@@ -65,7 +65,6 @@ class RestAccessDeniedHandler implements AccessDeniedHandler {
         response.put("status","403");
         response.put("message","unauthorized api access");
 
-        //httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
         httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
         OutputStream out = httpServletResponse.getOutputStream();
         ObjectMapper mapper = new ObjectMapper();
