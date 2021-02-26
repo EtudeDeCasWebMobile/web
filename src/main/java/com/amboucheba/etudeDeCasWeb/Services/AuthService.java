@@ -1,5 +1,6 @@
 package com.amboucheba.etudeDeCasWeb.Services;
 
+import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
 import com.amboucheba.etudeDeCasWeb.Models.Inputs.AuthInput;
 import com.amboucheba.etudeDeCasWeb.Models.Entities.User;
@@ -27,23 +28,23 @@ public class AuthService implements UserDetailsService {
     JwtUtil jwtUtil;
 
     @Override
-    public AuthDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByUsername(username);
+    public AuthDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findByEmail(email);
         if (user.isEmpty()){
-            throw new UsernameNotFoundException("User with username = " + username + " not found.");
+            throw new UsernameNotFoundException("User with email = " + email + " not found.");
         }
 
         User _user = user.get();
 
-        return new AuthDetails(_user.getId(), _user.getUsername(), _user.getPassword());
+        return new AuthDetails(_user.getId(), _user.getEmail(), _user.getPassword());
     }
 
     public String authenticate(AuthInput auth){
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(auth.getUsername(), auth.getPassword())
+                new UsernamePasswordAuthenticationToken(auth.getEmail(), auth.getPassword())
         );
 
-        AuthDetails userDetails = loadUserByUsername(auth.getUsername());
+        AuthDetails userDetails = loadUserByUsername(auth.getEmail());
         return jwtUtil.generateToken(userDetails);
     }
 }

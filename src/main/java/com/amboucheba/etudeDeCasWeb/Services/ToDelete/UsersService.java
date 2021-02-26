@@ -59,13 +59,13 @@ public class UsersService {
 
     public Users registerUser(RegisterInput user){
 
-        Optional<Users> _user = usersRepository.findByUsername(user.getUsername());
+        Optional<Users> _user = usersRepository.findByUsername(user.getEmail());
 
         if (_user.isPresent()){
-            throw new DuplicateResourceException("'User' with username " + user.getUsername() + " already exists");
+            throw new DuplicateResourceException("'User' with email " + user.getEmail() + " already exists");
         }
 
-        return usersRepository.save(new Users(user.getUsername(), passwordEncoder.encode(user.getPassword())));
+        return usersRepository.save(new Users(user.getEmail(), passwordEncoder.encode(user.getPassword())));
 
     }
 

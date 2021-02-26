@@ -29,10 +29,12 @@ public class CollectionController {
     CollectionService collectionService;
 
     // Get my collections
-    @GetMapping(value = "/me/collections", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(
+            value = "/me/collections",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE
+    })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Collection returned in body"),
-            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "User not found")
     })
     @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
@@ -51,10 +53,13 @@ public class CollectionController {
     }
 
     // Get collections by id --> uri to share with other users
-    @GetMapping(value = "/collections/{collectionId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(
+            value = "/collections/{collectionId}",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE
+    })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Collection returned in body"),
-            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
+            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data without token"),
             @ApiResponse(code = 404, message = "User not found")
     })
     @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
@@ -75,6 +80,8 @@ public class CollectionController {
                 .body(collection);
     }
 
+
+
     @PostMapping(
             value = "/me/collections",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
@@ -84,6 +91,7 @@ public class CollectionController {
             @ApiResponse(code = 400, message = "Provided Collection info not valid, check response body for more details on error"),
             @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
             @ApiResponse(code = 404, message = "User not found"),
+            @ApiResponse(code = 409, message = "A collection with the same tag name already exists for this user"),
     })
     @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
     public ResponseEntity<Void> addCollection(
@@ -98,6 +106,8 @@ public class CollectionController {
 
         return ResponseEntity.created(location).build();
     }
+
+
 
     @PutMapping(
             value = "/collections/{collectionId}",
@@ -121,6 +131,8 @@ public class CollectionController {
         );
         return ResponseEntity.ok(modifiedCollection);
     }
+
+
 
     @DeleteMapping(value = "/collections/{collectionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

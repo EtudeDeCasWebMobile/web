@@ -7,6 +7,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -22,11 +23,6 @@ public class User {
     @NotEmpty(message = "Field 'email' is required")
     private String email;
 
-    @Column(name = "username", unique = true)
-    @NotBlank(message = "Field 'username' is required")
-    @Size( min = 0, max = 255, message = "Username length must be between 6 and 255")
-    private String username;
-
     @Column(name = "password")
     @NotBlank(message = "Field 'password' is required")
     @Size( min = 6, max = 255, message = "Password length must be between 6 and 255")
@@ -37,22 +33,14 @@ public class User {
     @JoinColumn(name = "position")
     private Location position;
 
-    public User(Long id, String username, String password) {
-        this.id = id;
-        this.username = username;
+    public User(@Email @NotEmpty(message = "Field 'email' is required") String email,  @NotBlank(message = "Field 'password' is required") @Size(min = 0, max = 255, message = "Password length must be between 6 and 255") String password) {
+        this.email = email;
         this.password = password;
     }
 
-    public User(@Email @NotEmpty(message = "Field 'email' is required") String email, @NotBlank(message = "Field 'username' is required") @Size(min = 0, max = 255, message = "Username length must be between 6 and 255") String username, @NotBlank(message = "Field 'password' is required") @Size(min = 0, max = 255, message = "Password length must be between 6 and 255") String password) {
-        this.email = email;
-        this.username = username;
-        this.password = password;
-    }
-
-    public User(Long id, @Email @NotEmpty(message = "Field 'email' is required") String email, @NotBlank(message = "Field 'username' is required") @Size(min = 0, max = 255, message = "Username length must be between 6 and 255") String username, @NotBlank(message = "Field 'password' is required") @Size(min = 0, max = 255, message = "Password length must be between 6 and 255") String password) {
+    public User(Long id, @Email @NotEmpty(message = "Field 'email' is required") String email,  @NotBlank(message = "Field 'password' is required") @Size(min = 0, max = 255, message = "Password length must be between 6 and 255") String password) {
         this.id = id;
         this.email = email;
-        this.username = username;
         this.password = password;
     }
 
@@ -72,14 +60,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {
@@ -104,12 +84,11 @@ public class User {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return Objects.equals(id, user.id) &&
-                email.equals(user.email) &&
-                username.equals(user.username);
+                email.equals(user.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, username);
+        return Objects.hash(id, email);
     }
 }

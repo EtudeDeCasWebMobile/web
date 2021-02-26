@@ -54,7 +54,7 @@ public class FindTest {
     public void userExists__returnUser(){
 
         long userId = 1;
-        User user = new User("email", "user", "pass");
+        User user = new User("email", "pass");
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         User found = userService.find(userId);

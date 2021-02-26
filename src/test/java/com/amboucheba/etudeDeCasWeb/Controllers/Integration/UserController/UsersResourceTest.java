@@ -6,6 +6,7 @@ import com.amboucheba.etudeDeCasWeb.Models.Inputs.AuthInput;
 import com.amboucheba.etudeDeCasWeb.Models.Inputs.RegisterInput;
 import com.amboucheba.etudeDeCasWeb.Models.ToDelete.Users;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = EtudeDeCasWebApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //@SqlGroup({
-//        @Sql(scripts = { "classpath:schema121.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+//        @Sql(scripts = { "classpath:schema_tmp.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
 //        @Sql(scripts = { "classpath:reset.sql" }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 //})
 class UsersResourceTest {
@@ -42,14 +43,19 @@ class UsersResourceTest {
 
     @BeforeEach
     void setAuthHeader(){
-        user = new User("email@salut.com", "user", passwordEncoder.encode("pass"));
+        user = new User("email@salut.com",  passwordEncoder.encode("pass"));
         user = userRepository.save(user);
 
-        AuthInput authInput = new AuthInput("user", "pass");
+        AuthInput authInput = new AuthInput("email@salut.com", "pass");
 
         String uri = "http://localhost:" + port + "/auth";
         ResponseEntity<Void> response = testRestTemplate.postForEntity(uri, authInput, Void.class);
         token = response.getHeaders().getFirst("AuthToken");
+    }
+
+    @AfterEach
+    void clean(){
+        userRepository.deleteAll();
     }
 
     @Test
@@ -69,7 +75,6 @@ class UsersResourceTest {
 
         User returned = response.getBody();
 
-        assertEquals(user.getUsername(), returned.getUsername());
         assertEquals(user.getEmail(), returned.getEmail());
     }
 
@@ -78,7 +83,7 @@ class UsersResourceTest {
         String username = "user3p";
         String password = "password3";
         String email = "email@salut2.com";
-        RegisterInput input = new RegisterInput(email, username, password);
+        RegisterInput input = new RegisterInput(email, password);
         Users users = new Users(username, password);
 
         String uri = "http://localhost:" + port + "/users";

@@ -55,25 +55,24 @@ public class RegisterUserTest {
     }
     @Test
     public void usernameAndEmailDoNotExist__createUser(){
-        User toSave = new User("email", "user", "pass");
-        User expected = new User( 1L,"email", "user", "pass");
+        User toSave = new User("email", "pass");
+        User expected = new User( 1L,"email",  "pass");
 
-        Mockito.when(userRepository.findByUsername("user")).thenReturn(Optional.empty());
+        Mockito.when(userRepository.findByEmail("user")).thenReturn(Optional.empty());
 
         Mockito.when(userRepository.save(toSave)).thenReturn(expected);
 
-        RegisterInput r = new RegisterInput("email", "user", "pass");
+        RegisterInput r = new RegisterInput("email", "pass");
         User returned = userService.registerUser(r);
 
-        assertEquals(expected.getUsername(), returned.getUsername());
         assertEquals(expected.getEmail(), returned.getEmail());
     }
 
     @Test
     public void usernameAlreadyExists__throwDuplicateResourceException(){
-        User toSave = new User("email", "user", "pass");
-        RegisterInput r = new RegisterInput("e", toSave.getUsername(),  "pass");
-        Mockito.when(userRepository.findByUsername(r.getUsername())).thenReturn(Optional.of(toSave));
+        User toSave = new User("email", "pass");
+        RegisterInput r = new RegisterInput(toSave.getEmail(),  "pass");
+        Mockito.when(userRepository.findByEmail(r.getEmail())).thenReturn(Optional.of(toSave));
 
         assertThrows(DuplicateResourceException.class, () -> {
            userService.registerUser(r);
@@ -82,8 +81,8 @@ public class RegisterUserTest {
 
     @Test
     public void emailAlreadyExists__throwDuplicateResourceException(){
-        User toSave = new User("email", "user", "pass");
-        RegisterInput r = new RegisterInput(toSave.getEmail(), "u",  "pass");
+        User toSave = new User("email", "pass");
+        RegisterInput r = new RegisterInput(toSave.getEmail(), "pass");
         Mockito.when(userRepository.findByEmail(r.getEmail())).thenReturn(Optional.of(toSave));
 
         assertThrows(DuplicateResourceException.class, () -> {

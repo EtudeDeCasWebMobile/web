@@ -22,14 +22,14 @@ public class Collection {
     private String tag;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
+    @JoinColumn(name = "owner_id")
     private User owner;
 
     @ManyToMany
     @JoinTable(
         name = "collection_locations",
         joinColumns = @JoinColumn(name = "collection_id"),
-        inverseJoinColumns = @JoinColumn(name = "location_id"))
+        inverseJoinColumns = @JoinColumn(name = "location_id") )
     List<Location> locations;
 
     public Collection(@NotBlank(message = "Field 'tag' is required") @Size(min = 0, max = 50, message = "Tag length must be between 1 and 50") String tag, User owner, List<Location> locations) {

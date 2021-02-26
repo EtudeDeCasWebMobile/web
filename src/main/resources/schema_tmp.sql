@@ -1,26 +1,40 @@
---CREATE TABLE if not EXISTS users(
---    id  integer GENERATED ALWAYS AS IDENTITY,
---    username VARCHAR(255) not null UNIQUE,
---    password varchar(255) not null,
+CREATE TABLE if not EXISTS users(
+    id  integer GENERATED ALWAYS AS IDENTITY,
+    email VARCHAR(255) not null UNIQUE,
+    password varchar(255) not null,
+    position int,
+
+    PRIMARY KEY (id)
+);
 --
---    PRIMARY KEY (id)
---);
+CREATE TABLE if not EXISTS locations(
+    id  integer GENERATED ALWAYS AS IDENTITY,
+    title VARCHAR(255) not null,
+    description varchar(255) not null,
+    owner_id varchar(255) ,
+
+    PRIMARY KEY (id)
+);
 --
---CREATE TABLE if not EXISTS locations(
---    id  integer GENERATED ALWAYS AS IDENTITY,
---    title VARCHAR(255) not null,
---    description varchar(255) not null,
---    owner_id varchar(255) not null,
---
---    PRIMARY KEY (id)
---);
---
---CREATE TABLE if not EXISTS collections(
---    id  integer GENERATED ALWAYS AS IDENTITY,
---    tag VARCHAR(255) not null,
---
---    PRIMARY KEY (id)
---);
+CREATE TABLE if not EXISTS collections(
+    id  integer GENERATED ALWAYS AS IDENTITY,
+    tag VARCHAR(255) not null,
+    owner_id int,
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE users
+ADD CONSTRAINT fk_position
+FOREIGN KEY (position) REFERENCES locations(id) ON DELETE SET NULL;
+
+ALTER TABLE locations
+ADD CONSTRAINT fk_location_owner
+FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE collections
+ADD CONSTRAINT fk_collection_owner
+FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL;
+
 --
 --CREATE TABLE if not EXISTS location_collection(
 --    id  integer GENERATED ALWAYS AS IDENTITY,

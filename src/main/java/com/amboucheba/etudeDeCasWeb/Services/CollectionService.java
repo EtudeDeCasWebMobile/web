@@ -28,7 +28,7 @@ public class CollectionService {
 
         Optional<Collection> tmp = collectionRepository.findByTagAndOwnerId(tag, userId);
         if (tmp.isPresent()){
-            throw new DuplicateResourceException("'Collection' with tag " + tag + " already exists for user " + user.getUsername());
+            throw new DuplicateResourceException("'Collection' with tag " + tag + " already exists for user " + user.getEmail());
         }
 
         Collection collection = new Collection(tag, user);
