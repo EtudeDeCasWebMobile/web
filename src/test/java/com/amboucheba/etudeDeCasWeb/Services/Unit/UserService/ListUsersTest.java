@@ -53,7 +53,7 @@ public class ListUsersTest {
     public void __returnUserList(){
 
         List<User> expected = Collections.singletonList(
-                new User("email", "user", "pass")
+                new User("email", "pass")
         );
         Mockito.when(userRepository.findAll()).thenReturn(expected);
 

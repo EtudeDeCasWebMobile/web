@@ -44,16 +44,12 @@ public class UserService {
 
     public User registerUser(RegisterInput user){
 
-        Optional<User> byUsername = userRepository.findByUsername(user.getUsername());
         Optional<User> byEmail = userRepository.findByEmail(user.getEmail());
 
         if (byEmail.isPresent()){
-            throw new DuplicateResourceException("'User' with username " + user.getUsername() + " already exists");
-        }
-        if (byUsername.isPresent()){
-            throw new DuplicateResourceException("'User' with email " + user.getEmail() + " already exists");
+            throw new DuplicateResourceException("'User' with username " + user.getEmail() + " already exists");
         }
 
-        return userRepository.save(new User(user.getEmail(), user.getUsername(), passwordEncoder.encode(user.getPassword())));
+        return userRepository.save(new User(user.getEmail(), passwordEncoder.encode(user.getPassword())));
     }
 }

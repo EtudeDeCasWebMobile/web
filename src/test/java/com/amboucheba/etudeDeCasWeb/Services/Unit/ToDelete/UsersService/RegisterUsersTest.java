@@ -60,7 +60,7 @@ public class RegisterUsersTest {
 
         Mockito.when(usersRepository.save(toSave)).thenReturn(expected);
 
-        RegisterInput r = new RegisterInput("user", "", "pass");
+        RegisterInput r = new RegisterInput("user@gmail.com",  "pass");
         Users returned = usersService.registerUser(r);
 
         assertEquals(expected.getUsername(), returned.getUsername());
@@ -69,7 +69,7 @@ public class RegisterUsersTest {
     @Test
     public void usernameAlreadyExists__throwDuplicateResourceException(){
         Users toSave = new Users("user", "pass");
-        RegisterInput r = new RegisterInput(toSave.getUsername(), "", "pass");
+        RegisterInput r = new RegisterInput(toSave.getUsername(), "pass");
         Mockito.when(usersRepository.findByUsername("user")).thenReturn(Optional.of(toSave));
 
         assertThrows(DuplicateResourceException.class, () -> {

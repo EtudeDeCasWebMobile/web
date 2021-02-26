@@ -29,9 +29,9 @@ public class AuthController {
 
         String token = authService.authenticate(auth);
 
-        Optional<User> user = userRepository.findByUsername(auth.getUsername());
+        Optional<User> user = userRepository.findByEmail(auth.getEmail());
         if (user.isEmpty()){
-            throw new UsernameNotFoundException("User with username = " + auth.getUsername() + " not found.");
+            throw new UsernameNotFoundException("User with email = " + auth.getEmail() + " not found.");
         }
 
         User _user = user.get();
@@ -40,6 +40,6 @@ public class AuthController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("AuthToken", token);
-        return new ResponseEntity<User>(_user, headers, HttpStatus.OK);
+        return new ResponseEntity<>(_user, headers, HttpStatus.OK);
     }
 }

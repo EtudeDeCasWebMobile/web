@@ -9,14 +9,14 @@ import java.util.Map;
 public class AuthDetails implements UserDetails {
 
     private Long userId;
-    private String username;
+    private String email;
     private String password;
 
     private Map<Long, String> authorities;
 
-    public AuthDetails(Long userId, String username, String password) {
+    public AuthDetails(Long userId, String email, String password) {
         this.userId = userId;
-        this.username = username;
+        this.email = email;
         this.password = password;
     }
 
@@ -45,9 +45,10 @@ public class AuthDetails implements UserDetails {
         return password;
     }
 
+    // Using email instead of password
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
