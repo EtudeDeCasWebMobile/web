@@ -1,8 +1,18 @@
 package com.amboucheba.etudeDeCasWeb.Models.Inputs;
 
+
+import javax.persistence.Entity;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
+
 public class AuthInput {
 
+    @Email
     private String email;
+    @NotEmpty
+    @Size(min = 6, max = 50, message = "Password length should be between 6 and 50")
     private String password;
 
     public AuthInput(String email, String password) {

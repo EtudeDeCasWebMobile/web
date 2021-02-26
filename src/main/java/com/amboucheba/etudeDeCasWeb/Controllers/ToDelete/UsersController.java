@@ -31,52 +31,52 @@ public class UsersController {
     UsersService usersService;
 
     // Should be removed
-    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<UserList> getAll(){
-
-        List<Users> users = usersService.listUsers();
-
-        return ResponseEntity.ok(new UserList(users));
-    }
-
-    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    @ResponseStatus(HttpStatus.CREATED)
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "User created, check location header for uri"),
-            @ApiResponse(code = 400, message = "Provided User info not valid, check response body for more details on error")
-    })
-    public ResponseEntity<Void> addUser(@Valid @RequestBody RegisterInput newUser){
-
-        long newUserId = usersService.registerUser(newUser).getId();
-
-        URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .pathSegment("users", "{id}")
-                .buildAndExpand(newUserId)
-                .toUri();
-
-        return ResponseEntity.created(location).build();
-
-    }
-
-    @GetMapping(value = "/{userId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "User returned in body"),
-            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
-            @ApiResponse(code = 404, message = "User not found")
-    })
-    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
-    public ResponseEntity<Users> getUserById(@PathVariable("userId") long userId, @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
-
-        return ResponseEntity
-                .ok()
-                .cacheControl(CacheControl
-                        .maxAge(60, TimeUnit.SECONDS)
-                        .cachePrivate()
-                        .noTransform()
-                        .staleIfError(1, TimeUnit.HOURS))
-                .body(usersService.find(userId, userDetails.getUserId()));
-    }
-
+//    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+//    public ResponseEntity<UserList> getAll(){
+//
+//        List<Users> users = usersService.listUsers();
+//
+//        return ResponseEntity.ok(new UserList(users));
+//    }
+//
+//    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+//    @ResponseStatus(HttpStatus.CREATED)
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 201, message = "User created, check location header for uri"),
+//            @ApiResponse(code = 400, message = "Provided User info not valid, check response body for more details on error")
+//    })
+//    public ResponseEntity<Void> addUser(@Valid @RequestBody RegisterInput newUser){
+//
+//        long newUserId = usersService.registerUser(newUser).getId();
+//
+//        URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+//                .pathSegment("users", "{id}")
+//                .buildAndExpand(newUserId)
+//                .toUri();
+//
+//        return ResponseEntity.created(location).build();
+//
+//    }
+//
+//    @GetMapping(value = "/{userId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "User returned in body"),
+//            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
+//            @ApiResponse(code = 404, message = "User not found")
+//    })
+//    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+//    public ResponseEntity<Users> getUserById(@PathVariable("userId") long userId, @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
+//
+//        return ResponseEntity
+//                .ok()
+//                .cacheControl(CacheControl
+//                        .maxAge(60, TimeUnit.SECONDS)
+//                        .cachePrivate()
+//                        .noTransform()
+//                        .staleIfError(1, TimeUnit.HOURS))
+//                .body(usersService.find(userId, userDetails.getUserId()));
+//    }
+//
 //    @PutMapping(value = "/{userId}", consumes = "application/json", produces = "application/json")
 //    @ApiResponses(value = {
 //            @ApiResponse(code = 200, message = "User updated and returned in response body"),
@@ -105,8 +105,8 @@ public class UsersController {
 //
 //        return ResponseEntity.created(location).build();
 //    }
-
-
+//
+//
 //    @DeleteMapping(value = "/{userId}")
 //    @ResponseStatus(HttpStatus.NO_CONTENT)
 //    @ApiResponses(value = {
