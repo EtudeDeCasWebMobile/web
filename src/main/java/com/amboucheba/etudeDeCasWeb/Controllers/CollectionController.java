@@ -109,7 +109,7 @@ public class CollectionController {
         return ResponseEntity.created(location).build();
     }
 
-
+    // added comment
 
     @PutMapping(
             value = "/collections/{collectionId}",
