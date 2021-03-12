@@ -3,8 +3,10 @@ package com.amboucheba.etudeDeCasWeb.Controllers;
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
 import com.amboucheba.etudeDeCasWeb.Models.Entities.Collection;
 import com.amboucheba.etudeDeCasWeb.Models.Inputs.CollectionInput;
+import com.amboucheba.etudeDeCasWeb.Models.Outputs.CollectionShare;
 import com.amboucheba.etudeDeCasWeb.Models.Outputs.Collections;
 import com.amboucheba.etudeDeCasWeb.Services.CollectionService;
+import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -27,6 +29,7 @@ public class CollectionController {
 
     @Autowired
     CollectionService collectionService;
+
 
     // Get my collections
     @GetMapping(
@@ -62,15 +65,17 @@ public class CollectionController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Collection returned in body"),
             @ApiResponse(code = 401, message = "User unauthenticated: access restricted to authenticated users"),
+            @ApiResponse(code = 403, message = "User unauthorized: no token provided"),
             @ApiResponse(code = 404, message = "Collection not found")
     })
     @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
     public ResponseEntity<Collection> getCollectionById(
             @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails,
-            @PathVariable long collectionId
+            @PathVariable long collectionId,
+            @RequestParam("token") String token
     ){
 
-        Collection collection = collectionService.find(collectionId, userDetails.getUserId());
+        Collection collection = collectionService.find(collectionId, token, userDetails.getUserId());
 
         return ResponseEntity
                 .ok()
@@ -82,6 +87,39 @@ public class CollectionController {
                 .body(collection);
     }
 
+    @PostMapping(
+            value = "/collections/{collectionId}/share",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE
+            })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Collection token returned in body"),
+            @ApiResponse(code = 401, message = "User unauthenticated: access restricted to authenticated users"),
+            @ApiResponse(code = 403, message = "User unauthorized: only collection owner can request collection shareable link"),
+            @ApiResponse(code = 404, message = "Collection not found")
+    })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+    public ResponseEntity<CollectionShare> generateCollectionShareableLink(
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails,
+            @PathVariable long collectionId
+    ){
+
+        String token = collectionService.generateShareableToken(collectionId, userDetails.getUserId());
+        String link = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .pathSegment("collections", "{id}")
+                .buildAndExpand(collectionId)
+                .toUri()
+                .toString();
+        CollectionShare collectionShare = new CollectionShare(link, token);
+
+        return ResponseEntity
+                .ok()
+                .cacheControl(CacheControl
+                        .maxAge(60, TimeUnit.SECONDS)
+                        .cachePrivate()
+                        .noTransform()
+                        .staleIfError(1, TimeUnit.HOURS))
+                .body(collectionShare);
+    }
 
 
     @PostMapping(

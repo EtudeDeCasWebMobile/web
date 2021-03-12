@@ -68,7 +68,7 @@ public class FindTest {
         Mockito.when(collectionRepository.findById(collectionId)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> {
-            collectionService.find( collectionId, 1);
+            collectionService.find( collectionId, "", 1);
         });
     }
 
@@ -82,7 +82,7 @@ public class FindTest {
 
         Mockito.when(collectionRepository.findById(collectionId)).thenReturn(Optional.of(collection));
 
-        Collection returned = collectionService.find( collectionId, 1);
+        Collection returned = collectionService.find( collectionId, "", 1);
 
         assertEquals(collection.getTag(), returned.getTag());
         assertEquals(collection.getOwner(), returned.getOwner());
