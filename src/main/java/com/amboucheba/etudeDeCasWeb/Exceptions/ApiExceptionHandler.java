@@ -1,5 +1,7 @@
 package com.amboucheba.etudeDeCasWeb.Exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -22,6 +24,18 @@ public class ApiExceptionHandler {
     public ResponseEntity<ApiException> handleNotFoundException(NotFoundException e){
         ApiException apiException = new ApiException(e.getMessage(), HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(apiException, HttpStatus.NOT_FOUND );
+    }
+
+    @ExceptionHandler(value = {ExpiredJwtException.class})
+    public ResponseEntity<ApiException> handleExpiredJwtException(ExpiredJwtException e){
+        ApiException apiException = new ApiException(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(apiException, HttpStatus.UNAUTHORIZED );
+    }
+
+    @ExceptionHandler(value = {MalformedJwtException.class})
+    public ResponseEntity<ApiException> handleMalformedJwtException(MalformedJwtException e){
+        ApiException apiException = new ApiException(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(apiException, HttpStatus.UNAUTHORIZED );
     }
 
     @ExceptionHandler(value = {DuplicateResourceException.class})

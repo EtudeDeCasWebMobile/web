@@ -3,10 +3,13 @@ package com.amboucheba.etudeDeCasWeb.Services;
 import com.amboucheba.etudeDeCasWeb.Exceptions.DuplicateResourceException;
 import com.amboucheba.etudeDeCasWeb.Exceptions.ForbiddenActionException;
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
+import com.amboucheba.etudeDeCasWeb.Models.CollectionShareDetails;
 import com.amboucheba.etudeDeCasWeb.Models.Entities.Collection;
 import com.amboucheba.etudeDeCasWeb.Models.Entities.User;
 import com.amboucheba.etudeDeCasWeb.Models.Inputs.CollectionInput;
+import com.amboucheba.etudeDeCasWeb.Models.Outputs.CollectionShare;
 import com.amboucheba.etudeDeCasWeb.Repositories.CollectionRepository;
+import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,9 @@ public class CollectionService {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    JwtUtil jwtUtil;
 
     public Collection createCollection(String tag, long userId){
         // this handles user not found
@@ -43,7 +49,7 @@ public class CollectionService {
     }
 
     //TODO: add verify if collection is shared with user
-    public Collection find(long collectionId, long userId){
+    public Collection find(long collectionId, String token, long userId){
 
         Optional<Collection> tmp = collectionRepository.findById(collectionId);
         if (tmp.isEmpty()){
@@ -61,8 +67,16 @@ public class CollectionService {
         }
 
         // user is not owner --> check if the collection is shared with him
-        //...
-        return null;
+        if (token == null || token.isEmpty()){
+            throw new ForbiddenActionException("Permission denied: cannot access another user's collection(token required)");
+        }
+        // invalid token --> throws exception --> handled in ApiExceptionHandler
+        long allowedCollectionId = jwtUtil.extractCollectionId(token);
+        if (collectionId != allowedCollectionId){
+            throw new ForbiddenActionException("Permission denied: cannot access another user's collection(wrong/invalid token)");
+        }
+
+        return collection;
     }
 
     //TODO: add verify if collection is shared with user (with write access)
@@ -115,5 +129,20 @@ public class CollectionService {
         }
 
         collectionRepository.deleteById(collectionId);
+    }
+
+    public String generateShareableToken(long collectionId, Long userId) {
+
+        Optional<Collection> tmp = collectionRepository.findById(collectionId);
+        if (tmp.isEmpty()){
+            throw new NotFoundException("Collection with id " + collectionId + " not found.");
+        }
+        Collection collection = tmp.get();
+        if (!collection.getOwner().getId().equals(userId)){
+            throw new ForbiddenActionException("Permission denied: cannot request to share another user's collection");
+        }
+
+        CollectionShareDetails collectionShare = new CollectionShareDetails(collectionId);
+        return jwtUtil.generateToken(collectionShare);
     }
 }
