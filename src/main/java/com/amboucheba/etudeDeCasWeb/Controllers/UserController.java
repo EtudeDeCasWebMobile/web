@@ -1,9 +1,12 @@
 package com.amboucheba.etudeDeCasWeb.Controllers;
 
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
+import com.amboucheba.etudeDeCasWeb.Models.Entities.Location;
 import com.amboucheba.etudeDeCasWeb.Models.Entities.User;
 import com.amboucheba.etudeDeCasWeb.Models.Inputs.RegisterInput;
+import com.amboucheba.etudeDeCasWeb.Services.LocationService;
 import com.amboucheba.etudeDeCasWeb.Services.UserService;
+
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -27,6 +30,8 @@ public class UserController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    LocationService locationService;
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
@@ -49,7 +54,7 @@ public class UserController {
     @GetMapping(value = "/me", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User returned in body"),
-            @ApiResponse(code = 403, message = "Action forbidden: cannot access other users' data"),
+            @ApiResponse(code = 401, message = "User unauthenticated: access restricted to authenticated users"),
             @ApiResponse(code = 404, message = "User not found")
     })
     @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
@@ -64,5 +69,8 @@ public class UserController {
                         .staleIfError(1, TimeUnit.HOURS))
                 .body(userService.find( userDetails.getUserId()));
     }
+
+
+
 
 }
