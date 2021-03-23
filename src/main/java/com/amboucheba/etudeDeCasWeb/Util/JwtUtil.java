@@ -1,6 +1,7 @@
 package com.amboucheba.etudeDeCasWeb.Util;
 
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
+import com.amboucheba.etudeDeCasWeb.Models.CollectionShareDetails;
 import io.jsonwebtoken.Claims;
 
 import io.jsonwebtoken.Jwts;
@@ -39,6 +40,11 @@ public class JwtUtil {
         return claims.get("userId", Long.class);
     }
 
+    public long extractCollectionId(String token){
+        Claims claims = extractAllClaims(token);
+        return claims.get("collectionId", Long.class);
+    }
+
     private Claims extractAllClaims(String token) {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
@@ -56,6 +62,16 @@ public class JwtUtil {
 
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername(), userDetails.getUserId());
+    }
+
+    public String generateToken(CollectionShareDetails collectionShareDetails){
+
+        return Jwts.builder()
+                .claim("collectionId", collectionShareDetails.getCollectionId())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
