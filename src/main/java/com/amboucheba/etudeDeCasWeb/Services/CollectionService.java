@@ -68,14 +68,13 @@ public class CollectionService {
     //TODO: add verify if collection is shared with user (with write access)
     public Collection updateCollection(CollectionInput newCollection, long collectionId, Long userId) {
 
-        String tag = newCollection.getTag();
-
         Optional<Collection> tmp = collectionRepository.findById(collectionId);
         if (tmp.isEmpty()){
             throw new NotFoundException("Collection with id " + collectionId + " not found.");
         }
 
         // there already another collection with this tag
+        String tag = newCollection.getTag();
         Optional<Collection> tmp2 = collectionRepository.findByTagAndOwnerId(tag, userId);
         if (tmp2.isPresent() && tmp2.get().getId() != collectionId){
             throw new DuplicateResourceException("'Collection' with tag " + tag + " already exists for user with id " + userId);
