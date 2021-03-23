@@ -1,10 +1,13 @@
 package com.amboucheba.etudeDeCasWeb.Controllers;
 
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
+import com.amboucheba.etudeDeCasWeb.Models.Entities.Location;
 import com.amboucheba.etudeDeCasWeb.Models.Entities.User;
 import com.amboucheba.etudeDeCasWeb.Models.Inputs.RegisterInput;
 import com.amboucheba.etudeDeCasWeb.Models.Outputs.Users;
+import com.amboucheba.etudeDeCasWeb.Services.LocationService;
 import com.amboucheba.etudeDeCasWeb.Services.UserService;
+
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -28,6 +31,8 @@ public class UserController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    LocationService locationService;
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ResponseStatus(HttpStatus.CREATED)

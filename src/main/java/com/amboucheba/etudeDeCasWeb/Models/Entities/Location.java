@@ -17,13 +17,19 @@ public class Location {
     private Long id;
 
     @Column(name = "title")
-    @NotBlank(message = "Field 'title' is required")
+    //@NotBlank(message = "Field 'title' is required")
     @Size( min = 0, max = 255, message = "Username length must be between 6 and 255")
     private String title;
 
     @Column(name = "description")
     @Size( min = 0, max = 255, message = "Username length must be between 6 and 255")
     private String description;
+    
+    @Column(name = "latitude")
+    private String latitude;
+    
+    @Column(name = "longitude")
+    private String longitude;
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
@@ -32,11 +38,13 @@ public class Location {
     @ManyToMany(mappedBy = "locations")
     List<Collection> collections;
 
-    public Location(Long id, @NotBlank(message = "Field 'title' is required") @Size(min = 0, max = 255, message = "Username length must be between 6 and 255") String title, @Size(min = 0, max = 255, message = "Username length must be between 6 and 255") String description, User owner) {
+    public Location(Long id,  @Size(min = 0, max = 255, message = "Username length must be between 6 and 255") String title, @Size(min = 0, max = 255, message = "Username length must be between 6 and 255") String description, User owner, String latitude, String Longitude) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.owner = owner;
+        this.latitude = latitude;
+        this.longitude = Longitude;
     }
 
     public Location() {
@@ -65,8 +73,25 @@ public class Location {
     public void setDescription(String description) {
         this.description = description;
     }
+    
 
-    public User getOwner() {
+    public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
+	public User getOwner() {
         return owner;
     }
 

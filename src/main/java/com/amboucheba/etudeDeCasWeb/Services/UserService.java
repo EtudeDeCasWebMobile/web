@@ -3,10 +3,19 @@ package com.amboucheba.etudeDeCasWeb.Services;
 import com.amboucheba.etudeDeCasWeb.Exceptions.DuplicateResourceException;
 import com.amboucheba.etudeDeCasWeb.Exceptions.ForbiddenActionException;
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
+import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
+import com.amboucheba.etudeDeCasWeb.Models.Entities.Location;
 import com.amboucheba.etudeDeCasWeb.Models.Entities.User;
 import com.amboucheba.etudeDeCasWeb.Models.Inputs.RegisterInput;
+import com.amboucheba.etudeDeCasWeb.Repositories.LocationRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
+import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
+
+import springfox.documentation.annotations.ApiIgnore;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +24,21 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import javax.validation.Valid;
+
 @Service
 public class UserService {
 
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    LocationRepository locationRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    JwtUtil jwtUtil;
 
     public User find(long userId){
         Optional<User> result = userRepository.findById(userId);
@@ -52,4 +68,14 @@ public class UserService {
 
         return userRepository.save(new User(user.getEmail(), passwordEncoder.encode(user.getPassword())));
     }
+    
+
+	
+    public String shareCurrentLocation(AuthDetails userDetails) {
+
+
+        return jwtUtil.generateToken(userDetails);
+    }
+	
+
 }

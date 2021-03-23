@@ -2,6 +2,9 @@ package com.amboucheba.etudeDeCasWeb.Util;
 
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
 import com.amboucheba.etudeDeCasWeb.Models.CollectionShareDetails;
+import com.amboucheba.etudeDeCasWeb.Models.LocationShareDetails;
+
+
 import io.jsonwebtoken.Claims;
 
 import io.jsonwebtoken.Jwts;
@@ -27,6 +30,10 @@ public class JwtUtil {
 
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+    public long extractLocationId(String token){
+        Claims claims = extractAllClaims(token);
+        return claims.get("collectionId", Long.class);
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -83,6 +90,15 @@ public class JwtUtil {
                 .setClaims(claims)
                 .claim("userId", userId)
                 .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
+    }
+    public String generateToken(LocationShareDetails locationShareDetails){
+
+        return Jwts.builder()
+                .claim("locationId", locationShareDetails.getLocationId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)

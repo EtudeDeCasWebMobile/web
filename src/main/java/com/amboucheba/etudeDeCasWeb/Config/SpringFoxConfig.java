@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 
 @Configuration
 public class SpringFoxConfig {
+//<<<<<<< HEAD
 
     @Bean
     public Docket documentation() {
@@ -39,4 +40,41 @@ public class SpringFoxConfig {
                 Collections.emptyList()
                 );
     }
+//=======
+//
+//	@Bean
+//    public Docket api() {
+//        return new Docket(DocumentationType.SWAGGER_2)
+//          .select()
+//          .apis(RequestHandlerSelectors.any())
+//          .paths(PathSelectors.any())
+//          .build();
+//    }
+
+//    @Bean
+//    public Docket documentation() {
+//        return new Docket(DocumentationType.SWAGGER_2)
+//                .useDefaultResponseMessages(false)
+//                .select()
+//                .apis(RequestHandlerSelectors.basePackage("com.amboucheba.seriesTemporellesTpWeb"))
+//                .paths(PathSelectors.any())
+//                .paths(Predicate.not(PathSelectors.ant("/documentation")) )
+//
+//                .build()
+//                .apiInfo(apiInfo());
+//    }
+//
+//    private ApiInfo apiInfo(){
+//        return new ApiInfo(
+//                "Series Temporelles Api Documentation",
+//                "This is the 'Series Temporelles' api implemented for Web Technologies's  Homework, it describes the crud operation of the series temporelles, events and tag entity",
+//                "1.0",
+//                null,
+//                new Contact("Amine Bouchebaba", null, "bouchebaba.amine@gmail.com"),
+//                null,
+//                null,
+//                Collections.emptyList()
+//                );
+//    }
+//>>>>>>> 6dfda2f8c8fa49fdb61c8904c98f5fb0dba3b385
 }
