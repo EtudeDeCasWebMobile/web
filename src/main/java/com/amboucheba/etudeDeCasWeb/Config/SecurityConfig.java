@@ -39,18 +39,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                .headers().frameOptions().sameOrigin().and()
-                .csrf().disable()
-                .cors()
-                .and().authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/auth").permitAll()
-                .antMatchers(HttpMethod.POST, "/users").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
-                .and().exceptionHandling().accessDeniedHandler(accessDeniedHandler())
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().addFilterBefore( jwtRequestFilter , UsernamePasswordAuthenticationFilter.class);
+            .headers().frameOptions().sameOrigin().and()
+            .csrf().disable()
+            .cors()
+            .and().authorizeRequests()
+            .antMatchers(HttpMethod.POST,"/auth").permitAll()
+            .antMatchers(HttpMethod.POST, "/users").permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
+            .and().exceptionHandling().accessDeniedHandler(accessDeniedHandler())
+            .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and().addFilterBefore( jwtRequestFilter , UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins( Arrays.asList( "*" ) );
+        configuration.setAllowedOrigins( Arrays.asList( "**" ) );
         configuration.setAllowedMethods( Arrays.asList( "GET", "POST", "DELETE", "PUT","PATCH","HEAD" ) );
         configuration.setAllowedHeaders( Arrays.asList( "Content-Type", "Authorization", "X-Requested-With","AuthToken","authtoken" ) );
         configuration.setAllowCredentials( false );

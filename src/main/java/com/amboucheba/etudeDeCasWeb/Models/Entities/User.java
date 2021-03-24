@@ -26,7 +26,7 @@ public class User {
     @Column(name = "password")
     @NotBlank(message = "Field 'password' is required")
     @Size( min = 6, max = 255, message = "Password length must be between 6 and 255")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @OneToOne

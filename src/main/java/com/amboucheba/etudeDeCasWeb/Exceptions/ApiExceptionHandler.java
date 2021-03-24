@@ -71,7 +71,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(value = {BadCredentialsException.class})
     public ResponseEntity<ApiException> handleBadCredentialsException(BadCredentialsException e){
-        System.out.println("Bad credentials");
+        System.out.println("Bad credentials: " + e.toString());
         ApiException apiException = new ApiException(e.getMessage(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST );
     }

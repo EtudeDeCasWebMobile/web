@@ -45,7 +45,7 @@ public class AuthDetails implements UserDetails {
         return password;
     }
 
-    // Using email instead of password
+    // Using email instead of username
     @Override
     public String getUsername() {
         return email;

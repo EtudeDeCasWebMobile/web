@@ -37,22 +37,18 @@ public class AuthController {
             @ApiResponse(code = 400, message = "Bad Credentials, check email and password ")
     })
     ResponseEntity<User> authenticate (@Valid @RequestBody AuthInput auth){
-        System.out.println("Entered");
 
         Optional<User> user = userRepository.findByEmail(auth.getEmail());
         if (user.isEmpty()){
             throw new UsernameNotFoundException("User with email = " + auth.getEmail() + " not found.");
         }
 
+        String token = authService.authenticate(auth);
         User _user = user.get();
         _user.setPassword("");
-//        _user.setUsername("");
-
-        String token = authService.authenticate(auth);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("AuthToken", token);
-        System.out.println("token = " + token);
         return new ResponseEntity<>(_user, headers, HttpStatus.OK);
     }
 }

@@ -43,13 +43,16 @@ class UsersResourceTest {
 
     @BeforeEach
     void setAuthHeader(){
-        user = new User("email@salut.com",  passwordEncoder.encode("pass"));
+        user = new User("email@salut.com",  passwordEncoder.encode("password"));
         user = userRepository.save(user);
 
-        AuthInput authInput = new AuthInput("email@salut.com", "pass");
+        AuthInput authInput = new AuthInput("email@salut.com", "password");
 
         String uri = "http://localhost:" + port + "/auth";
+        System.out.println("uri: " + uri);
         ResponseEntity<Void> response = testRestTemplate.postForEntity(uri, authInput, Void.class);
+        System.out.println("STATUS CODE: " + response.getStatusCodeValue());
+        System.out.println("body: " + response.getBody());
         token = response.getHeaders().getFirst("AuthToken");
     }
 
