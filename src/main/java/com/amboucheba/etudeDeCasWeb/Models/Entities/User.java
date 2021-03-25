@@ -1,5 +1,6 @@
 package com.amboucheba.etudeDeCasWeb.Models.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -27,6 +28,7 @@ public class User {
     @NotBlank(message = "Field 'password' is required")
     @Size( min = 6, max = 255, message = "Password length must be between 6 and 255")
 //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnore
     private String password;
 
     @OneToOne

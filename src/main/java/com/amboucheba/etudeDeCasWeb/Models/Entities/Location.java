@@ -1,5 +1,7 @@
 package com.amboucheba.etudeDeCasWeb.Models.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -11,7 +13,6 @@ import java.util.Objects;
 public class Location {
 
     // Long to UUID
-    // Add Lat long
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,6 +37,7 @@ public class Location {
     private User owner;
 
     @ManyToMany(mappedBy = "locations")
+    @JsonBackReference
     List<Collection> collections;
 
     public Location(Long id,  @Size(min = 0, max = 255, message = "Username length must be between 6 and 255") String title, @Size(min = 0, max = 255, message = "Username length must be between 6 and 255") String description, User owner, String latitude, String Longitude) {
@@ -45,6 +47,15 @@ public class Location {
         this.owner = owner;
         this.latitude = latitude;
         this.longitude = Longitude;
+    }
+
+    public Location(@Size(min = 0, max = 255, message = "Username length must be between 6 and 255") String title, @Size(min = 0, max = 255, message = "Username length must be between 6 and 255") String description, String latitude, String longitude, User owner, List<Collection> collections) {
+        this.title = title;
+        this.description = description;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.owner = owner;
+        this.collections = collections;
     }
 
     public Location(String latitude, String longitude, User owner) {

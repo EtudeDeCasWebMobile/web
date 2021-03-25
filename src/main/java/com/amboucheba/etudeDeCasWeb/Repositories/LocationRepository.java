@@ -1,16 +1,10 @@
 package com.amboucheba.etudeDeCasWeb.Repositories;
 
 import com.amboucheba.etudeDeCasWeb.Models.Entities.Location;
-import com.amboucheba.etudeDeCasWeb.Models.Entities.User;
-
-import java.util.Optional;
-
 import org.springframework.data.repository.CrudRepository;
-
+import java.util.List;
+import java.util.Optional;
 public interface LocationRepository extends CrudRepository<Location, Long> {
-
-	Optional<Location> findByOwner(User user);
-
-
-
+	List<Location> findByOwnerId(long ownerId);
+	Optional<Location> findByTitleAndOwnerId(String title, long ownerId);
 }

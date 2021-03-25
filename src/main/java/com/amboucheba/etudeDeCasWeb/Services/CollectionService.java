@@ -48,6 +48,11 @@ public class CollectionService {
         return collectionRepository.findByOwnerId(userId);
     }
 
+    protected Optional<Collection> findByByTagAndOwner(String tag, User owner){
+
+        return collectionRepository.findByTagAndOwnerId(tag, owner.getId());
+    }
+
     //TODO: add verify if collection is shared with user
     public Collection find(long collectionId, String token, long userId){
 

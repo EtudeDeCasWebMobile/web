@@ -1,6 +1,8 @@
 package com.amboucheba.etudeDeCasWeb.Models.Entities;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -30,6 +32,7 @@ public class Collection {
         name = "collection_locations",
         joinColumns = @JoinColumn(name = "collection_id"),
         inverseJoinColumns = @JoinColumn(name = "location_id") )
+    @JsonManagedReference
     List<Location> locations;
 
     public Collection(@NotBlank(message = "Field 'tag' is required") @Size(min = 0, max = 50, message = "Tag length must be between 1 and 50") String tag, User owner, List<Location> locations) {

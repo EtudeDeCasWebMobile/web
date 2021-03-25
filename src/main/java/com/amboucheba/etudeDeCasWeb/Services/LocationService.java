@@ -1,17 +1,23 @@
 package com.amboucheba.etudeDeCasWeb.Services;
 
+import com.amboucheba.etudeDeCasWeb.Exceptions.DuplicateResourceException;
 import com.amboucheba.etudeDeCasWeb.Exceptions.ForbiddenActionException;
 import com.amboucheba.etudeDeCasWeb.Exceptions.NotFoundException;
+import com.amboucheba.etudeDeCasWeb.Models.Entities.Collection;
 import com.amboucheba.etudeDeCasWeb.Models.Entities.Position;
+import com.amboucheba.etudeDeCasWeb.Models.Inputs.LocationInput;
 import com.amboucheba.etudeDeCasWeb.Models.Inputs.PositionInput;
 import com.amboucheba.etudeDeCasWeb.Models.LocationShareDetails;
 import com.amboucheba.etudeDeCasWeb.Models.Entities.Location;
 import com.amboucheba.etudeDeCasWeb.Models.Entities.User;
+import com.amboucheba.etudeDeCasWeb.Repositories.CollectionRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.LocationRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.PositionRepository;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -26,6 +32,12 @@ public class LocationService {
     LocationRepository locationRepository;
 
     @Autowired
+    CollectionService collectionService;
+
+    @Autowired
+    CollectionRepository collectionRepository;
+
+    @Autowired
     PositionRepository positionRepository;
     
     @Autowired
@@ -36,6 +48,53 @@ public class LocationService {
     
     @Autowired
     JwtUtil jwtUtil;
+
+    public Location createLocation(LocationInput locationInput, long userId){
+
+        User user = userService.find(userId);
+
+        Optional<Location> tmp = locationRepository.findByTitleAndOwnerId(locationInput.getTitle(), userId);
+        if (tmp.isPresent()){
+            throw new DuplicateResourceException("'Location' with title " + locationInput.getTitle() + " already exists for user " + user.getEmail());
+        }
+
+        Location location = new Location();
+        location.setTitle(locationInput.getTitle());
+        location.setDescription(locationInput.getDescription());
+        location.setOwner(user);
+        location.setLatitude(locationInput.getLatitude());
+        location.setLongitude(locationInput.getLongitude());
+
+        List<Collection> collections = new ArrayList<>();
+        for (String tag: locationInput.getTags()) {
+            Optional<Collection> tmp_c = collectionService.findByByTagAndOwner(tag, user);
+            if (tmp_c.isEmpty()){
+                collections.add(collectionService.createCollection(tag, userId));
+            }
+            else {
+                collections.add(tmp_c.get());
+            }
+        }
+
+        location.setCollections(collections);
+        location = locationRepository.save(location);
+
+        //update collections --> add location to them --> necessary
+
+        for (Collection c : collections) {
+            c.getLocations().add(location);
+            collectionRepository.save(c);
+        }
+
+        return location;
+    }
+
+    public List<Location> listLocationsByUser(long userId) {
+
+        // this verifies if user exists
+        User user = userService.find(userId);
+        return locationRepository.findByOwnerId(userId);
+    }
 
     public String generateShareableToken(long userId, long initiatorId) {
 
@@ -85,7 +144,57 @@ public class LocationService {
         }
         return current;
     }
-    
+
+    public void deleteLocation(long locationId, Long userId) {
+
+        Optional<Location> tmp = locationRepository.findById(locationId);
+        if (tmp.isEmpty()){
+            throw new NotFoundException("location with id " + locationId + " not found.");
+        }
+
+        Location location = tmp.get();
+
+        if (!location.getOwner().getId().equals(userId)){
+            throw new ForbiddenActionException("Permission denied: cannot delete another user's location");
+        }
+
+        // first remove location from other collections
+        for (Collection c: location.getCollections()) {
+            c.getLocations().remove(location);
+            collectionRepository.save(c);
+        }
+
+        locationRepository.deleteById(locationId);
+    }
+
+    public Location updateLocation(LocationInput newLocation, long locationId, Long userId) {
+
+        String title = newLocation.getTitle();
+
+        Optional<Location> tmp = locationRepository.findById(locationId);
+        if (tmp.isEmpty()){
+            throw new NotFoundException("Location with id " + locationId + " not found.");
+        }
+
+        Optional<Location> tmp2 = locationRepository.findByTitleAndOwnerId(title, userId);
+        if (tmp2.isPresent() && tmp2.get().getId() != locationId){
+            throw new DuplicateResourceException("'location' with title " + title + " already exists for user with id " + userId);
+        }
+
+        Location location = tmp.get();
+
+        if (!location.getOwner().getId().equals(userId)){
+            throw new ForbiddenActionException("Permission denied: cannot update another user's location");
+        }
+
+        // user is owner --> update the location
+        location.setTitle(newLocation.getTitle());
+        location.setDescription(newLocation.getDescription());
+        if (newLocation.getLatitude() != null) location.setLatitude(newLocation.getLatitude());
+        if (newLocation.getLongitude() != null) location.setLongitude(newLocation.getLongitude());
+        return locationRepository.save(location);
+    }
+
     public Position updateCurrentLocation(long userId, PositionInput newLocation, long initiatorId) {
 
         if (userId != initiatorId){
@@ -111,5 +220,4 @@ public class LocationService {
 
     	return current;
     }
-
 }
