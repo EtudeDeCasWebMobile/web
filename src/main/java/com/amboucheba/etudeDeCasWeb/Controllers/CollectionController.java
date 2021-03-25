@@ -71,7 +71,6 @@ public class CollectionController {
     })
 //    @ApiImplicitParam(name = "Authorization", required = false, paramType = "header", allowEmptyValue = true, dataTypeClass = String.class, example = "Bearer access_token")
     public ResponseEntity<Collection> getCollectionById(
-            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails,
             @PathVariable long collectionId,
             @RequestParam(value = "token", required = false) String token,
             @RequestHeader(value = "AuthToken", required = false) String authtoken

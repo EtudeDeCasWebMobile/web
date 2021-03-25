@@ -6,20 +6,13 @@ import javax.validation.Valid;
 
 import com.amboucheba.etudeDeCasWeb.Models.Entities.Position;
 import com.amboucheba.etudeDeCasWeb.Models.Inputs.PositionInput;
+import com.amboucheba.etudeDeCasWeb.Util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
@@ -35,14 +28,11 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 @RequestMapping("/users")
 public class CurrentLocationController {
-	 @Autowired 
-	    LocationService locationService;
-	 
-//	 @RequestMapping(value = "/custom", method = RequestMethod.POST)
-//	    public String custom() {
-//	        return "custom";
-//	    }
+	@Autowired
+	LocationService locationService;
 
+	@Autowired
+	JwtUtil jwtUtil;
 
 	@PostMapping(
 	            value = "/{userId}/position/share",
@@ -90,14 +80,19 @@ public class CurrentLocationController {
 			@ApiResponse(code = 403, message = "User unauthorized: no token provided"),
 			@ApiResponse(code = 404, message = "User's position not set")
 	})
-	@ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+//	@ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
 	public ResponseEntity<Position> getUserCurrentPositionByUserId(
-			@ApiIgnore @AuthenticationPrincipal AuthDetails userDetails,
 			@PathVariable long userId,
-			@RequestParam("token") String token
+			@RequestParam(value = "token", required = false) String token,
+			@RequestHeader(value = "AuthToken", required = false) String authtoken
 	){
 
-		Position currentLocation = locationService.find(userId, token, userDetails.getUserId());
+		long initiatorId = -1;
+		if (authtoken != null && authtoken.startsWith("Bearer ")){
+			authtoken = authtoken.substring(7);
+			initiatorId = jwtUtil.extractUserId(authtoken);
+		}
+		Position currentLocation = locationService.find(userId, token, initiatorId);
 
 		return ResponseEntity
 				.ok()

@@ -133,16 +133,19 @@ public class LocationService {
             throw new NotFoundException("User " + userId + " 's position is not set.");
         }
 
-        if (token == null || token.isEmpty()){
-            throw new ForbiddenActionException("Permission denied: cannot access another user's collection(token required)");
+        if (userId == initiatorId){
+            return current;
         }
 
-        // invalid token --> throws exception --> handled in ApiExceptionHandler
-        long allowedCollectionId = jwtUtil.extractPositionId(token);
-        if (current.getId() != allowedCollectionId){
-            throw new ForbiddenActionException("Permission denied: cannot access another user's position(wrong/invalid token)");
+        if (token != null ){
+            // invalid token --> throws exception --> handled in ApiExceptionHandler
+            long allowedPositionId = jwtUtil.extractPositionId(token);
+            if (current.getId() == allowedPositionId){
+                return current;
+            }
         }
-        return current;
+
+        throw new ForbiddenActionException("Permission denied: cannot access another user's position(missing/invalid token)");
     }
 
     public void deleteLocation(long locationId, Long userId) {
