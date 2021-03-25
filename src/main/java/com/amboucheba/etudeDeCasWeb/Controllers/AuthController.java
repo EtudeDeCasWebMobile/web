@@ -38,7 +38,6 @@ public class AuthController {
     })
     ResponseEntity<User> authenticate (@Valid @RequestBody AuthInput auth){
 
-
         Optional<User> user = userRepository.findByEmail(auth.getEmail());
         if (user.isEmpty()){
             throw new UsernameNotFoundException("User with email = " + auth.getEmail() + " not found.");

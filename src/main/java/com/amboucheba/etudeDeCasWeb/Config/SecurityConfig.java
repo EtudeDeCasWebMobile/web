@@ -16,6 +16,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 
 @EnableWebSecurity
@@ -35,24 +40,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable(); //we don't make use of cookies
 
-        http.authorizeRequests()
+        http
+            .headers().frameOptions().sameOrigin().and()
+            .csrf().disable()
+            .cors()
+            .and().authorizeRequests()
             .antMatchers(HttpMethod.POST,"/auth").permitAll()
             .antMatchers(HttpMethod.POST, "/users").permitAll()
-            .anyRequest().authenticated();
-
-        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint());
-        http.exceptionHandling().accessDeniedHandler(accessDeniedHandler());
-
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        http.addFilterBefore( jwtRequestFilter , UsernamePasswordAuthenticationFilter.class);
+            .anyRequest().authenticated()
+            .and()
+            .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
+            .and().exceptionHandling().accessDeniedHandler(accessDeniedHandler())
+            .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and().addFilterBefore( jwtRequestFilter , UsernamePasswordAuthenticationFilter.class);
 
     }
     
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**").allowedMethods("*");
+
     }
 
     @Override
@@ -95,6 +102,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     RestAuthenticationFailureHandler authenticationFailureHandler(){
         return new RestAuthenticationFailureHandler();
     }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins( Arrays.asList( "**" ) );
+        configuration.setAllowedMethods( Arrays.asList( "GET", "POST", "DELETE", "PUT","PATCH","HEAD" ) );
+        configuration.setAllowedHeaders( Arrays.asList( "Content-Type", "Authorization", "X-Requested-With","AuthToken","authtoken" ) );
+        configuration.setAllowCredentials( false );
+        configuration.setMaxAge( (long) 86400 );
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration( "/**", configuration );
+        return source;
+    }
+
+
 }
 
 

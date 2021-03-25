@@ -50,13 +50,15 @@ public class GetCollectionByIdTest {
         user = new User( "user@gmail.com", passwordEncoder.encode("pass"));
         user = userRepository.save(user);
 
-        System.out.println(userRepository.findById(user.getId()).get().getEmail());
+//        System.out.println(userRepository.findById(user.getId()).get().getEmail());
 
         AuthInput authInput = new AuthInput("user@gmail.com", "pass");
 
         String uri = "http://localhost:" + port + "/auth";
         ResponseEntity<Void> response = testRestTemplate.postForEntity(uri, authInput, Void.class);
         token = response.getHeaders().getFirst("AuthToken");
+        System.out.println("response : " + response.hasBody() + " " + response.getStatusCodeValue());
+        System.out.println("token == " + token);
     }
 
     @AfterEach

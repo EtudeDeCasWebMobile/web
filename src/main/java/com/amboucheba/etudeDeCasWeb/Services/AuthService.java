@@ -31,18 +31,24 @@ public class AuthService implements UserDetailsService {
     public AuthDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isEmpty()){
+            System.out.println("User not found ....");
             throw new UsernameNotFoundException("User with email = " + email + " not found.");
         }
 
         User _user = user.get();
+        System.out.println("password : " + _user.getPassword());
 
         return new AuthDetails(_user.getId(), _user.getEmail(), _user.getPassword());
     }
 
     public String authenticate(AuthInput auth){
+        System.out.println("authenticate");
+        System.out.println("password: " + auth.getPassword());
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(auth.getEmail(), auth.getPassword())
         );
+
+        System.out.println("middle");
 
         AuthDetails userDetails = loadUserByUsername(auth.getEmail());
         return jwtUtil.generateToken(userDetails);
