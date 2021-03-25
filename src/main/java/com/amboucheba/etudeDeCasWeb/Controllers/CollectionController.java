@@ -30,6 +30,8 @@ public class CollectionController {
     @Autowired
     CollectionService collectionService;
 
+    @Autowired
+    JwtUtil jwtUtil;
 
     // Get my collections
     @GetMapping(
@@ -56,7 +58,6 @@ public class CollectionController {
                 .body(collections);
     }
 
-
     // Get collections by id --> uri to share with other users
     @GetMapping(
             value = "/collections/{collectionId}",
@@ -68,14 +69,21 @@ public class CollectionController {
             @ApiResponse(code = 403, message = "User unauthorized: no token provided"),
             @ApiResponse(code = 404, message = "Collection not found")
     })
-    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+//    @ApiImplicitParam(name = "Authorization", required = false, paramType = "header", allowEmptyValue = true, dataTypeClass = String.class, example = "Bearer access_token")
     public ResponseEntity<Collection> getCollectionById(
             @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails,
             @PathVariable long collectionId,
-            @RequestParam("token") String token
+            @RequestParam(value = "token", required = false) String token,
+            @RequestHeader(value = "AuthToken", required = false) String authtoken
     ){
 
-        Collection collection = collectionService.find(collectionId, token, userDetails.getUserId());
+        long userId = -1;
+        if (authtoken != null && authtoken.startsWith("Bearer ")){
+            authtoken = authtoken.substring(7);
+            userId = jwtUtil.extractUserId(authtoken);
+        }
+
+        Collection collection = collectionService.find(collectionId, token, userId);
 
         return ResponseEntity
                 .ok()

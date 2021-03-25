@@ -71,17 +71,14 @@ public class CollectionService {
             return collection;
         }
 
-        // user is not owner --> check if the collection is shared with him
-        if (token == null || token.isEmpty()){
-            throw new ForbiddenActionException("Permission denied: cannot access another user's collection(token required)");
-        }
-        // invalid token --> throws exception --> handled in ApiExceptionHandler
-        long allowedCollectionId = jwtUtil.extractCollectionId(token);
-        if (collectionId != allowedCollectionId){
-            throw new ForbiddenActionException("Permission denied: cannot access another user's collection(wrong/invalid token)");
+        if (token != null) {
+            long allowedCollectionId = jwtUtil.extractCollectionId(token);
+            if (collectionId == allowedCollectionId){
+                return collection;
+            }
         }
 
-        return collection;
+        throw new ForbiddenActionException("Permission denied: cannot access another user's collection(missing/invalid token)");
     }
 
     //TODO: add verify if collection is shared with user (with write access)
