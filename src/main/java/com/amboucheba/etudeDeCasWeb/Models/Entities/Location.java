@@ -47,6 +47,12 @@ public class Location {
         this.longitude = Longitude;
     }
 
+    public Location(String latitude, String longitude, User owner) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.owner = owner;
+    }
+
     public Location() {
     }
 

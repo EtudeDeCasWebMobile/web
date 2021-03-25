@@ -38,16 +38,15 @@ public class AuthController {
     })
     ResponseEntity<User> authenticate (@Valid @RequestBody AuthInput auth){
 
-        String token = authService.authenticate(auth);
 
         Optional<User> user = userRepository.findByEmail(auth.getEmail());
         if (user.isEmpty()){
             throw new UsernameNotFoundException("User with email = " + auth.getEmail() + " not found.");
         }
 
+        String token = authService.authenticate(auth);
         User _user = user.get();
         _user.setPassword("");
-//        _user.setUsername("");
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("AuthToken", token);

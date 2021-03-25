@@ -26,12 +26,12 @@ public class User {
     @Column(name = "password")
     @NotBlank(message = "Field 'password' is required")
     @Size( min = 6, max = 255, message = "Password length must be between 6 and 255")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @OneToOne
     @JoinColumn(name = "position")
-    private Location position;
+    private Position position;
 
     public User(@Email @NotEmpty(message = "Field 'email' is required") String email,  @NotBlank(message = "Field 'password' is required") @Size(min = 0, max = 255, message = "Password length must be between 6 and 255") String password) {
         this.email = email;
@@ -70,11 +70,11 @@ public class User {
         this.password = password;
     }
 
-    public Location getPosition() {
+    public Position getPosition() {
         return position;
     }
 
-    public void setPosition(Location position) {
+    public void setPosition(Position position) {
         this.position = position;
     }
 

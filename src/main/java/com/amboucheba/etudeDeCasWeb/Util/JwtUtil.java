@@ -31,10 +31,6 @@ public class JwtUtil {
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
-    public long extractLocationId(String token){
-        Claims claims = extractAllClaims(token);
-        return claims.get("collectionId", Long.class);
-    }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
@@ -50,6 +46,11 @@ public class JwtUtil {
     public long extractCollectionId(String token){
         Claims claims = extractAllClaims(token);
         return claims.get("collectionId", Long.class);
+    }
+
+    public long extractPositionId(String token){
+        Claims claims = extractAllClaims(token);
+        return claims.get("positionId", Long.class);
     }
 
     private Claims extractAllClaims(String token) {
@@ -95,10 +96,11 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
+
     public String generateToken(LocationShareDetails locationShareDetails){
 
         return Jwts.builder()
-                .claim("locationId", locationShareDetails.getLocationId())
+                .claim("positionId", locationShareDetails.getLocationId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
