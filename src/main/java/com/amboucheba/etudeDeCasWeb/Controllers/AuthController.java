@@ -1,7 +1,7 @@
 package com.amboucheba.etudeDeCasWeb.Controllers;
 
-import com.amboucheba.etudeDeCasWeb.Models.Inputs.AuthInput;
 import com.amboucheba.etudeDeCasWeb.Models.Entities.User;
+import com.amboucheba.etudeDeCasWeb.Models.Inputs.AuthInput;
 import com.amboucheba.etudeDeCasWeb.Repositories.UserRepository;
 import com.amboucheba.etudeDeCasWeb.Services.AuthService;
 import io.swagger.annotations.ApiResponse;
@@ -36,10 +36,10 @@ public class AuthController {
             @ApiResponse(code = 200, message = "Auth token returned in AuthToken response header"),
             @ApiResponse(code = 400, message = "Bad Credentials, check email and password ")
     })
-    ResponseEntity<User> authenticate (@Valid @RequestBody AuthInput auth){
+    ResponseEntity<User> authenticate(@Valid @RequestBody AuthInput auth) {
 
         Optional<User> user = userRepository.findByEmail(auth.getEmail());
-        if (user.isEmpty()){
+        if (user.isEmpty()) {
             throw new UsernameNotFoundException("User with email = " + auth.getEmail() + " not found.");
         }
 

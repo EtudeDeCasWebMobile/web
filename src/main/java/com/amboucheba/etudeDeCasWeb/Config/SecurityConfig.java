@@ -108,8 +108,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins( Arrays.asList( "**" ) );
-        configuration.setAllowedMethods( Arrays.asList( "GET", "POST", "DELETE", "PUT","PATCH","HEAD" ) );
+        configuration.setAllowedOrigins( Arrays.asList( "*" ) );
+        configuration.setAllowedMethods( Arrays.asList( "GET", "POST", "DELETE", "PUT","PATCH","HEAD","OPTIONS" ) );
         configuration.setAllowedHeaders( Arrays.asList( "Content-Type", "Authorization", "X-Requested-With","AuthToken","authtoken" ) );
         configuration.setAllowCredentials( false );
         configuration.setMaxAge( (long) 86400 );
