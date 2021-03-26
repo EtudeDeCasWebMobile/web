@@ -84,7 +84,7 @@ public class CurrentLocationController {
 	public ResponseEntity<Position> getUserCurrentPositionByUserId(
 			@PathVariable long userId,
 			@RequestParam(value = "token", required = false) String token,
-			@RequestHeader(value = "AuthToken", required = false) String authtoken
+			@RequestHeader(value = "Authorization", required = false) String authtoken
 	){
 
 		long initiatorId = -1;

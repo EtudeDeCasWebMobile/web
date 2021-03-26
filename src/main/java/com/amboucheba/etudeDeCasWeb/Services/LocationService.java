@@ -223,4 +223,60 @@ public class LocationService {
 
     	return current;
     }
+
+    public Collection addToCollection(long locationId, String tag, Long userId) {
+
+        Optional<Location> tmp = locationRepository.findById(locationId);
+        if (tmp.isEmpty()){
+            throw new NotFoundException("Location with id " + locationId + " not found.");
+        }
+
+        Location location = tmp.get();
+        if (!location.getOwner().getId().equals(userId)){
+            throw new ForbiddenActionException("Permission denied: cannot update another user's location");
+        }
+
+        Collection collection;
+        Optional<Collection> tmp2 = collectionRepository.findByTagAndOwnerId(tag, userId);
+        if (tmp2.isEmpty()) collection = collectionService.createCollection(tag, userId);
+        else collection = tmp2.get();
+
+        if(!location.getCollections().contains(collection)){
+            location.getCollections().add(collection);
+        }
+        if (!collection.getLocations().contains(location)){
+            collection.getLocations().add(location);
+        }
+
+        locationRepository.save(location);
+        collectionRepository.save(collection);
+
+        return collection;
+    }
+
+    public void deleteFromCollection(long locationId, String tag, Long userId) {
+
+        Optional<Location> tmp = locationRepository.findById(locationId);
+        if (tmp.isEmpty()){
+            throw new NotFoundException("Location with id " + locationId + " not found.");
+        }
+
+        Location location = tmp.get();
+        if (!location.getOwner().getId().equals(userId)){
+            throw new ForbiddenActionException("Permission denied: cannot update another user's location");
+        }
+
+        Optional<Collection> tmp2 = collectionRepository.findByTagAndOwnerId(tag, userId);
+        if (tmp2.isEmpty()){
+            throw new NotFoundException("Collection with tag " + tag + " not found.");
+        }
+        Collection collection = tmp2.get();
+
+        collection.getLocations().remove(location);
+        location.getCollections().remove(collection);
+
+        locationRepository.save(location);
+        collectionRepository.save(collection);
+
+    }
 }

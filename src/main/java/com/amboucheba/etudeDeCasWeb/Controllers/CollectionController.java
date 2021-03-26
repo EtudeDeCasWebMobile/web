@@ -73,7 +73,7 @@ public class CollectionController {
     public ResponseEntity<Collection> getCollectionById(
             @PathVariable long collectionId,
             @RequestParam(value = "token", required = false) String token,
-            @RequestHeader(value = "AuthToken", required = false) String authtoken
+            @RequestHeader(value = "Authorization", required = false) String authtoken
     ){
 
         long userId = -1;
@@ -154,7 +154,6 @@ public class CollectionController {
         return ResponseEntity.created(location).build();
     }
 
-    // added comment
 
     @PutMapping(
             value = "/collections/{collectionId}",
@@ -179,7 +178,6 @@ public class CollectionController {
         );
         return ResponseEntity.ok(modifiedCollection);
     }
-
 
 
     @DeleteMapping(value = "/collections/{collectionId}")

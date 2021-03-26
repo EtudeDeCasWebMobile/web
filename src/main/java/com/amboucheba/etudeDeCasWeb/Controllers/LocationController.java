@@ -1,7 +1,9 @@
 package com.amboucheba.etudeDeCasWeb.Controllers;
 
 import com.amboucheba.etudeDeCasWeb.Models.AuthDetails;
+import com.amboucheba.etudeDeCasWeb.Models.Entities.Collection;
 import com.amboucheba.etudeDeCasWeb.Models.Entities.Location;
+import com.amboucheba.etudeDeCasWeb.Models.Inputs.AddTagToLocationInput;
 import com.amboucheba.etudeDeCasWeb.Models.Inputs.LocationInput;
 import com.amboucheba.etudeDeCasWeb.Models.Outputs.Locations;
 import com.amboucheba.etudeDeCasWeb.Services.LocationService;
@@ -79,6 +81,26 @@ public class LocationController {
         return ResponseEntity.created(location).build();
     }
 
+    @PostMapping(
+            value = "/locations/{locationId}/collections",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @ResponseStatus(HttpStatus.OK)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "location created, check location header for uri"),
+            @ApiResponse(code = 400, message = "Provided location info not valid, check response body for more details on error"),
+            @ApiResponse(code = 401, message = "User unauthenticated: access restricted to authenticated users"),
+            @ApiResponse(code = 403, message = "User unauthorized: cannot update other users locations"),
+            @ApiResponse(code = 404, message = "Location not found"),
+    })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+    public ResponseEntity<Collection> addTagToLocation(
+            @PathVariable long locationId,
+            @Valid @RequestBody AddTagToLocationInput input,
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
+
+        Collection collection = locationService.addToCollection(locationId, input.getTag(), userDetails.getUserId() );
+        return ResponseEntity.ok(collection);
+    }
 
     @PutMapping(
             value = "/locations/{locationId}",
@@ -118,6 +140,24 @@ public class LocationController {
             @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
 
         locationService.deleteLocation(locationId, userDetails.getUserId());
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping(value = "/locations/{locationId}/collections")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "Location deleted"),
+            @ApiResponse(code = 401, message = "User unauthenticated: access restricted to authenticated users"),
+            @ApiResponse(code = 403, message = "Permission denied: Only owner of the location can delete it"),
+            @ApiResponse(code = 404, message = "Location not found")
+    })
+    @ApiImplicitParam(name = "Authorization", required = true, paramType = "header", allowEmptyValue = false, dataTypeClass = String.class, example = "Bearer access_token")
+    public ResponseEntity<Void> deleteTagFromLocation(
+            @PathVariable long locationId,
+            @Valid @RequestBody AddTagToLocationInput input,
+            @ApiIgnore @AuthenticationPrincipal AuthDetails userDetails){
+
+        locationService.deleteFromCollection(locationId, input.getTag(), userDetails.getUserId());
         return ResponseEntity.noContent().build();
     }
 
