@@ -3,7 +3,6 @@ package com.amboucheba.etudeDeCasWeb.Models.Entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +24,10 @@ public class Location {
     @Column(name = "description")
     @Size( min = 0, max = 255, message = "Username length must be between 6 and 255")
     private String description;
+
+    @Lob
+    @Column(name="image", length=8192)
+    private String image;
     
     @Column(name = "latitude")
     private String latitude;
