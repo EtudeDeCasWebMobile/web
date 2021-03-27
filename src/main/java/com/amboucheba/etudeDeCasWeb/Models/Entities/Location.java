@@ -28,7 +28,11 @@ public class Location {
     @Lob
     @Column(name="image", length=8192)
     private String image;
-    
+
+    @Column(name = "imageTitle")
+    @Size( min = 0, max = 255, message = "length must be between 6 and 255")
+    private String imageTitle;
+
     @Column(name = "latitude")
     private String latitude;
     
