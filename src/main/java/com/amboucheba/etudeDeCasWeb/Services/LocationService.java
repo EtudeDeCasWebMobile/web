@@ -64,6 +64,8 @@ public class LocationService {
         location.setOwner(user);
         location.setLatitude(locationInput.getLatitude());
         location.setLongitude(locationInput.getLongitude());
+        location.setImage(locationInput.getImage());
+
 
         List<Collection> collections = new ArrayList<>();
         for (String tag: locationInput.getTags()) {
@@ -195,6 +197,7 @@ public class LocationService {
         location.setDescription(newLocation.getDescription());
         if (newLocation.getLatitude() != null) location.setLatitude(newLocation.getLatitude());
         if (newLocation.getLongitude() != null) location.setLongitude(newLocation.getLongitude());
+        if (newLocation.getImage() != null) location.setImage(newLocation.getImage());
         return locationRepository.save(location);
     }
 

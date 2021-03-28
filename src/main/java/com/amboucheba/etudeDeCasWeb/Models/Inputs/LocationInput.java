@@ -18,8 +18,17 @@ public class LocationInput {
 
     private String latitude;
     private String longitude;
-
+    private String image;
     private List<String> tags;
+
+    public LocationInput(@NotBlank(message = "Field 'title' is required") @Size(min = 0, max = 255, message = "title length must be between 0 and 255") String title, @NotBlank(message = "Field 'description' is required") @Size(min = 0, max = 255, message = "description length must be between 0 and 255") String description, String latitude, String longitude, String image, List<String> tags) {
+        this.title = title;
+        this.description = description;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.image = image;
+        this.tags = tags;
+    }
 
     public LocationInput(@NotBlank(message = "Field 'title' is required") @Size(min = 0, max = 255, message = "title length must be between 0 and 255") String title, @Size(min = 0, max = 255, message = "description length must be between 0 and 255") String description, String latitude, String longitude, List<String> tags) {
         this.title = title;
@@ -67,6 +76,14 @@ public class LocationInput {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public List<String> getTags() {

@@ -45,7 +45,6 @@ public class AuthController {
 
         String token = authService.authenticate(auth);
         User _user = user.get();
-        _user.setPassword("");
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("AuthToken", token);

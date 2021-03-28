@@ -29,10 +29,6 @@ public class Location {
     @Column(name="image", length=8192)
     private String image;
 
-    @Column(name = "imageTitle")
-    @Size( min = 0, max = 255, message = "length must be between 6 and 255")
-    private String imageTitle;
-
     @Column(name = "latitude")
     private String latitude;
     
@@ -46,6 +42,8 @@ public class Location {
     @ManyToMany(mappedBy = "locations")
     @JsonBackReference
     List<Collection> collections;
+
+
 
     public Location(Long id,  @Size(min = 0, max = 255, message = "Username length must be between 6 and 255") String title, @Size(min = 0, max = 255, message = "Username length must be between 6 and 255") String description, User owner, String latitude, String Longitude) {
         this.id = id;
@@ -129,6 +127,14 @@ public class Location {
 
     public void setCollections(List<Collection> collections) {
         this.collections = collections;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     @Override
