@@ -38,7 +38,6 @@ public class JwtUtil {
     }
 
     public long extractUserId(String token){
-
         Claims claims = extractAllClaims(token);
         return claims.get("userId", Long.class);
     }
