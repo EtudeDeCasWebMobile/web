@@ -1,6 +1,7 @@
 package com.amboucheba.etudeDeCasWeb.Controllers.Integration.CollectionController;
 
 import com.amboucheba.etudeDeCasWeb.EtudeDeCasWebApplication;
+import com.amboucheba.etudeDeCasWeb.Models.CollectionMixin;
 import com.amboucheba.etudeDeCasWeb.Models.Entities.Collection;
 import com.amboucheba.etudeDeCasWeb.Models.Entities.User;
 import com.amboucheba.etudeDeCasWeb.Models.Inputs.AuthInput;
@@ -47,12 +48,10 @@ public class GetCollectionByIdTest {
     @BeforeEach
     void setAuthHeader(){
 
-        user = new User( "user@gmail.com", passwordEncoder.encode("pass"));
+        user = new User( "user@gmail.com", passwordEncoder.encode("password"));
         user = userRepository.save(user);
 
-//        System.out.println(userRepository.findById(user.getId()).get().getEmail());
-
-        AuthInput authInput = new AuthInput("user@gmail.com", "pass");
+        AuthInput authInput = new AuthInput("user@gmail.com", "password");
 
         String uri = "http://localhost:" + port + "/auth";
         ResponseEntity<Void> response = testRestTemplate.postForEntity(uri, authInput, Void.class);
@@ -80,9 +79,9 @@ public class GetCollectionByIdTest {
         headers.setBearerAuth(token);
         HttpEntity<Void> entity = new HttpEntity<>( headers);
         // Send request and get response
-        ResponseEntity<Collection> response = testRestTemplate.exchange(uri, HttpMethod.GET, entity, Collection.class);
+        ResponseEntity<CollectionMixin> response = testRestTemplate.exchange(uri, HttpMethod.GET, entity, CollectionMixin.class);
 
-        Collection collection = response.getBody();
+        CollectionMixin collection = response.getBody();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(c1.getId(), collection.getId());
@@ -95,13 +94,12 @@ public class GetCollectionByIdTest {
         String uri = "http://localhost:" + port + "/collections/1" ;
         userRepository.deleteById(user.getId());
 
-
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         HttpEntity<Void> entity = new HttpEntity<>( headers);
         // Send request and get response
         ResponseEntity<Void> response = testRestTemplate.exchange(uri, HttpMethod.GET, entity, Void.class);
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 }

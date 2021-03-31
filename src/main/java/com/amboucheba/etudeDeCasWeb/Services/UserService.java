@@ -31,8 +31,6 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
-    @Autowired
-    LocationRepository locationRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;

@@ -47,12 +47,10 @@ public class DeleteCollectionTest {
     @BeforeEach
     void setAuthHeader(){
 
-        user = new User( "user@gmail.com", passwordEncoder.encode("pass"));
+        user = new User( "user@gmail.com", passwordEncoder.encode("password"));
         user = userRepository.save(user);
 
-        System.out.println(userRepository.findById(user.getId()).get().getEmail());
-
-        AuthInput authInput = new AuthInput("user@gmail.com", "pass");
+        AuthInput authInput = new AuthInput("user@gmail.com", "password");
 
         String uri = "http://localhost:" + port + "/auth";
         ResponseEntity<Void> response = testRestTemplate.postForEntity(uri, authInput, Void.class);
