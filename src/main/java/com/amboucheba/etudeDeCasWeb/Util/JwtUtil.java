@@ -76,7 +76,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .claim("collectionId", collectionShareDetails.getCollectionId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 48))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
@@ -91,7 +91,7 @@ public class JwtUtil {
                 .claim("userId", userId)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 48))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
@@ -101,7 +101,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .claim("positionId", locationShareDetails.getLocationId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 48))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
